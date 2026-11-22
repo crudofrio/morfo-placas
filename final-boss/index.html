@@ -348,7 +348,7 @@ function start(opts){
   if(!list.length) return;
   const qs=buildQuestions(list, level, cls);
   if(!qs.length){ alert("No pude armar preguntas para este nivel con estas placas."); return; }
-  G={level,cls,isBoss:level===4,qs,i:0,lives:level===4?3:null,combo:0,maxCombo:0,score:0,ok:0,bad:0,t0:Date.now(),log:[],baseTime:level===1?10:level===4?15:12};
+  G={level,cls,isBoss:level===4,qs,i:0,lives:level===4?3:null,combo:0,maxCombo:0,score:0,ok:0,bad:0,t0:Date.now(),log:[],baseTime:level===1?13:level===4?20:16};
   countdown();
 }
 
@@ -501,7 +501,7 @@ function countdown(){
   tick();
 }
 function timerLimit(){
-  if(G.level===4) return Math.max(7, G.baseTime - G.combo*0.45);
+  if(G.level===4) return Math.max(9, G.baseTime - G.combo*0.45);
   return G.baseTime;
 }
 
