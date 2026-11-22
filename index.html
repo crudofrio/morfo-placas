@@ -119,6 +119,7 @@ function home(){stopT();$('back').style.visibility='hidden';$('ttl').textContent
  <div class="chips">${[['all','📚 Todas (29)'],['2','Clase 2 (10)'],['3','Clase 3 (13)'],['4','Clase 4 (6)']].map(([k,t])=>`<button class="chip ${S.cls===k?'on':''}" data-c="${k}">${t}</button>`).join('')}</div>
  <div class="stat"><div><b>${L.length}</b>placas</div><div><b>${F.length}</b>falladas</div><div><b>${avg}${avg==='—'?'':'%'}</b>prom. últimos</div></div></div>
  <div class="card"><b style="color:var(--vino)">🎨 Colores = cuántas placas comparten la estructura</b>${legendH()}${hlChips()}<div class="small">Aprende primero la BASE ★ (se repite mucho) y luego las únicas ○ de cada placa.</div></div>
+ <button class="big" id="mBoss" style="background:linear-gradient(120deg,#140628,#3a0ca3,#ff0055)">⚡ FINAL BOSS<small>Examen primer parcial · clases 2 a 6 · toca, no escribas · ritmo y combo</small></button>
  <button class="big b5" id="mBase">★ Base primero<small>Solo las estructuras que se repiten (★ base y ◆ frecuentes): ¿cuál es? y en qué placas sale</small></button>
  <button class="big b1" id="mFlash">🃏 Flashcards<small>Mira la placa tapada y toca para revelar diagnóstico y estructuras</small></button>
  <button class="big b2" id="mExam">⏱️ Modo examen<small>Placa al azar · 60 s · escribe diagnóstico + 4 estructuras · nota final</small></button>
@@ -126,7 +127,7 @@ function home(){stopT();$('back').style.visibility='hidden';$('ttl').textContent
  <button class="big b4" id="mList">📖 Ver todas con nombres<small>Lista completa, placa por placa</small></button>
  <p class="small">Tip: activa el modo avión y abre este archivo en Safari; funciona sin internet. Tus fallas se guardan en este iPhone.</p>`;
  app.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{S.cls=b.dataset.c;save();home()});
- $('mFlash').onclick=()=>flash(shuffle(pool()),0);$('mExam').onclick=()=>examCfg(false);$('mFail').onclick=()=>examCfg(true);$('mList').onclick=()=>list();$('mBase').onclick=()=>baseCfg();bindHl(home);}
+ $('mBoss').onclick=()=>location.href='final-boss/';$('mFlash').onclick=()=>flash(shuffle(pool()),0);$('mExam').onclick=()=>examCfg(false);$('mFail').onclick=()=>examCfg(true);$('mList').onclick=()=>list();$('mBase').onclick=()=>baseCfg();bindHl(home);}
 // ---------- FLASHCARDS
 let FR=[];function flash(L,k,keep){stopT();if(!keep)FR=[];$('back').style.visibility='visible';$('back').onclick=home;const p=L[k];$('ttl').textContent=`🃏 ${k+1}/${L.length}`;
  app.innerHTML=`<div class="card">${tagCls(p)} <span class="small">${p.code} · ${p.pdf.split(' - ')[0]} p.${p.page}</span>

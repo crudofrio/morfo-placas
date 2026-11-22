@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#05030c">
+<title>FINAL BOSS · Morfo III Práctica</title>
+<style>
+:root{
+  --bg:#05030c; --bg2:#0c0820; --card:#120c28;
+  --cyan:#00f5d4; --mag:#ff2d95; --yel:#ffd60a; --pur:#8b5cff;
+  --ok:#3dff9a; --bad:#ff3b6b; --mut:#9aa0c3;
+  --text:#f4f1ff; --dim:#a9a3c7;
+  --safe-t:env(safe-area-inset-top,0px);
+  --safe-b:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
+  min-height:100%;min-height:100dvh;overflow-x:hidden}
+body{background:
+  radial-gradient(1200px 600px at 10% -10%,#ff2d9526,transparent 55%),
+  radial-gradient(900px 500px at 110% 0%,#00f5d433,transparent 50%),
+  repeating-linear-gradient(0deg,transparent 0 3px,#00000022 3px 4px),
+  var(--bg);
+  padding:calc(8px + var(--safe-t)) 12px calc(12px + var(--safe-b));
+}
+button{font:inherit;color:inherit;cursor:pointer}
+h1,h2,h3{margin:0}
+#app{max-width:430px;margin:0 auto}
+
+.top{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.brand{flex:1;min-width:0}
+.brand .kicker{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);font-weight:800}
+.brand h1{font-size:28px;line-height:1;font-weight:900;letter-spacing:.02em;
+  background:linear-gradient(90deg,var(--yel),#fff,var(--mag));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:none;filter:drop-shadow(0 0 12px #ff2d9566)}
+.iconbtn{width:44px;height:44px;border:1px solid #ffffff22;border-radius:14px;
+  background:#ffffff10;font-size:18px;display:grid;place-items:center;flex-shrink:0}
+.iconbtn.on{border-color:var(--cyan);box-shadow:0 0 12px #00f5d455}
+
+.hero{text-align:center;padding:8px 4px 14px}
+.hero p{margin:6px 0 0;color:var(--dim);font-size:14px;line-height:1.35}
+.pulse{display:block;width:100%;border:0;border-radius:22px;padding:18px 16px 16px;margin:14px 0 10px;
+  font-size:22px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;
+  color:#140016;background:linear-gradient(135deg,var(--yel),#ff9e2c 40%,var(--mag));
+  box-shadow:0 8px 28px #ff2d9577,0 0 0 3px #ffffff18 inset;animation:beat 1.6s ease-in-out infinite}
+.pulse small{display:block;font-size:12px;font-weight:700;letter-spacing:.02em;opacity:.85;text-transform:none;margin-top:3px}
+@keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+
+.modes,.classes{display:grid;gap:8px}
+.modes{grid-template-columns:1fr 1fr;margin:10px 0}
+.mcard,.ccard{border:1px solid #ffffff18;background:linear-gradient(180deg,#1a1236,#110a24);
+  border-radius:16px;padding:12px 10px;text-align:left;min-height:72px}
+.mcard b,.ccard b{display:block;font-size:14px}
+.mcard span,.ccard span{display:block;font-size:11px;color:var(--dim);margin-top:3px;line-height:1.3}
+.mcard:active,.ccard:active,.opt:active,.chip:active,.pulse:active{transform:scale(.98)}
+.ccard{min-height:58px}
+.classes{grid-template-columns:repeat(3,1fr);margin-bottom:8px}
+.ccard.all{grid-column:1/-1;background:linear-gradient(135deg,#24104a,#0d1b3a);border-color:#8b5cff88}
+.ccard.on, .mcard.on{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan),0 0 16px #00f5d433}
+
+.stats{display:flex;gap:8px;margin:10px 0 6px}
+.stat{flex:1;background:#ffffff0c;border:1px solid #ffffff14;border-radius:12px;padding:8px;text-align:center}
+.stat b{display:block;font-size:16px;color:var(--yel)}
+.stat span{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em}
+
+.hud{display:flex;align-items:center;gap:8px;margin:0 0 8px;font-weight:800}
+.lives{letter-spacing:2px;color:var(--mag);font-size:16px}
+.combo{color:var(--yel);font-size:14px;min-width:64px}
+.score{margin-left:auto;color:var(--cyan);font-variant-numeric:tabular-nums}
+.bar{height:8px;border-radius:99px;background:#ffffff14;overflow:hidden;margin-bottom:8px}
+.bar>i{display:block;height:100%;width:100%;transform-origin:left center;
+  background:linear-gradient(90deg,var(--ok),var(--yel),var(--mag));
+  box-shadow:0 0 10px #00f5d4}
+.bar.low>i{background:var(--bad);animation:blink .3s linear infinite}
+@keyframes blink{50%{opacity:.45}}
+.qmeta{font-size:11px;color:var(--dim);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.prompt{font-size:16px;font-weight:800;line-height:1.25;margin:0 0 8px}
+.imgw{position:relative;border-radius:14px;overflow:hidden;background:#000;border:1px solid #ffffff22;
+  box-shadow:0 8px 24px #0008;margin-bottom:8px}
+.imgw img,.imgw canvas{display:block;width:100%;height:auto;vertical-align:bottom}
+.imgw .tag{position:absolute;left:8px;top:8px;background:#05030ccc;border:1px solid #ffffff33;
+  border-radius:99px;padding:3px 8px;font-size:11px;font-weight:800;color:var(--cyan)}
+
+.opts{display:grid;gap:8px}
+.opt{width:100%;text-align:left;border-radius:14px;border:1px solid #ffffff22;
+  background:#1a1433;padding:12px 12px;min-height:56px;font-size:13.5px;font-weight:700;line-height:1.3}
+.opt.ok{background:#0d3a22;border-color:var(--ok);color:var(--ok)}
+.opt.bad{background:#3a0d1c;border-color:var(--bad);color:#ffb3c5}
+.opt.lock{pointer-events:none}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0}
+.chip{border:1px solid #ffffff25;background:#1c1638;border-radius:999px;padding:10px 12px;
+  font-size:13px;font-weight:800;min-height:44px}
+.chip.used{opacity:.3;pointer-events:none}
+.build{min-height:56px;border:1px dashed #ffffff33;border-radius:14px;padding:10px;margin-bottom:8px;
+  background:#0006;font-weight:800;font-size:14px;line-height:1.35}
+.build em{font-style:normal;color:var(--cyan)}
+.rowbtns{display:flex;gap:8px;margin-top:6px}
+.ghost{flex:1;border:1px solid #ffffff22;background:#ffffff0c;border-radius:14px;padding:12px;font-weight:800;min-height:48px}
+
+.fb{border-radius:16px;padding:12px;margin:8px 0;border:1px solid #ffffff22;background:#160b28}
+.fb.good{border-color:var(--ok);background:#0a2418}
+.fb.nope{border-color:var(--bad);background:#2a0a14}
+.fb h3{font-size:15px;margin-bottom:4px}
+.fb .dx{font-weight:800;color:var(--yel);font-size:14px;line-height:1.3}
+.fb .els{font-size:12px;color:var(--dim);margin-top:6px;line-height:1.35}
+.toast{position:fixed;left:50%;top:30%;transform:translate(-50%,-50%) scale(.9);opacity:0;
+  pointer-events:none;z-index:20;font-size:28px;font-weight:900;color:var(--yel);
+  text-shadow:0 0 18px #ffd60a;transition:all .2s}
+.toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+
+.results{text-align:center;padding:10px 4px}
+.results h2{font-size:32px;margin:8px 0;background:linear-gradient(90deg,var(--yel),var(--mag));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.bigscore{font-size:48px;font-weight:900;color:var(--cyan);text-shadow:0 0 20px #00f5d488}
+.results p{color:var(--dim)}
+.go{display:block;width:100%;border:0;border-radius:18px;padding:16px;margin:8px 0;font-size:18px;font-weight:900;
+  background:linear-gradient(135deg,var(--cyan),#3d7dff);color:#041018}
+.go.alt{background:#ffffff12;color:#fff;border:1px solid #ffffff22}
+.miss{text-align:left;margin:12px 0;font-size:13px}
+.miss div{padding:8px 0;border-bottom:1px solid #ffffff14}
+
+.count{display:grid;place-items:center;min-height:70dvh;text-align:center}
+.count b{font-size:120px;line-height:1;color:var(--yel);text-shadow:0 0 40px #ffd60a;animation:pop .4s ease}
+@keyframes pop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+
+.foot{font-size:11px;color:#6f6a8d;text-align:center;margin-top:16px;line-height:1.4}
+a{color:var(--cyan)}
+.shake{animation:shake .35s linear}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="toast" id="toast"></div>
+<script src="data.js"></script>
+<script>
+(function(){
+const P = window.FB_PLACAS || [];
+const META = window.FB_META || {};
+const $ = (id) => document.getElementById(id);
+const app = $("app");
+const LS = "fb_morfo_v1";
+
+const load = () => {
+  try { return Object.assign({mute:false,best:0,bestCombo:0,bestTime:null,mastery:{}}, JSON.parse(localStorage.getItem(LS)||"{}")); }
+  catch(e){ return {mute:false,best:0,bestCombo:0,bestTime:null,mastery:{}}; }
+};
+const save = () => localStorage.setItem(LS, JSON.stringify(S));
+let S = load();
+
+let audioCtx = null;
+function beep(type, combo){
+  if (S.mute) return;
+  try{
+    audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
+    if (audioCtx.state==="suspended") audioCtx.resume();
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.connect(g); g.connect(audioCtx.destination);
+    const now = audioCtx.currentTime;
+    if (type==="ok"){
+      o.type="square"; o.frequency.setValueAtTime(520+(combo||0)*20, now);
+      o.frequency.exponentialRampToValueAtTime(880, now+.08);
+      g.gain.setValueAtTime(.07, now); g.gain.exponentialRampToValueAtTime(.001, now+.14);
+      o.start(now); o.stop(now+.15);
+    } else if (type==="bad"){
+      o.type="sawtooth"; o.frequency.setValueAtTime(180, now);
+      o.frequency.exponentialRampToValueAtTime(70, now+.2);
+      g.gain.setValueAtTime(.08, now); g.gain.exponentialRampToValueAtTime(.001, now+.22);
+      o.start(now); o.stop(now+.23);
+    } else if (type==="go"){
+      o.type="square"; o.frequency.setValueAtTime(330, now);
+      g.gain.setValueAtTime(.06, now); g.gain.exponentialRampToValueAtTime(.001, now+.12);
+      o.start(now); o.stop(now+.13);
+    } else if (type==="combo"){
+      o.type="square"; o.frequency.setValueAtTime(660, now);
+      o.frequency.exponentialRampToValueAtTime(1320, now+.16);
+      g.gain.setValueAtTime(.08, now); g.gain.exponentialRampToValueAtTime(.001, now+.2);
+      o.start(now); o.stop(now+.21);
+    }
+  }catch(e){}
+}
+function vibe(ms){ try{ if (!S.mute && navigator.vibrate) navigator.vibrate(ms); }catch(e){} }
+function toast(t){ const el=$("toast"); el.textContent=t; el.classList.add("show"); clearTimeout(toast._t); toast._t=setTimeout(()=>el.classList.remove("show"), 700); }
+
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function pick(arr,n){ return shuffle(arr).slice(0,n); }
+function uniq(arr){ return [...new Set(arr)]; }
+function norm(s){ return (s||"").replace(/\s+/g," ").trim(); }
+function elNames(p){ return p.elements.map(e=>e.name); }
+function uniqueNames(p){ return uniq(elNames(p)); }
+
+function pool(cls){
+  if (!cls || cls==="all") return P.slice();
+  return P.filter(p=>p.cls===String(cls));
+}
+function allDiagnoses(){ return uniq(P.map(p=>p.diagnosis)); }
+function diagnosesOf(list){ return uniq(list.map(p=>p.diagnosis)); }
+
+function nearDiagnoses(correct, list, k){
+  const others = diagnosesOf(list).filter(d=>d!==correct);
+  const extra = allDiagnoses().filter(d=>d!==correct && !others.includes(d));
+  const score = (d) => {
+    const A=new Set(correct.split(/\s+/)), B=d.split(/\s+/);
+    let c=0; for (const w of B) if (A.has(w)) c++;
+    const sameClassBoost = list.some(p=>p.diagnosis===d) ? 2 : 0;
+    return c + sameClassBoost;
+  };
+  others.sort((a,b)=>score(b)-score(a));
+  const out = others.slice(0,k);
+  for (const d of shuffle(extra)){
+    if (out.length>=k) break;
+    if (!out.includes(d)) out.push(d);
+  }
+  return shuffle(out).slice(0,k);
+}
+
+function nearStructs(correctName, placa, k){
+  const mine = new Set(elNames(placa).map(n=>n.toLowerCase()));
+  const same = uniqueNames(placa).filter(n=>n!==correctName);
+  const others = [];
+  for (const q of shuffle(P)){
+    if (q.code===placa.code) continue;
+    for (const n of uniqueNames(q)){
+      if (!mine.has(n.toLowerCase()) && n!==correctName && !others.includes(n)) others.push(n);
+    }
+  }
+  const prefer = others.filter(n=>{
+    const a=correctName.toLowerCase(), b=n.toLowerCase();
+    return a.split(/\s+/)[0]===b.split(/\s+/)[0] || /ganglio|nervio|ventrículo|placa|arteria|vena/i.test(n);
+  });
+  const bag = same.concat(shuffle(prefer), shuffle(others));
+  const out=[];
+  for (const n of bag){
+    if (n!==correctName && !out.includes(n)) out.push(n);
+    if (out.length>=k) break;
+  }
+  return out;
+}
+
+function wordsOf(dx){ return dx.split(/\s+/).filter(Boolean); }
+
+function weightFor(p){
+  const m = S.mastery[p.code] || {ok:0,bad:0};
+  return 1 + m.bad*3 + (m.ok===0?1:0) - Math.min(2, m.ok*0.15);
+}
+
+function record(code, ok){
+  const m = S.mastery[code] || {ok:0,bad:0};
+  if (ok) m.ok++; else m.bad++;
+  S.mastery[code]=m; save();
+}
+
+function classLabel(c){ return (META.classes&&META.classes[c]) ? META.classes[c].name : ("Clase "+c); }
+
+/* -------- screens -------- */
+let G = null; // current run
+let timerT = null, raf=null;
+let selCls = "all";
+let imgGen = 0;
+
+function stopTimer(){ if(timerT){clearInterval(timerT);timerT=null;} if(raf){cancelAnimationFrame(raf);raf=null;} }
+
+function menu(){
+  stopTimer(); G=null;
+  const best=S.best||0, combo=S.bestCombo||0;
+  const counts = ["2","3","4","5","6"].map(c=>{
+    const n=(META.classes&&META.classes[c]&&META.classes[c].count)||pool(c).length;
+    const short = {2:"Gastrulación",3:"Tubo neural",4:"Cresta neural",5:"SNA",6:"Prosencéfalo"}[c];
+    return `<button class="ccard ${selCls===c?"on":""}" data-cls="${c}"><b>Clase ${c}</b><span>${short} · ${n} placas</span></button>`;
+  }).join("");
+  const selName = selCls==="all" ? "Todo el parcial (2–6)" : ("Clase "+selCls);
+  app.innerHTML = `
+    <div class="top">
+      <div class="brand"><div class="kicker">Morfogénesis III · Práctica</div><h1>FINAL BOSS</h1></div>
+      <button class="iconbtn ${S.mute?'':'on'}" id="mute" aria-label="Sonido">${S.mute?"🔇":"🔊"}</button>
+    </div>
+    <div class="hero" id="screen-menu">
+      <p>Primer parcial · UCSG · Dr. Herrera Valdivieso.<br>Toca, no escribas. Ritmo, combo, y el diagnóstico <b style="color:var(--yel)">palabra por palabra</b> (sin números de sección).</p>
+      <button class="pulse" id="btn-play-boss">JUGAR FINAL BOSS<small>${selName} · 3 vidas · contrarreloj</small></button>
+    </div>
+    <div class="stats">
+      <div class="stat"><b>${best||"—"}</b><span>Mejor score</span></div>
+      <div class="stat"><b>${combo?("x"+combo):"—"}</b><span>Mejor combo</span></div>
+      <div class="stat"><b>${P.length}</b><span>Placas</span></div>
+    </div>
+    <p class="qmeta">1. Elige la clase &nbsp; 2. Elige el modo (o lánzate al boss)</p>
+    <div class="classes" id="cls">
+      <button class="ccard all ${selCls==="all"?"on":""}" data-cls="all"><b>TODO EL PARCIAL</b><span>Clases 2 a 6 · ${P.length} placas · el jefe final</span></button>
+      ${counts}
+    </div>
+    <div class="modes">
+      <button class="mcard" data-mode="dx"><b>🎯 Diagnóstico Dash</b><span>La placa y 4 diagnósticos casi iguales. Quédate con el exacto.</span></button>
+      <button class="mcard" data-mode="st"><b>⚡ Estructuras Rush</b><span>Toca qué estructura marca la flecha, o cuál sí está en la placa.</span></button>
+      <button class="mcard" data-mode="or"><b>🧩 Ordena el dx</b><span>Arma el diagnóstico tocando las palabras en orden. Cero teclado.</span></button>
+      <button class="mcard" data-mode="boss"><b>💀 FINAL BOSS</b><span>Mix de todo, timer que aprieta, 3 vidas, combo y racha.</span></button>
+    </div>
+    <p class="foot">41 placas reales de las diapos de clase (2–6). Clase 1 es reglas y la 7 es entrega de notas: no hay placas. <a href="../index.html">Volver a la app de estudio (clases 2–4)</a></p>
+  `;
+  $("mute").onclick=()=>{ S.mute=!S.mute; save(); menu(); };
+  $("btn-play-boss").onclick=()=>{ beep("go"); start({mode:"boss", cls:selCls}); };
+  app.querySelectorAll("[data-cls]").forEach(b=>{
+    b.onclick=()=>{ selCls=b.dataset.cls; menu(); };
+  });
+  app.querySelectorAll("[data-mode]").forEach(b=>{
+    b.onclick=()=>{ beep("go"); start({mode:b.dataset.mode, cls:selCls}); };
+  });
+}
+
+function start(opts){
+  const mode = opts.mode||"boss";
+  const cls = opts.cls||"all";
+  const list = pool(cls);
+  if (!list.length){ alert("No hay placas en esta clase."); return; }
+  const isBoss = mode==="boss";
+  const n = opts.n || (isBoss ? (cls==="all"?20:Math.max(10, Math.min(16, list.length*2))) : list.length);
+  const qs = buildQuestions(list, mode, n, isBoss);
+  if (!qs.length){ alert("No pude armar preguntas con estas placas."); return; }
+  G = {
+    mode, cls, isBoss, qs, i:0,
+    lives: isBoss?3:null,
+    combo:0, maxCombo:0, score:0, ok:0, bad:0,
+    t0: Date.now(), log:[],
+    baseTime: 15, // seconds
+  };
+  countdown();
+}
+
+function buildQuestions(list, mode, n, isBoss){
+  const qs=[];
+  if (!isBoss){
+    const kinds = mode==="st"
+      ? (p,i)=> (i%2? "st":"belong")
+      : (p,i)=> mode;
+    shuffle(list).forEach((p,i)=>{
+      const q = makeQuestion(p, kinds(p,i), list);
+      if (q) qs.push(q);
+    });
+    return qs;
+  }
+  const modes = ["dx","st","or"];
+  const bag = [];
+  list.forEach(p=>{
+    const w = Math.max(1, Math.round(weightFor(p)*2));
+    for(let i=0;i<w;i++) bag.push(p);
+  });
+  let guard=0;
+  while(qs.length<n && guard++<500){
+    const p = bag[Math.floor(Math.random()*bag.length)];
+    let m = modes[qs.length % modes.length];
+    if (m==="st" && Math.random()<.45) m="belong";
+    const prev = qs[qs.length-1];
+    if (prev && prev.placa.code===p.code && prev.kind===m){
+      m = modes.find(x=>x!==m) || m;
+    }
+    const q = makeQuestion(p, m, list);
+    if (q) qs.push(q);
+  }
+  return qs;
+}
+
+function makeQuestion(p, kind, list){
+  if (kind==="dx"){
+    const opts = shuffle([p.diagnosis, ...nearDiagnoses(p.diagnosis, list, 3)]);
+    if (opts.length<2) return null;
+    return {kind:"dx", placa:p, options:opts, answer:p.diagnosis};
+  }
+  if (kind==="or"){
+    const words = wordsOf(p.diagnosis);
+    if (words.length<3) return makeQuestion(p,"dx",list);
+    return {kind:"or", placa:p, words:shuffle(words.slice()), answer:p.diagnosis};
+  }
+  if (kind==="belong"){
+    const correct = pick(uniqueNames(p),1)[0];
+    if (!correct) return makeQuestion(p,"dx",list);
+    const wrong = nearStructs(correct, p, 3);
+    if (wrong.length<3) return makeQuestion(p,"dx",list);
+    return {kind:"belong", placa:p, options:shuffle([correct, ...wrong]), answer:correct};
+  }
+  // st = identify a marked structure
+  const els = p.elements.filter(e=>e.poly && e.poly.length);
+  if (!els.length) return makeQuestion(p,"belong",list);
+  const el = els[Math.floor(Math.random()*els.length)];
+  const wrong = nearStructs(el.name, p, 3);
+  if (wrong.length<2) return makeQuestion(p,"belong",list);
+  return {kind:"st", placa:p, target:el, options:shuffle([el.name, ...wrong]), answer:el.name};
+}
+
+function countdown(){
+  let n=3;
+  const tick=()=>{
+    app.innerHTML = `<div class="count" id="screen-count"><div class="kicker" style="color:var(--cyan);letter-spacing:.2em;font-weight:800;font-size:12px">CLASE ${G.cls==="all"?"2–6":G.cls} · ${G.mode.toUpperCase()}</div><b>${n}</b><p>Suéltalo cuando salga la placa</p></div>`;
+    beep("go"); vibe(20);
+    if (n>1){ n--; setTimeout(tick, 520); }
+    else setTimeout(()=>{ beep("combo"); showQ(); }, 520);
+  };
+  tick();
+}
+
+function timerLimit(){
+  if (!G.isBoss) return 20;
+  return Math.max(7, G.baseTime - G.combo*0.45);
+}
+
+function showQ(){
+  stopTimer();
+  if (!G || G.i>=G.qs.length || (G.isBoss && G.lives<=0)){ return results(); }
+  const q = G.qs[G.i];
+  const p = q.placa;
+  const limit = timerLimit();
+  G.deadline = Date.now() + limit*1000;
+  G.locked=false;
+  const life = G.isBoss ? `<div class="lives">${"♥".repeat(G.lives)}${"♡".repeat(Math.max(0,3-G.lives))}</div>` : `<div class="lives" style="color:var(--dim)">${G.mode.toUpperCase()}</div>`;
+  app.innerHTML = `
+    <div class="hud" id="screen-play">
+      ${life}
+      <div class="combo">${G.combo?("COMBO x"+G.combo):"COMBO x0"}</div>
+      <div class="qmeta">${G.i+1}/${G.qs.length}</div>
+      <div class="score">${G.score}</div>
+    </div>
+    <div class="bar ${""}" id="tbar"><i id="tfill"></i></div>
+    <div class="prompt" id="prompt">${promptFor(q)}</div>
+    <div class="imgw" id="iw"><span class="tag">Clase ${p.cls} · ${p.code}</span></div>
+    <div id="playbody"></div>
+  `;
+  renderImage(q);
+  renderBody(q);
+  runTimer();
+}
+
+function promptFor(q){
+  if (q.kind==="dx") return "¿Cuál es el diagnóstico exacto?";
+  if (q.kind==="or") return "Toca las palabras en el orden exacto del diagnóstico";
+  if (q.kind==="belong") return "¿Cuál de estas SÍ está en esta placa?";
+  if (q.kind==="st") return q.placa.numbered && q.target.id ? `¿Cuál es la estructura nº ${q.target.id}?` : "¿Qué estructura marca el punto neón?";
+  return "¡Dále!";
+}
+
+function centroid(poly){
+  let x=0,y=0; for (const pt of poly){ x+=pt[0]; y+=pt[1]; }
+  return [x/poly.length, y/poly.length];
+}
+
+function renderImage(q){
+  const p=q.placa, iw=$("iw");
+  const gen=++imgGen;
+  const img=new Image();
+  img.alt=p.code;
+  img.onload=()=>{
+    if (gen!==imgGen || !iw.isConnected) return;
+    const w=iw.clientWidth||390;
+    const h=Math.round(w * (img.naturalHeight/img.naturalWidth));
+    const c=document.createElement("canvas");
+    const ratio=Math.min(2, window.devicePixelRatio||1);
+    c.width=Math.round(w*ratio); c.height=Math.round(h*ratio);
+    c.style.width=w+"px"; c.style.height=h+"px";
+    const ctx=c.getContext("2d");
+    ctx.scale(ratio,ratio);
+    ctx.drawImage(img,0,0,w,h);
+    const mask = (q.kind==="st");
+    if (mask){
+      // cover label boxes so he can't just read the answer
+      ctx.fillStyle="rgba(5,3,12,.82)";
+      for (const e of p.elements){
+        if (!e.poly||e.poly.length<2) continue;
+        const xs=e.poly.map(pt=>pt[0]*w/100), ys=e.poly.map(pt=>pt[1]*h/100);
+        const x=Math.min(...xs)-3, y=Math.min(...ys)-3;
+        const bw=Math.max(...xs)-Math.min(...xs)+6, bh=Math.max(...ys)-Math.min(...ys)+6;
+        roundRect(ctx,x,y,bw,bh,6); ctx.fill();
+      }
+    }
+    if (q.kind==="st" && q.target && q.target.poly){
+      const [px,py]=centroid(q.target.poly);
+      const x=px*w/100, y=py*h/100;
+      ctx.beginPath(); ctx.arc(x,y,16,0,Math.PI*2);
+      ctx.fillStyle="rgba(255,45,149,.25)"; ctx.fill();
+      ctx.beginPath(); ctx.arc(x,y,9,0,Math.PI*2);
+      ctx.fillStyle="#ff2d95"; ctx.strokeStyle="#ffd60a"; ctx.lineWidth=3; ctx.fill(); ctx.stroke();
+      ctx.fillStyle="#05030c"; ctx.font="bold 11px system-ui"; ctx.textAlign="center"; ctx.textBaseline="middle";
+      ctx.fillText(q.target.id||"•", x, y);
+    }
+    iw.appendChild(c);
+  };
+  img.src=p.img;
+}
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
+}
+
+function renderBody(q){
+  const box=$("playbody");
+  if (q.kind==="or"){
+    box.innerHTML = `<div class="build" id="build"><em>Tu respuesta:</em> <span id="built"></span></div>
+      <div class="chips" id="chips"></div>
+      <div class="rowbtns"><button class="ghost" id="undo">↩ Borrar última</button></div>`;
+    const used=[];
+    const paint=()=>{
+      $("built").textContent = used.map(i=>q.words[i]).join(" ");
+      $("chips").innerHTML = q.words.map((w,i)=>`<button class="chip ${used.includes(i)?"used":""}" data-i="${i}">${esc(w)}</button>`).join("");
+      $("chips").querySelectorAll(".chip").forEach(b=>{
+        b.onclick=()=>{
+          if (G.locked) return;
+          const i=+b.dataset.i;
+          if (used.includes(i)) return;
+          used.push(i); paint();
+          vibe(8);
+          if (used.length===q.words.length){
+            judge(used.map(i=>q.words[i]).join(" ")===q.answer, q);
+          }
+        };
+      });
+    };
+    $("undo").onclick=()=>{ if(G.locked||!used.length) return; used.pop(); paint(); };
+    paint();
+    return;
+  }
+  box.innerHTML = `<div class="opts" id="opts">${q.options.map((o,i)=>`<button class="opt" data-v="${i}">${esc(o)}</button>`).join("")}</div>`;
+  box.querySelectorAll(".opt").forEach(b=>{
+    b.onclick=()=>{
+      if (G.locked) return;
+      const val=q.options[+b.dataset.v];
+      judge(val===q.answer, q, b, val);
+    };
+  });
+}
+
+function runTimer(){
+  const fill=$("tfill"), bar=$("tbar");
+  if (!fill) return;
+  if (!G.isBoss){ fill.style.transform="scaleX(1)"; bar.style.opacity=".25"; return; }
+  const total = G.deadline-Date.now();
+  const step=()=>{
+    if (!G || G.locked) return;
+    const left=G.deadline-Date.now();
+    const pct=Math.max(0,left/total);
+    fill.style.transform=`scaleX(${pct})`;
+    if (left<3000) bar.classList.add("low");
+    if (left<=0){ judge(false, G.qs[G.i], null, null, true); return; }
+    raf=requestAnimationFrame(step);
+  };
+  raf=requestAnimationFrame(step);
+}
+
+function judge(ok, q, btn, chosen, timeout){
+  if (G.locked) return;
+  G.locked=true; stopTimer();
+  const p=q.placa;
+  if (ok){
+    G.combo++; G.maxCombo=Math.max(G.maxCombo,G.combo); G.ok++;
+    const left=Math.max(0,G.deadline-Date.now());
+    const bonus=G.isBoss? Math.round(40*(left/Math.max(1,timerLimit()*1000))) : 0;
+    const pts = Math.round((100 + bonus) * (1+G.combo*0.15));
+    G.score += pts;
+    record(p.code,true);
+    beep(G.combo>=3?"combo":"ok", G.combo); vibe(12);
+    if (G.combo===3||G.combo===5||G.combo===8||G.combo===10) toast("COMBO x"+G.combo);
+    if (btn) btn.classList.add("ok");
+  } else {
+    G.combo=0; G.bad++;
+    if (G.isBoss) G.lives--;
+    record(p.code,false);
+    beep("bad"); vibe([40,40,40]);
+    app.classList.add("shake"); setTimeout(()=>app.classList.remove("shake"), 360);
+    if (btn) btn.classList.add("bad");
+    // highlight correct option if present
+    if ($("opts")){
+      $("opts").querySelectorAll(".opt").forEach(b=>{
+        const val=q.options[+b.dataset.v];
+        if (val===q.answer) b.classList.add("ok");
+        b.classList.add("lock");
+      });
+    }
+  }
+  G.log.push({ok, code:p.code, kind:q.kind, answer:q.answer, chosen: timeout?"(tiempo)":(chosen||""), dx:p.diagnosis});
+  const fb = document.createElement("div");
+  fb.className="fb "+(ok?"good":"nope");
+  const els = uniqueNames(p).slice(0,12).join(" · ") + (uniqueNames(p).length>12?" …":"");
+  fb.innerHTML = `<h3>${ok?"¡Bien! Te la sabes.":(timeout?"Se acabó el tiempo.":"Casi… mira el correcto.")}</h3>
+    <div class="dx">${esc(p.diagnosis)}</div>
+    <div class="els"><b>Estructuras:</b> ${esc(els)}</div>`;
+  $("playbody").appendChild(fb);
+  const wait = ok? 850 : 1600;
+  setTimeout(()=>{
+    if (G.isBoss && G.lives<=0){ results(); return; }
+    G.i++; showQ();
+  }, wait);
+}
+
+function results(){
+  stopTimer();
+  const t=Math.round((Date.now()-G.t0)/1000);
+  const total=G.ok+G.bad;
+  const acc = total? Math.round(G.ok*100/total):0;
+  if (G.score> (S.best||0)) S.best=G.score;
+  if (G.maxCombo>(S.bestCombo||0)) S.bestCombo=G.maxCombo;
+  if (G.isBoss && G.ok>=10){
+    if (!S.bestTime || t<S.bestTime) S.bestTime=t;
+  }
+  save();
+  const title = (G.isBoss && G.lives<=0 && G.i<G.qs.length) ? "TE DESPLOMASTE" :
+                acc===100? "PERFECTO, LEO" : acc>=80? "CASI PRO" : acc>=50? "VAMOS, OTRA RUN" : "SE PUEDE MEJORAR";
+  const misses = G.log.filter(x=>!x.ok);
+  app.innerHTML = `
+    <div class="results" id="screen-results">
+      <div class="kicker" style="color:var(--cyan);letter-spacing:.18em;font-weight:800;font-size:12px">RESULTADOS</div>
+      <h2>${title}</h2>
+      <div class="bigscore">${G.score}</div>
+      <p>${G.ok} aciertos · ${G.bad} fallos · ${acc}% · combo máx x${G.maxCombo} · ${t}s</p>
+      <div class="stats">
+        <div class="stat"><b>${S.best}</b><span>Récord</span></div>
+        <div class="stat"><b>x${S.bestCombo||0}</b><span>Mejor combo</span></div>
+        <div class="stat"><b>${S.bestTime||"—"}</b><span>Mejor tiempo s</span></div>
+      </div>
+      ${misses.length?`<div class="miss"><b>A repasarse (el correcto):</b>${misses.slice(0,8).map(m=>`<div>${m.code}: ${esc(m.dx)}</div>`).join("")}${misses.length>8?"<div>…</div>":""}</div>`:""}
+      <button class="go" id="again">OTRA VEZ, MÁS RÁPIDO</button>
+      <button class="go alt" id="home">Volver al menú</button>
+    </div>
+  `;
+  $("again").onclick=()=>start({mode:G.mode, cls:G.cls, n:G.qs.length});
+  $("home").onclick=menu;
+}
+
+function esc(s){ return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])); }
+
+// preload a handful of images
+function preload(){
+  P.slice(0,8).forEach(p=>{ const i=new Image(); i.src=p.img; });
+}
+
+window.FB = {
+  start, menu, pool,
+  get state(){ return G; },
+  setMastery: (obj)=>{ S.mastery=obj; save(); },
+  getS: ()=>S
+};
+
+document.addEventListener("visibilitychange", ()=>{ if (!document.hidden && audioCtx) try{audioCtx.resume();}catch(e){} });
+preload();
+menu();
+})();
+</script>
+</body>
+</html>
