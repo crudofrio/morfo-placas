@@ -37,6 +37,7 @@ h1,h2,h3,p{margin:0}
   background:linear-gradient(135deg,var(--yel),#ff9e2c 45%,var(--mag));
   box-shadow:0 8px 24px #ff3d8a55}
 .pulse small{display:block;font-size:12px;font-weight:700;letter-spacing:0;text-transform:none;margin-top:2px;opacity:.85}
+.pulse.alt{background:linear-gradient(135deg,var(--cyan),#3d7dff);color:#041018;box-shadow:0 8px 24px #00e6c355;font-size:18px}
 .row{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
 .chip{border:1px solid var(--line);background:#1a1633;border-radius:999px;padding:8px 12px;font-weight:800;font-size:13px;min-height:40px}
 .chip.on{border-color:var(--cyan);background:#123;color:var(--cyan)}
@@ -66,13 +67,25 @@ a{color:var(--cyan)}
 .bar{height:7px;border-radius:99px;background:#ffffff14;overflow:hidden;margin-bottom:8px}
 .bar>i{display:block;height:100%;width:100%;transform-origin:left center;background:linear-gradient(90deg,var(--ok),var(--yel),var(--mag))}
 .bar.low>i{background:var(--bad)}
+.bar.off{opacity:.35}
+.bar.off>i{transform:scaleX(0);background:#ffffff33}
 .prompt{font-size:16px;font-weight:800;line-height:1.25;margin:0 0 8px}
 .sub{font-size:12px;color:var(--dim);margin:-4px 0 8px}
-.imgw{position:relative;border-radius:14px;overflow:hidden;background:#000;border:1px solid var(--line);
-  box-shadow:0 8px 22px #0008;margin-bottom:8px}
-.imgw img,.imgw canvas{display:block;width:100%;height:auto}
-.imgw .tag{position:absolute;left:8px;top:8px;background:#07060fcc;border:1px solid #ffffff33;
-  border-radius:99px;padding:3px 8px;font-size:11px;font-weight:800;color:var(--cyan)}
+.stick{position:sticky;top:calc(-8px - var(--safe-t));z-index:8;background:var(--bg);
+  margin:0 -12px;padding:calc(4px + var(--safe-t)) 12px 8px;
+  box-shadow:0 10px 18px #07060fee}
+.imgw{position:relative;border-radius:14px;overflow:hidden;background:#0a0a12;border:1px solid var(--line);
+  box-shadow:0 8px 22px #0008;margin-bottom:0;min-height:140px}
+.imgw img.placa{display:block;width:100%;height:auto;max-height:38dvh;object-fit:contain;background:#000;min-height:120px}
+.imgw .tag{position:absolute;left:8px;bottom:8px;top:auto;background:#07060fcc;border:1px solid #ffffff33;
+  border-radius:99px;padding:3px 8px;font-size:11px;font-weight:800;color:var(--cyan);z-index:1}
+.imgw .mark{position:absolute;width:28px;height:28px;border-radius:50%;transform:translate(-50%,-50%);
+  background:#ff3d8a;border:2px solid #ffd166;color:#fff;font-weight:900;font-size:13px;
+  display:grid;place-items:center;box-shadow:0 0 0 2px #0008;pointer-events:none;z-index:2}
+.imgw .zonebox{position:absolute;border:3px dashed #00e6c3;background:rgba(0,230,195,.18);
+  border-radius:10px;pointer-events:none;z-index:1}
+.imgw .img-err{position:absolute;inset:0;display:grid;place-items:center;align-content:center;gap:8px;
+  background:#000c;text-align:center;padding:16px;z-index:4;font-weight:800}
 .opts{display:grid;gap:7px}
 .opt,.tchip{width:100%;text-align:left;border-radius:14px;border:1px solid var(--line);
   background:#1a1433;padding:11px 12px;min-height:52px;font-size:13.5px;font-weight:700;line-height:1.3}
@@ -106,7 +119,6 @@ a{color:var(--cyan)}
 .dot.gold{background:#ffd166}
 .dot.red{background:#ff4d6d;box-shadow:0 0 8px #ff4d6d88}
 .thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
-.thumbs figure{margin:0}
 .thumbs img{width:100%;border-radius:8px;border:1px solid var(--line);display:block}
 .thumbs figcaption{font-size:10px;color:var(--dim);text-align:center;margin-top:2px}
 .goldcard{border:1px solid #ffd16655;background:linear-gradient(180deg,#2a2208,#1a1408);border-radius:16px;padding:12px;margin:8px 0}
@@ -114,6 +126,21 @@ a{color:var(--cyan)}
 .shake{animation:shake .32s linear}
 @keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 .opt .hint{display:inline-block;width:8px;height:8px;border-radius:50%;background:#2ee59d;margin-left:6px;vertical-align:middle}
+.cardset{background:#14102a;border:1px solid var(--line);border-radius:16px;padding:14px;margin:10px 0}
+.slabel{display:flex;justify-content:space-between;align-items:baseline;font-weight:800;font-size:14px;margin:10px 0 4px}
+.slabel span{color:var(--cyan);font-variant-numeric:tabular-nums}
+.seg{display:flex;gap:6px;margin:8px 0}
+.seg button{flex:1;border:1px solid var(--line);background:#1a1633;border-radius:12px;padding:10px;font-weight:800;min-height:44px}
+.seg button.on{border-color:var(--cyan);color:var(--cyan);background:#123}
+input[type=range]{width:100%;height:32px;accent-color:#00e6c3}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
+.pcard{border:1px solid var(--line);background:#14102a;border-radius:12px;padding:0;overflow:hidden;text-align:left}
+.pcard img{width:100%;display:block;aspect-ratio:1400/740;object-fit:cover;background:#000;min-height:64px}
+.pcard figcaption{font-size:11px;padding:6px;font-weight:800;color:var(--text)}
+.pcard figcaption small{display:block;color:var(--dim);font-weight:600}
+.packrow{margin:8px 0;padding:8px;border:1px solid var(--line);border-radius:14px;background:#14102a}
+.packrow .lab{font-weight:900;color:var(--yel);margin-bottom:6px;font-size:14px}
+.hide{display:none}
 </style>
 </head>
 <body>
@@ -133,13 +160,28 @@ const LNAMES = {1:"Rápido",2:"Por partes",3:"Estructuras",4:"Jefe"};
 const LBLURB = {
   1:"Diagnóstico completo. Opciones casi iguales (horas, somitas, corte).",
   2:"Arma el diagnóstico por trozos: tipo, etapa, corte o región.",
-  3:"Flecha numerada, zona, y la que NO está en la placa.",
+  3:"El núcleo: flechas 1, 2 o 4 a la vez, zona, y la que NO está.",
   4:"Mix de todo, timer más duro, 3 vidas y combo."
 };
+const TIME_DEF = {1:13,2:16,3:16,4:20};
 
+const DEFAULTS = {
+  mute:false,best:0,bestCombo:0,mastery:{},sm:{},progress:{},free:false,
+  timeMode:"level", timeSec:16, timeL:{1:13,2:16,3:16,4:20},
+  advance:"manual", autoMs:2000, pack:1
+};
 const load = () => {
-  try { return Object.assign({mute:false,best:0,bestCombo:0,mastery:{},sm:{},progress:{},free:false}, JSON.parse(localStorage.getItem(LS)||"{}")); }
-  catch(e){ return {mute:false,best:0,bestCombo:0,mastery:{},sm:{},progress:{},free:false}; }
+  try {
+    const raw=JSON.parse(localStorage.getItem(LS)||"{}");
+    const s=Object.assign({}, DEFAULTS, raw);
+    s.timeL=Object.assign({}, TIME_DEF, raw.timeL||{});
+    if(!["level","custom","off"].includes(s.timeMode)) s.timeMode="level";
+    if(s.advance!=="auto") s.advance="manual";
+    s.pack=[1,2,4].includes(+s.pack)?+s.pack:1;
+    s.timeSec=Math.max(10,Math.min(60,+s.timeSec||16));
+    s.autoMs=Math.max(600,Math.min(8000,+s.autoMs||2000));
+    return s;
+  } catch(e){ return Object.assign({}, DEFAULTS, {timeL:Object.assign({},TIME_DEF)}); }
 };
 const save = () => localStorage.setItem(LS, JSON.stringify(S));
 let S = load();
@@ -177,6 +219,7 @@ function centroid(poly){ let x=0,y=0; for(const pt of poly){x+=pt[0];y+=pt[1];} 
 function keysOf(p){ return new Set(p.elements.map(e=>e.key || norm(e.name))); }
 function namesOf(p){ return uniq(p.elements.map(e=>e.name)); }
 function norm(s){ return (s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[.,;:()[\]¿?¡!]+/g," ").replace(/\s+/g," ").trim(); }
+function scrollTop(){ try{ window.scrollTo(0,0); document.documentElement.scrollTop=0; document.body.scrollTop=0; }catch(e){} }
 
 function uniqueByKey(names){
   const seen=new Set(), out=[];
@@ -255,13 +298,16 @@ function menu(){
       <div class="n">${lv}</div><div style="flex:1"><b>Nivel ${lv} · ${LNAMES[lv]}</b><span>${LBLURB[lv]}</span></div>
       <div class="lock">${mark}</div></button>`;
   }).join("");
+  const packLab={1:"de a una",2:"en duplas",4:"de a 4"}[S.pack]||"de a una";
   app.innerHTML = `
     <div class="top">
       <div class="brand"><div class="k">Morfogénesis III · Práctica</div><h1>FINAL BOSS</h1></div>
+      <button class="ib" id="btn-set" title="Ajustes">⚙️</button>
       <button class="ib ${S.mute?"":"on"}" id="mute">${S.mute?"🔇":"🔊"}</button>
     </div>
     <div id="screen-menu">
       <p class="lead">Placas <b style="color:var(--yel)">silenciadas</b>, como en el examen. El diagnóstico va palabra por palabra (sin número de sección). Toca, no escribas.</p>
+      <button class="pulse alt" id="btn-learn">APRENDER ESTRUCTURAS<small>Placa por placa, flechas numeradas, ${packLab}. Luego ves la placa con nombres.</small></button>
       <button class="pulse" id="btn-play">JUGAR · ${LNAMES[n]}<small>${selCls==="all"?"Todo el parcial":"Clase "+selCls} · desbloquea el siguiente con ${PASS}%</small></button>
       <div class="row" id="cls">
         <button class="chip ${selCls==="all"?"on":""}" data-cls="all">TODO (${P.length})</button>
@@ -279,7 +325,9 @@ function menu(){
     <p class="foot">41 placas reales de las diapos (clases 2–6). Clase 1 son reglas y la 7 es notas. <a href="../index.html">App de estudio 2–4</a></p>
   `;
   $("mute").onclick=()=>{S.mute=!S.mute;save();menu();};
+  $("btn-set").onclick=showSettings;
   $("btn-play").onclick=()=>{ beep("go"); start({level:n, cls:selCls}); };
+  $("btn-learn").onclick=()=>showLearnPick();
   $("btn-map").onclick=()=>showMap();
   $("btn-free").onclick=()=>{S.free=!S.free;save();menu();};
   app.querySelectorAll("#cls [data-cls]").forEach(b=>b.onclick=()=>{selCls=b.dataset.cls;menu();});
@@ -290,14 +338,97 @@ function menu(){
   });
 }
 
+function showSettings(){
+  stopTimer(); clearFB();
+  const tm=S.timeMode||"level";
+  const adv=S.advance||"manual";
+  const pack=S.pack||1;
+  const delay=Math.round((S.autoMs||2000)/100)/10;
+  const custom=S.timeSec||16;
+  const timeLabel = tm==="off"?"Sin tiempo": tm==="custom"? (custom+" s") : "Según el nivel";
+  app.innerHTML=`
+    <div class="top">
+      <button class="ib" id="back">◀</button>
+      <div class="brand"><div class="k">Lo tuyo</div><h1 style="font-size:22px">Ajustes</h1></div>
+    </div>
+    <div id="screen-settings">
+      <div class="cardset">
+        <b>Tiempo por pregunta</b>
+        <p class="lead" style="margin:4px 0 0">En Jefe el combo puede recortar, pero no baja de 9 s (salvo que elijas sin tiempo).</p>
+        <div class="seg" id="tmode">
+          <button data-m="level" class="${tm==="level"?"on":""}">Del nivel</button>
+          <button data-m="custom" class="${tm==="custom"?"on":""}">Uno para todos</button>
+          <button data-m="off" class="${tm==="off"?"on":""}">Sin tiempo</button>
+        </div>
+        <div id="tcustom" class="${tm==="custom"?"":"hide"}">
+          <div class="slabel">Segundos <span id="tsecv">${custom} s</span></div>
+          <input type="range" id="tsec" min="10" max="60" step="1" value="${custom}">
+        </div>
+        <button class="ghost" id="tog-lv" style="margin-top:8px">${S.showLevelTimes?"▾ Tiempos por nivel":"▸ Tiempos por nivel (opcional)"}</button>
+        <div id="tlv" class="${S.showLevelTimes?"":"hide"}">
+          ${[1,2,3,4].map(lv=>`
+            <div class="slabel">N${lv} · ${LNAMES[lv]} <span id="tlv${lv}v">${(S.timeL&&S.timeL[lv])||TIME_DEF[lv]} s</span></div>
+            <input type="range" id="tlv${lv}" min="10" max="60" step="1" value="${(S.timeL&&S.timeL[lv])||TIME_DEF[lv]}">
+          `).join("")}
+          <p class="foot" style="margin-top:6px">Si los mueves, el juego usa estos tiempos (el modo “Del nivel” o “Uno para todos” queda por debajo si pides 2 o 4 estructuras).</p>
+        </div>
+      </div>
+      <div class="cardset">
+        <b>Avance a la siguiente</b>
+        <p class="lead" style="margin:4px 0 0">Por defecto tú decides cuándo seguir. El feedback se queda hasta que toques Siguiente.</p>
+        <div class="seg" id="adv">
+          <button data-a="manual" class="${adv==="manual"?"on":""}">Manual</button>
+          <button data-a="auto" class="${adv==="auto"?"on":""}">Automático</button>
+        </div>
+        <div id="adelay" class="${adv==="auto"?"":"hide"}">
+          <div class="slabel">Espera después del feedback <span id="adelayv">${delay} s</span></div>
+          <input type="range" id="ams" min="8" max="50" step="1" value="${Math.round((S.autoMs||2000)/100)}">
+        </div>
+      </div>
+      <div class="cardset">
+        <b>Estructuras por pregunta</b>
+        <p class="lead" style="margin:4px 0 0">En Nivel 3, Jefe y Aprender. Si pides 4, el timer es de al menos 30 s (~10 s por una).</p>
+        <div class="seg" id="pack">
+          <button data-p="1" class="${pack===1?"on":""}">1</button>
+          <button data-p="2" class="${pack===2?"on":""}">Duplas</button>
+          <button data-p="4" class="${pack===4?"on":""}">4</button>
+        </div>
+      </div>
+      <p class="foot">Ahora: ${esc(timeLabel)} · avance ${adv==="auto"?"automático":"manual"} · estructuras de a ${pack}.</p>
+      <button class="ghost" id="reset">Restablecer ajustes</button>
+    </div>`;
+  $("back").onclick=menu;
+  app.querySelectorAll("#tmode [data-m]").forEach(b=>b.onclick=()=>{
+    S.timeMode=b.dataset.m; save(); showSettings();
+  });
+  const tsec=$("tsec");
+  if(tsec) tsec.oninput=()=>{ S.timeSec=+tsec.value; $("tsecv").textContent=S.timeSec+" s"; save(); };
+  $("tog-lv").onclick=()=>{ S.showLevelTimes=!S.showLevelTimes; save(); showSettings(); };
+  [1,2,3,4].forEach(lv=>{
+    const el=$("tlv"+lv); if(!el) return;
+    el.oninput=()=>{ S.timeL=S.timeL||Object.assign({},TIME_DEF); S.timeL[lv]=+el.value; $("tlv"+lv+"v").textContent=el.value+" s"; S.useLevelTimes=true; save(); };
+  });
+  app.querySelectorAll("#adv [data-a]").forEach(b=>b.onclick=()=>{
+    S.advance=b.dataset.a; save(); showSettings();
+  });
+  const ams=$("ams");
+  if(ams) ams.oninput=()=>{ S.autoMs=+ams.value*100; $("adelayv").textContent=(+ams.value/10)+" s"; save(); };
+  app.querySelectorAll("#pack [data-p]").forEach(b=>b.onclick=()=>{
+    S.pack=+b.dataset.p; save(); showSettings();
+  });
+  $("reset").onclick=()=>{
+    const keep={mute:S.mute,best:S.best,bestCombo:S.bestCombo,mastery:S.mastery,sm:S.sm,progress:S.progress,free:S.free};
+    S=Object.assign({}, DEFAULTS, keep, {timeL:Object.assign({},TIME_DEF)});
+    save(); showSettings();
+  };
+}
+
 function showMap(){
   const cls=selCls;
   const cov=COVER[cls]||COVER.all;
   const codes=new Set(pool(cls).map(p=>p.code));
   const list=STRUCTS.filter(s=>s.placas.some(c=>codes.has(c)));
   const route=(cov.route||[]).slice(0,5);
-  const covered=new Set();
-  route.forEach(r=> (r.codes||[]).forEach(c=>covered.add(c)));
   const gold = route.length?`
     <div class="goldcard" id="ruta">
       <h3>Ruta de oro</h3>
@@ -340,6 +471,168 @@ function showStruct(key){
   $("back").onclick=showMap;
 }
 
+/* ---------- aprender estructuras ---------- */
+function showLearnPick(){
+  stopTimer(); clearFB(); G=null;
+  const list=pool(selCls).filter(p=>p.structureOK && p.elements.some(e=>e.poly&&e.poly.length>=4));
+  app.innerHTML=`
+    <div class="top">
+      <button class="ib" id="back">◀</button>
+      <div class="brand"><div class="k">A tu ritmo</div><h1 style="font-size:22px">Aprender estructuras</h1></div>
+      <button class="ib" id="btn-set" title="Ajustes">⚙️</button>
+    </div>
+    <div id="screen-learn">
+      <p class="lead">Silenciada, con flechas. Te las pido ${S.pack===2?"de a 2":S.pack===4?"de a 4":"una por una"}. Al terminar ves la placa con nombres y repetimos las que se te fueron.</p>
+      <div class="row" id="lcls">
+        <button class="chip ${selCls==="all"?"on":""}" data-cls="all">TODO</button>
+        ${["2","3","4","5","6"].map(c=>`<button class="chip ${selCls===c?"on":""}" data-cls="${c}">C${c}</button>`).join("")}
+      </div>
+      <button class="go" id="allp">Todas las de ${selCls==="all"?"este parcial":"la clase "+selCls} (${list.length})</button>
+      <div class="pgrid">
+        ${list.map(p=>`<button class="pcard" data-code="${p.code}"><img src="${p.imgSin}" alt="${p.code}"><figcaption>${p.code}<small>${p.elements.length} estructuras</small></figcaption></button>`).join("")}
+      </div>
+    </div>`;
+  $("back").onclick=menu;
+  $("btn-set").onclick=showSettings;
+  app.querySelectorAll("#lcls [data-cls]").forEach(b=>b.onclick=()=>{selCls=b.dataset.cls;showLearnPick();});
+  $("allp").onclick=()=>startLearn(list);
+  app.querySelectorAll(".pcard").forEach(b=>b.onclick=()=>{
+    const p=P.find(x=>x.code===b.dataset.code); if(p) startLearn([p]);
+  });
+}
+
+function startLearn(placas){
+  const pack=S.pack||1;
+  const rounds=placas.map(p=>{
+    const els=shuffle(p.elements.filter(e=>e.poly&&e.poly.length>=4));
+    return {placa:p, els, missed:[]};
+  }).filter(r=>r.els.length);
+  if(!rounds.length){ alert("Estas placas no tienen estructuras bien ubicadas."); return; }
+  G={mode:"learn", cls:selCls, rounds, ri:0, qi:0, pack, ok:0, bad:0, t0:Date.now(), locked:false};
+  beep("go"); showLearnQ();
+}
+
+function learnChunks(els, pack, qi){
+  const n=Math.max(1, pack);
+  return els.slice(qi, qi+n);
+}
+
+function showLearnQ(){
+  stopTimer(); clearFB(); scrollTop();
+  if(!G || G.mode!=="learn") return;
+  if(G.ri>=G.rounds.length) return learnDone();
+  const R=G.rounds[G.ri], p=R.placa;
+  if(G.qi>=R.els.length){ return learnReveal(); }
+  const chunk=learnChunks(R.els, G.pack, G.qi);
+  const items=[];
+  for(const el of chunk){
+    const wrong=similarOff(p, el.name, 3);
+    const opts=uniqueByKey([el.name, ...wrong]);
+    if(opts.length<2) continue;
+    items.push({target:el, options:shuffle(opts), answer:el.name, pick:null});
+  }
+  if(!items.length){ G.qi+=chunk.length||1; return showLearnQ(); }
+  const q={kind:items.length===1?"st":"stpack", placa:p, target:items[0].target, targets:items.map(i=>i.target), items, prompt: items.length===1?`¿Cuál es esta estructura?  (${items[0].target.id||"•"})`: (items.length===2?"¿Cuáles son estas 2 estructuras?":`¿Cuáles son estas ${items.length} estructuras?`), sub: items.length>1?"Una respuesta por número":""};
+  G.q=q; G.locked=false;
+  const total=G.rounds.reduce((a,r)=>a+r.els.length,0);
+  const done=G.rounds.slice(0,G.ri).reduce((a,r)=>a+r.els.length,0)+G.qi;
+  app.innerHTML=`
+    <div class="stick" id="stick">
+      <div class="hud" id="screen-learn-q">
+        <button class="ib" id="back" style="width:36px;height:36px">◀</button>
+        <div>${p.code}</div>
+        <div>${Math.min(total,done+chunk.length)}/${total}</div>
+        <div class="sp">${G.ok}✓ ${G.bad?G.bad+"✗":""}</div>
+      </div>
+      <div class="prompt">${esc(q.prompt)}</div>
+      ${q.sub?`<div class="sub">${esc(q.sub)}</div>`:""}
+      <div class="imgw" id="iw"><span class="tag">Clase ${p.cls} · ${p.code}</span>
+        <img class="placa" alt="Placa ${p.code}" src="${p.imgSin}" decoding="async" fetchpriority="high">
+      </div>
+    </div>
+    <div id="playbody"></div>`;
+  $("back").onclick=()=>{ if(confirm("¿Salir de esta ronda?")) showLearnPick(); };
+  bindPlacaImg(q, false);
+  renderBody(q, true);
+}
+
+function learnCheck(okAll, detail){
+  if(!G||G.locked) return;
+  G.locked=true;
+  const q=G.q, p=q.placa, R=G.rounds[G.ri];
+  const items=q.items||[{target:q.target,answer:q.answer}];
+  items.forEach((it,i)=>{
+    const ok=detail?detail[i]:okAll;
+    if(ok){ G.ok++; record(p,true,{kind:"st",answer:it.answer}); }
+    else { G.bad++; R.missed.push(it.target); record(p,false,{kind:"st",answer:it.answer}); }
+  });
+  if(okAll){ beep("ok"); vibe(12); } else { beep("bad"); vibe([30,30,30]); }
+  const fb=document.createElement("div");
+  fb.className="fb "+(okAll?"good":"nope");
+  fb.id="screen-fb";
+  const lines=(q.items||[{target:q.target,answer:q.answer,pick:null}]).map(it=>{
+    const good=it.pick==null? it.answer : it.pick;
+    const right=it.pick==null || it.pick===it.answer;
+    return `<div class="els">${esc(it.target.id||"")} · ${right?"✓":"✗"} <b style="color:${right?"var(--ok)":"var(--bad)"}">${esc(it.answer)}</b>${!right && it.pick?` <span style="color:var(--dim)">(dijiste ${esc(it.pick)})</span>`:""}</div>`;
+  }).join("");
+  fb.innerHTML=`<h3>${okAll?"¡Exacto!":"Mira el correcto."}</h3>${lines}
+    <button class="go" id="btn-next">Siguiente</button>`;
+  $("playbody").appendChild(fb);
+  bindPlacaImg(q, true);
+  $("btn-next").onclick=()=>{
+    G.qi += (q.items?q.items.length:1);
+    showLearnQ();
+  };
+}
+
+function learnReveal(){
+  const R=G.rounds[G.ri], p=R.placa;
+  const missed=R.missed;
+  app.innerHTML=`
+    <div class="top"><button class="ib" id="back">◀</button>
+      <div class="brand"><div class="k">${p.code}</div><h1 style="font-size:20px">Placa con nombres</h1></div></div>
+    <div class="imgw" id="iw"><span class="tag">Clase ${p.cls} · ${p.code}</span>
+      <img class="placa" alt="Placa ${p.code} con nombres" src="${p.imgCon}" decoding="async">
+    </div>
+    <div class="fb good" style="margin-top:10px">
+      <div class="dx">${esc(p.diagnosis)}</div>
+      <div class="els"><b>Estructuras:</b> ${esc(namesOf(p).join(" · "))}</div>
+    </div>
+    ${missed.length?`<p class="lead">Se te fueron ${missed.length}: ${esc(uniqueByKey(missed.map(e=>e.name)).join(" · "))}</p>
+      <button class="go" id="rep">Repetir las que fallé</button>`:`<p class="lead">Esta placa, limpia. Bien.</p>`}
+    <button class="go ${missed.length?"alt":""}" id="nxt">${G.ri+1<G.rounds.length?"Siguiente placa":"Terminé"}</button>
+    <button class="ghost" id="home">Volver al listado</button>`;
+  $("back").onclick=showLearnPick;
+  $("home").onclick=showLearnPick;
+  bindPlacaImg({kind:"dx", placa:p}, true);
+  if($("rep")) $("rep").onclick=()=>{
+    R.els=shuffle(uniqueByKeyEls(missed));
+    R.missed=[];
+    G.qi=0;
+    showLearnQ();
+  };
+  $("nxt").onclick=()=>{ G.ri++; G.qi=0; showLearnQ(); };
+}
+function uniqueByKeyEls(els){
+  const seen=new Set(), out=[];
+  for(const e of els){ const k=e.key||norm(e.name); if(seen.has(k)) continue; seen.add(k); out.push(e); }
+  return out;
+}
+function learnDone(){
+  const t=Math.round((Date.now()-G.t0)/1000);
+  app.innerHTML=`
+    <div class="results" id="screen-results">
+      <div class="k" style="color:var(--cyan);letter-spacing:.16em;font-weight:800;font-size:12px">APRENDER ESTRUCTURAS</div>
+      <h2>${G.bad?"BUENA RONDA":"LIMPIO"}</h2>
+      <div class="bigscore">${G.ok}</div>
+      <p>${G.ok} aciertos · ${G.bad} fallos · ${t}s</p>
+      <button class="go" id="again">Otra ronda</button>
+      <button class="go alt" id="home">Volver al menú</button>
+    </div>`;
+  $("again").onclick=showLearnPick;
+  $("home").onclick=menu;
+}
+
 function start(opts){
   stopTimer(); clearFB();
   const level=opts.level||1, cls=opts.cls||"all";
@@ -348,12 +641,13 @@ function start(opts){
   if(!list.length) return;
   const qs=buildQuestions(list, level, cls);
   if(!qs.length){ alert("No pude armar preguntas para este nivel con estas placas."); return; }
-  G={level,cls,isBoss:level===4,qs,i:0,lives:level===4?3:null,combo:0,maxCombo:0,score:0,ok:0,bad:0,t0:Date.now(),log:[],baseTime:level===1?13:level===4?20:16};
+  G={mode:"play", level,cls,isBoss:level===4,qs,i:0,lives:level===4?3:null,combo:0,maxCombo:0,score:0,ok:0,bad:0,t0:Date.now(),log:[],baseTime:TIME_DEF[level]||16};
   countdown();
 }
 
 function buildQuestions(list, level, cls){
   const qs=[];
+  const pack=S.pack||1;
   if(level===1){
     shuffle(list).forEach(p=>{ const q=makeDx(p,list); if(q) qs.push(q); });
     return qs;
@@ -372,12 +666,13 @@ function buildQuestions(list, level, cls){
   }
   if(level===3){
     const bag=shuffle(list.filter(p=>p.structureOK));
-    const kinds=["st","zone","absent"];
-    const cap = Math.min(16, Math.max(8, bag.length*2));
+    const kinds= pack>1 ? ["stpack","stpack","stpack","zone","absent"] : ["st","st","st","zone","absent"];
+    const cap = Math.min(18, Math.max(10, bag.length*2));
     let i=0, guard=0;
     while(qs.length<cap && guard++<400 && bag.length){
       const p=bag[i%bag.length]; i++;
-      const q=makeStruct(p, kinds[qs.length%kinds.length]);
+      const kind=kinds[qs.length%kinds.length];
+      const q= kind==="stpack"? makeStPack(p,pack) : makeStruct(p, kind);
       if(q) qs.push(q);
     }
     return qs;
@@ -390,7 +685,7 @@ function buildQuestions(list, level, cls){
     const w=Math.max(1, Math.round(1+m.bad*3+(m.ok?0:1)));
     for(let i=0;i<w;i++) bag.push(p);
   });
-  const kinds=["dx","part","st","zone","absent"];
+  const kinds=["dx","part","stpack","zone","absent"];
   let guard=0;
   while(qs.length<n && guard++<500){
     const p=bag[Math.floor(Math.random()*bag.length)];
@@ -398,6 +693,7 @@ function buildQuestions(list, level, cls){
     let q=null;
     if(kind==="dx") q=makeDx(p,list);
     else if(kind==="part"){ const parts=p.parts||[]; if(parts.length) q=makePart(p,parts[qs.length%parts.length]); }
+    else if(kind==="stpack") q=makeStPack(p,pack);
     else q=makeStruct(p, kind);
     if(q) qs.push(q);
   }
@@ -418,7 +714,7 @@ function makePart(p, part){
 }
 function makeStruct(p, kind){
   if(!p.structureOK) return null;
-  if(kind==="st") return makeSt(p);
+  if(kind==="st"||kind==="stpack") return makeSt(p);
   if(kind==="zone") return makeZone(p);
   if(kind==="absent") return makeAbsent(p);
   return makeSt(p);
@@ -432,8 +728,26 @@ function makeSt(p){
   const lab=el.id||"•";
   const opts=uniqueByKey([el.name, ...wrong]);
   if(opts.length<3) return null;
-  return {kind:"st", placa:p, target:el, options:shuffle(opts), answer:el.name,
+  return {kind:"st", placa:p, target:el, targets:[el], items:[{target:el,options:shuffle(opts),answer:el.name}], options:shuffle(opts), answer:el.name,
     prompt:`¿Cuál es esta estructura?  (${lab})`};
+}
+function makeStPack(p, n){
+  const els=p.elements.filter(e=>e.poly && e.poly.length>=4);
+  if(!els.length) return null;
+  n=Math.min(Math.max(1,n||1), els.length);
+  if(n===1) return makeSt(p);
+  const targets=shuffle(els).slice(0,n);
+  const items=[];
+  for(const el of targets){
+    const wrong=similarOff(p, el.name, 3);
+    const opts=uniqueByKey([el.name, ...wrong]);
+    if(opts.length<3) continue;
+    items.push({target:el, options:shuffle(opts), answer:el.name});
+  }
+  if(items.length<2) return items.length===1? makeSt(p): null;
+  return {kind:"stpack", placa:p, targets:items.map(i=>i.target), items,
+    prompt: items.length===2 ? "¿Cuáles son estas 2 estructuras?" : `¿Cuáles son estas ${items.length} estructuras?`,
+    sub:"Una respuesta por número · luego Listo"};
 }
 function makeZone(p){
   const els=p.elements.filter(e=>e.poly&&e.poly.length>=4);
@@ -500,80 +814,122 @@ function countdown(){
   };
   tick();
 }
+
+function packCount(q){
+  if(!q) return 1;
+  if(q.kind==="stpack") return (q.items||q.targets||[]).length||1;
+  return 1;
+}
 function timerLimit(){
-  if(G.level===4) return Math.max(9, G.baseTime - G.combo*0.45);
-  return G.baseTime;
+  if(S.timeMode==="off") return 0;
+  let base = S.timeMode==="custom" ? (+S.timeSec||16) : (+((S.timeL||TIME_DEF)[G.level])||G.baseTime);
+  const n=packCount(G.qs[G.i]);
+  if(n>=2) base=Math.max(base, n*10, n>=4?30:0);
+  if(G.level===4) return Math.max(9, base - G.combo*0.45);
+  return base;
 }
 
 function showQ(){
-  stopTimer(); clearFB();
+  stopTimer(); clearFB(); scrollTop();
   if(!G || G.i>=G.qs.length || (G.isBoss && G.lives<=0)) return results();
   const q=G.qs[G.i], p=q.placa;
   const limit=timerLimit();
-  G.deadline=Date.now()+limit*1000; G.locked=false;
+  G.deadline= limit? Date.now()+limit*1000 : 0;
+  G.locked=false;
   const life = G.isBoss? `<div class="lives">${"♥".repeat(G.lives)}${"♡".repeat(Math.max(0,3-G.lives))}</div>` :
     `<div class="lives" style="color:var(--dim)">${LNAMES[G.level]}</div>`;
   app.innerHTML=`
-    <div class="hud" id="screen-play">${life}
-      <div class="combo">${G.combo?("x"+G.combo):"x0"}</div>
-      <div>${G.i+1}/${G.qs.length}</div>
-      <div class="sp">${G.score}</div></div>
-    <div class="bar" id="tbar"><i id="tfill"></i></div>
-    <div class="prompt">${esc(q.prompt)}</div>
-    ${q.sub?`<div class="sub">${esc(q.sub)}</div>`:""}
-    <div class="imgw" id="iw"><span class="tag">Clase ${p.cls} · ${p.code}</span></div>
+    <div class="stick" id="stick">
+      <div class="hud" id="screen-play">${life}
+        <div class="combo">${G.combo?("x"+G.combo):"x0"}</div>
+        <div>${G.i+1}/${G.qs.length}</div>
+        <div class="sp">${G.score}</div></div>
+      <div class="bar ${limit?"":"off"}" id="tbar"><i id="tfill"></i></div>
+      <div class="prompt">${esc(q.prompt)}</div>
+      ${q.sub?`<div class="sub">${esc(q.sub)}</div>`:""}
+      <div class="imgw" id="iw"><span class="tag">Clase ${p.cls} · ${p.code}</span>
+        <img class="placa" alt="Placa ${p.code}" src="${p.imgSin}" decoding="async" fetchpriority="high">
+      </div>
+    </div>
     <div id="playbody"></div>`;
-  renderImage(q,false);
-  renderBody(q);
+  bindPlacaImg(q,false);
+  renderBody(q,false);
   runTimer();
   const nxt=G.qs[G.i+1];
   if(nxt){ const im=new Image(); im.src=nxt.placa.imgSin; }
 }
 
-function renderImage(q, labeled){
-  const p=q.placa, iw=$("iw"); if(!iw) return;
+function bindPlacaImg(q, labeled){
+  const p=q.placa, iw=$("iw"); if(!iw||!p) return;
   const gen=++imgGen;
-  const img=new Image();
-  img.onload=()=>{
-    if(gen!==imgGen || !iw.isConnected) return;
-    const w=iw.clientWidth||390;
-    const h=Math.round(w*(img.naturalHeight/img.naturalWidth));
-    const ratio=Math.min(2, window.devicePixelRatio||1);
-    const c=document.createElement("canvas");
-    c.width=Math.round(w*ratio); c.height=Math.round(h*ratio);
-    c.style.width=w+"px"; c.style.height=h+"px";
-    const ctx=c.getContext("2d"); ctx.scale(ratio,ratio);
-    ctx.drawImage(img,0,0,w,h);
-    if(!labeled && q.kind==="st" && q.target && q.target.poly){
-      const [px,py]=centroid(q.target.poly);
-      const x=px*w/100, y=py*h/100;
-      ctx.beginPath(); ctx.arc(x,y,22,0,Math.PI*2);
-      ctx.strokeStyle="#ffd166"; ctx.lineWidth=4; ctx.stroke();
-      ctx.beginPath(); ctx.arc(x,y,22,0,Math.PI*2);
-      ctx.strokeStyle="#ff3d8a"; ctx.lineWidth=2; ctx.stroke();
+  let img=iw.querySelector("img.placa");
+  if(!img){
+    img=document.createElement("img");
+    img.className="placa";
+    img.alt="Placa "+p.code;
+    img.decoding="async";
+    iw.appendChild(img);
+  }
+  const src=labeled? p.imgCon : p.imgSin;
+  const paintMarks=()=>{
+    iw.querySelectorAll(".mark,.zonebox,.img-err").forEach(n=>n.remove());
+    if(labeled) return;
+    const marks=(q.kind==="stpack"||q.kind==="st") ? (q.targets|| (q.target?[q.target]:[])) : [];
+    marks.forEach(el=>{
+      if(!el||!el.poly) return;
+      const [x,y]=centroid(el.poly);
+      const m=document.createElement("span");
+      m.className="mark";
+      m.textContent=el.id||"•";
+      m.style.left=x+"%"; m.style.top=y+"%";
+      iw.appendChild(m);
+    });
+    if(q.kind==="zone" && q.box){
+      const b=document.createElement("div");
+      b.className="zonebox";
+      const x0=Math.max(0,q.box.x0), y0=Math.max(0,q.box.y0);
+      const x1=Math.min(100,q.box.x1), y1=Math.min(100,q.box.y1);
+      b.style.left=x0+"%"; b.style.top=y0+"%";
+      b.style.width=Math.max(4,x1-x0)+"%"; b.style.height=Math.max(4,y1-y0)+"%";
+      iw.appendChild(b);
     }
-    if(!labeled && q.kind==="zone" && q.box){
-      const x=q.box.x0*w/100, y=q.box.y0*h/100;
-      const bw=(q.box.x1-q.box.x0)*w/100, bh=(q.box.y1-q.box.y0)*h/100;
-      ctx.fillStyle="rgba(0,230,195,.18)";
-      ctx.strokeStyle="#00e6c3"; ctx.lineWidth=3;
-      ctx.setLineDash([6,4]);
-      roundRect(ctx,x,y,bw,bh,10); ctx.fill(); ctx.stroke(); ctx.setLineDash([]);
-    }
-    // clear previous canvas/img
-    [...iw.querySelectorAll("canvas,img.placa")].forEach(n=>n.remove());
-    iw.appendChild(c);
   };
-  img.src = labeled ? p.imgCon : p.imgSin;
-}
-function roundRect(ctx,x,y,w,h,r){
-  ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
-  ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
+  let tries=0;
+  const failBox=()=>{
+    iw.querySelectorAll(".img-err").forEach(n=>n.remove());
+    const box=document.createElement("div");
+    box.className="img-err";
+    box.innerHTML=`<div>No cargó la placa.</div><button class="go" type="button">Reintentar</button>`;
+    box.querySelector("button").onclick=(ev)=>{ ev.stopPropagation(); tries=0; load(src,true); };
+    iw.appendChild(box);
+  };
+  const load=(url,bust)=>{
+    if(gen!==imgGen || !iw.isConnected) return;
+    const u=bust ? url+(url.indexOf("?")>=0?"&":"?")+"r="+Date.now() : url;
+    img.onload=()=>{
+      if(gen!==imgGen || !iw.isConnected) return;
+      iw.querySelectorAll(".img-err").forEach(n=>n.remove());
+      paintMarks();
+    };
+    img.onerror=()=>{
+      if(gen!==imgGen || !iw.isConnected) return;
+      tries++;
+      if(tries<3){ setTimeout(()=>load(url,true), 280*tries); return; }
+      failBox();
+    };
+    if(!bust && img.src && img.src.endsWith(url) && img.complete && img.naturalWidth){
+      iw.querySelectorAll(".img-err").forEach(n=>n.remove());
+      paintMarks();
+      return;
+    }
+    img.src=u;
+  };
+  load(src,false);
 }
 
-function renderBody(q){
+function renderBody(q, isLearn){
   const box=$("playbody");
-  const cheat=cheatOn(G.cls);
+  const cheat=!isLearn && G && G.mode==="play" && cheatOn(G.cls);
   const isCore = n => STRUCTS.some(s=>s.color==="green" && (s.name===n || s.key===norm(n)));
   if(q.kind==="zone"){
     const picked=new Set();
@@ -586,18 +942,54 @@ function renderBody(q){
       if(G.locked) return;
       const sel=[...picked].map(i=>q.options[i]);
       const ok = sel.length===q.correct.length && q.correct.every(c=>sel.includes(c)) && sel.every(c=>q.correct.includes(c));
-      judge(ok,q,null,sel.join(" · ")||"(nada)");
+      if(isLearn) learnCheck(ok, null);
+      else judge(ok,q,null,sel.join(" · ")||"(nada)");
+    };
+    return;
+  }
+  if(q.kind==="stpack"){
+    box.innerHTML=q.items.map((it,i)=>`
+      <div class="packrow" data-i="${i}">
+        <div class="lab">(${esc(it.target.id||String(i+1))})</div>
+        <div class="chips">${it.options.map((o,j)=>`<button class="tchip" data-i="${i}" data-j="${j}">${esc(o)}</button>`).join("")}</div>
+      </div>`).join("")+`<button class="go" id="okz">Listo</button>`;
+    box.querySelectorAll(".tchip").forEach(b=>{
+      b.onclick=()=>{
+        if(G.locked) return;
+        const i=+b.dataset.i, j=+b.dataset.j;
+        const row=box.querySelectorAll(`.tchip[data-i="${i}"]`);
+        row.forEach(x=>x.classList.remove("on"));
+        b.classList.add("on");
+        q.items[i].pick=q.items[i].options[j];
+        vibe(8);
+      };
+    });
+    $("okz").onclick=()=>{
+      if(G.locked) return;
+      const detail=q.items.map(it=>it.pick===it.answer);
+      const ok=detail.every(Boolean) && q.items.every(it=>it.pick);
+      const chosen=q.items.map(it=>it.pick||"(nada)").join(" · ");
+      if(isLearn) learnCheck(ok, detail);
+      else judge(ok,q,null,chosen);
     };
     return;
   }
   box.innerHTML=`<div class="opts" id="opts">${q.options.map((o,i)=>`<button class="opt" data-v="${i}">${esc(o)}${cheat&&isCore(o)?'<i class="hint" title="sale en muchas placas"></i>':""}</button>`).join("")}</div>`;
   box.querySelectorAll(".opt").forEach(b=>{
-    b.onclick=()=>{ if(G.locked) return; const val=q.options[+b.dataset.v]; judge(val===q.answer,q,b,val); };
+    b.onclick=()=>{
+      if(G.locked) return;
+      const val=q.options[+b.dataset.v];
+      if(isLearn){
+        if(q.items&&q.items[0]) q.items[0].pick=val;
+        learnCheck(val===q.answer, [val===q.answer]);
+      } else judge(val===q.answer,q,b,val);
+    };
   });
 }
 
 function runTimer(){
   const fill=$("tfill"), bar=$("tbar"); if(!fill) return;
+  if(!G.deadline){ fill.style.transform="scaleX(0)"; if(bar) bar.classList.add("off"); return; }
   const total=G.deadline-Date.now();
   const step=()=>{
     if(!G||G.locked) return;
@@ -614,8 +1006,8 @@ function record(p, ok, q){
   const m=S.mastery[p.code]||{ok:0,bad:0};
   if(ok) m.ok++; else m.bad++;
   S.mastery[p.code]=m;
-  if(q && (q.kind==="st"||q.kind==="zone"||q.kind==="absent")){
-    const names = q.kind==="zone"? q.correct : [q.kind==="st"?q.answer:null];
+  if(q && (q.kind==="st"||q.kind==="stpack"||q.kind==="zone"||q.kind==="absent")){
+    const names = q.kind==="zone"? q.correct : q.kind==="stpack"? (q.items||[]).map(i=>i.answer) : [q.kind==="st"?q.answer:null];
     names.filter(Boolean).forEach(n=>{
       const key=norm(n);
       const sm=S.sm[key]||{ok:0,bad:0};
@@ -632,8 +1024,8 @@ function judge(ok,q,btn,chosen,timeout){
   const p=q.placa;
   if(ok){
     G.combo++; G.maxCombo=Math.max(G.maxCombo,G.combo); G.ok++;
-    const left=Math.max(0,G.deadline-Date.now());
-    const bonus=G.isBoss?Math.round(40*(left/Math.max(1,timerLimit()*1000))):0;
+    const left=G.deadline? Math.max(0,G.deadline-Date.now()) : 0;
+    const bonus=G.isBoss&&G.deadline?Math.round(40*(left/Math.max(1,timerLimit()*1000))):0;
     G.score += Math.round((100+bonus)*(1+G.combo*0.15));
     record(p,true,q); beep(G.combo>=3?"combo":"ok"); vibe(12);
     if(btn) btn.classList.add("ok");
@@ -653,8 +1045,18 @@ function judge(ok,q,btn,chosen,timeout){
         b.classList.add("lock");
       });
     }
+    if(q.kind==="stpack"){
+      document.querySelectorAll(".packrow .tchip").forEach(b=>{
+        const it=q.items[+b.dataset.i];
+        const val=it.options[+b.dataset.j];
+        if(val===it.answer) b.classList.add("ok");
+        else if(b.classList.contains("on")) b.classList.add("bad");
+        b.classList.add("lock");
+      });
+    }
   }
-  G.log.push({ok,code:p.code,kind:q.kind,answer:q.answer||(q.correct||[]).join(" · "),chosen:timeout?"(tiempo)":(chosen||""),dx:p.diagnosis});
+  const ans=q.answer||(q.correct||[]).join(" · ")||((q.items||[]).map(i=>i.answer).join(" · "));
+  G.log.push({ok,code:p.code,kind:q.kind,answer:ans,chosen:timeout?"(tiempo)":(chosen||""),dx:p.diagnosis});
   const fb=document.createElement("div");
   fb.className="fb "+(ok?"good":"nope");
   fb.id="screen-fb";
@@ -662,20 +1064,26 @@ function judge(ok,q,btn,chosen,timeout){
   let extra="";
   if(q.kind==="zone") extra=`<div class="els"><b>En la zona:</b> ${esc((q.correct||[]).join(" · "))}</div>`;
   if(q.kind==="st") extra=`<div class="els"><b>${esc(q.target.id||"")}:</b> ${esc(q.answer)}</div>`;
+  if(q.kind==="stpack") extra=`<div class="els">${(q.items||[]).map(it=>`<b>(${esc(it.target.id||"")})</b> ${esc(it.answer)}`).join(" · ")}</div>`;
   if(q.kind==="absent") extra=`<div class="els"><b>No está:</b> ${esc(q.answer)}</div>`;
   if(q.kind==="part") extra=`<div class="els"><b>Trokazo:</b> ${esc(q.answer)}</div>`;
+  const manual=(S.advance||"manual")!=="auto";
   fb.innerHTML=`<h3>${ok?"¡Exacto!":(timeout?"Se acabó el tiempo.":"Mira el correcto.")}</h3>
     <div class="dx">${esc(p.diagnosis)}</div>
     ${extra}
     <div class="els"><b>Estructuras:</b> ${esc(els)}</div>
-    <div class="tap" id="tapc">Toca para seguir</div>`;
+    ${manual?`<button class="go" id="btn-next">Siguiente</button>`:`<div class="tap" id="tapc">Toca para seguir</div>`}`;
   $("playbody").appendChild(fb);
-  renderImage(q,true);
+  bindPlacaImg(q,true);
   const go=()=>{ if(!G||!G.locked) return; if(G.isBoss && G.lives<=0){ results(); return; } G.i++; showQ(); };
-  let armed=false;
-  setTimeout(()=>{ armed=true; }, 700);
-  fbTimer=setTimeout(go, 2200);
-  app.onclick= (ev)=>{ if(!armed) return; if(ev.target && ev.target.id==="mute") return; clearFB(); go(); };
+  if(manual){
+    $("btn-next").onclick=(ev)=>{ ev.stopPropagation(); clearFB(); go(); };
+  } else {
+    let armed=false;
+    setTimeout(()=>{ armed=true; }, 500);
+    fbTimer=setTimeout(go, S.autoMs||2000);
+    app.onclick= (ev)=>{ if(!armed) return; if(ev.target && (ev.target.id==="mute"||ev.target.id==="btn-set")) return; clearFB(); go(); };
+  }
 }
 
 function results(){
@@ -711,8 +1119,14 @@ function results(){
   $("home").onclick=menu;
 }
 
-window.FB={ start, menu, showMap, get state(){return G;}, getS:()=>S, unlockAll(){ S.free=true; save(); } };
-P.slice(0,6).forEach(p=>{ const i=new Image(); i.src=p.imgSin; });
+function preloadAll(){
+  P.forEach(p=>{ const a=new Image(); a.src=p.imgSin; const b=new Image(); b.src=p.imgCon; });
+}
+
+window.FB={ start, menu, showMap, showSettings, showLearnPick, startLearn,
+  get state(){return G;}, getS:()=>S, setS(p){ Object.assign(S,p); save(); },
+  unlockAll(){ S.free=true; save(); } };
+preloadAll();
 menu();
 })();
 </script>
