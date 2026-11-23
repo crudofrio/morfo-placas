@@ -201,14 +201,15 @@ input[type=range]{width:100%;height:32px;accent-color:#00e6c3}
   #app.wide{max-width:1100px;width:100%}
   body.playon{padding:8px 12px;overflow:hidden;height:100dvh}
   body.playon #app.wide{height:100%}
-  .playwrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,360px);grid-template-rows:auto minmax(0,1fr);
+  .playwrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,360px);
+    grid-template-rows:minmax(0,auto) minmax(12rem,1fr);
     grid-template-areas:"img head" "img side";gap:10px 16px;height:calc(100dvh - 16px);min-height:0;align-items:stretch}
   .playwrap>.stick{display:contents;position:static;margin:0;padding:0;box-shadow:none;background:transparent;top:auto}
   .stage-head{grid-area:head;min-width:0;background:linear-gradient(180deg,#14102acc,#0c0a18cc);border:1px solid var(--line);
     border-radius:16px 16px 0 0;padding:10px 12px 8px;border-bottom:none}
-  .stage-img{grid-area:img;container-type:size;min-width:0;min-height:0;height:100%;
+  .stage-img{grid-area:img;container-type:size;min-width:0;min-height:0;height:auto;align-self:stretch;overflow:hidden;
     display:flex;flex-direction:column;align-items:center;justify-content:center}
-  .stage-side{grid-area:side;min-width:0;min-height:0;overflow:hidden;display:flex;flex-direction:column;
+  .stage-side{grid-area:side;min-width:0;min-height:12rem;overflow:hidden;display:flex;flex-direction:column;
     background:linear-gradient(180deg,#0c0a18cc,#0c0a18cc);border:1px solid var(--line);border-top:none;
     border-radius:0 0 16px 16px;padding:8px 12px 10px}
   .stage-side #playbody{flex:1 1 auto;min-height:0;overflow:auto}
@@ -239,7 +240,14 @@ input[type=range]{width:100%;height:32px;accent-color:#00e6c3}
   .packrow .tchip,#opts.chips .tchip{position:relative;padding-left:32px}
   .stage-side .go.pinned{flex:0 0 auto;margin-bottom:0;margin-top:8px}
   .stage-side .desk-hint{flex:0 0 auto}
-  @media (max-height:640px){ .desk-hint{display:none} }
+  @media (max-height:640px){
+    .desk-hint{display:none}
+    .stage-side{padding:6px 10px 8px}
+    .opts{gap:5px}
+    .opt,.tchip{min-height:40px;padding:8px 10px;font-size:13px}
+    .stage-head{padding:8px 10px 6px}
+    .stage-head .hud{margin-bottom:4px}
+  }
 }
 @media (min-width:1100px){
   #app.wide{max-width:1400px}
@@ -1569,7 +1577,14 @@ function showLearnQ(){
     items.push({target:el, options:shuffle(opts), answer:el.name, pick:null});
   }
   if(!items.length){ G.qi+=chunk.length||1; return showLearnQ(); }
-  const q={kind:items.length===1?"st":"stpack", placa:p, target:items[0].target, targets:items.map(i=>i.target), items, prompt: items.length===1?`¿Cuál es esta estructura?  (${items[0].target.id||"•"})`: (items.length===2?"¿Cuáles son estas 2 estructuras?":`¿Cuáles son estas ${items.length} estructuras?`), sub: items.length>1?"Una respuesta por número":""};
+  const q={
+    kind:items.length===1?"st":"stpack",
+    placa:p, target:items[0].target, targets:items.map(i=>i.target), items,
+    options:items.length===1?items[0].options:null,
+    answer:items.length===1?items[0].answer:null,
+    prompt: items.length===1?`¿Cuál es esta estructura?  (${items[0].target.id||"•"})`: (items.length===2?"¿Cuáles son estas 2 estructuras?":`¿Cuáles son estas ${items.length} estructuras?`),
+    sub: items.length>1?"Una respuesta por número":""
+  };
   G.q=q; G.locked=false;
   const total=G.rounds.reduce((a,r)=>a+r.els.length,0);
   const done=G.rounds.slice(0,G.ri).reduce((a,r)=>a+r.els.length,0)+G.qi;
@@ -2013,15 +2028,18 @@ function renderBody(q, isLearn){
     };
     return;
   }
-  box.innerHTML=`<div class="opts" id="opts">${q.options.map((o,i)=>`<button class="opt" data-v="${i}">${esc(o)}${cheat&&isCore(o)?'<i class="hint" title="sale en muchas placas"></i>':""}</button>`).join("")}</div>`;
+  const options=q.options||(q.items&&q.items[0]&&q.items[0].options)||[];
+  const answer=q.answer||(q.items&&q.items[0]&&q.items[0].answer);
+  if(options.length<2){ box.innerHTML=`<p class="lead">No pude armar opciones para esta estructura.</p><button class="go" id="btn-next">Siguiente</button>`; if($("btn-next")) $("btn-next").onclick=()=>{ if(isLearn){ G.qi+=(q.items?q.items.length:1); showLearnQ(); } else { G.i++; showQ(); } }; return; }
+  box.innerHTML=`<div class="opts" id="opts">${options.map((o,i)=>`<button class="opt" data-v="${i}">${esc(o)}${cheat&&isCore(o)?'<i class="hint" title="sale en muchas placas"></i>':""}</button>`).join("")}</div>`;
   box.querySelectorAll(".opt").forEach(b=>{
     b.onclick=()=>{
       if(G.locked) return;
-      const val=q.options[+b.dataset.v];
+      const val=options[+b.dataset.v];
       if(isLearn){
         if(q.items&&q.items[0]) q.items[0].pick=val;
-        learnCheck(sameAns(val,q.answer), [sameAns(val,q.answer)]);
-      } else judge(sameAns(val,q.answer),q,b,val);
+        learnCheck(sameAns(val,answer), [sameAns(val,answer)]);
+      } else judge(sameAns(val,answer),q,b,val);
     };
   });
 }
@@ -2215,7 +2233,7 @@ function auditQuestions(nRandom){
 }
 
 window.FB={ start, menu, showMap, showSettings, showLearnPick, startLearn,
-  showExamSetup, startExam, showExamQ, examReveal, showQ, pickExamPlacas, examTarget, examProgressOn, setExamKind, switchSet, openLightbox, closeLightbox, auditQuestions, canon, sameAns, pickOptions, makeDx, makePart, makeSt, makeZone, makeAbsent,
+  showExamSetup, startExam, showExamQ, examReveal, showQ, showLearnQ, pickExamPlacas, examTarget, examProgressOn, setExamKind, switchSet, openLightbox, closeLightbox, auditQuestions, canon, sameAns, pickOptions, makeDx, makePart, makeSt, makeZone, makeAbsent,
   get state(){return G;}, getS:()=>S, setS(p){ Object.assign(S,p); save(); },
   unlockAll(){ S.free=true; save(); } };
 bindDataset();
