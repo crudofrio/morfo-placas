@@ -306,6 +306,93 @@ input[type=range]{width:100%;height:32px;accent-color:#00e6c3}
   .opts.lgrid .opt{min-height:38px;padding:6px 8px 6px 28px;font-size:11.5px}
 }
 
+
+/* ---- Editor de línea temporal ---- */
+#app.edwide{max-width:1720px;width:100%}
+@media (min-width:768px){
+  body.edon{padding:6px 10px;height:100dvh;overflow:hidden}
+  body.edon #app.edwide{height:100%;display:flex;flex-direction:column;min-height:0}
+}
+.ed-bar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:6px 8px;background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:8px;flex:0 0 auto}
+.ed-bar h2{margin:0;font-size:16px;font-weight:900;color:var(--yel);margin-right:auto;white-space:nowrap}
+.ed-btn{background:#ffffff10;border:1px solid var(--line);color:var(--ink);border-radius:9px;padding:6px 10px;font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.ed-btn:hover{border-color:#00e6c388;background:#00e6c318}
+.ed-btn.pri{background:linear-gradient(135deg,#00e6c3,#2ee59d);color:#061310;border:none}
+.ed-btn.vio{background:linear-gradient(135deg,#8b6cff,#ff3d8a);color:#fff;border:none}
+.ed-btn:disabled{opacity:.4;cursor:not-allowed}
+.ed-work{display:flex;flex-direction:column;gap:10px;min-height:0;flex:1 1 auto}
+@media (min-width:768px){
+  .ed-work{display:grid;grid-template-columns:275px minmax(0,1fr);gap:10px;overflow:hidden}
+}
+@media (min-width:1280px){
+  .ed-work{grid-template-columns:315px minmax(0,1fr)}
+}
+.ed-tray{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px;display:flex;flex-direction:column;gap:6px;min-height:0;transition:border-color .15s,background .15s}
+.ed-tray.drop-over{border-color:var(--hot);background:#2a1026cc}
+@media (min-width:768px){ .ed-tray{overflow:hidden;height:100%} }
+@media (max-width:767px){ .ed-tray{max-height:285px;overflow:hidden} .ed-tgrid{min-height:150px} }
+.ed-tctrl{display:flex;flex-wrap:wrap;gap:4px;align-items:center;flex:0 0 auto}
+.ed-pill{background:#090714;border:1px solid var(--line);color:var(--dim);border-radius:99px;padding:4px 8px;font-size:11px;font-weight:800;cursor:pointer}
+.ed-pill.on{background:#00e6c322;color:var(--cyan);border-color:#00e6c388}
+.ed-tgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:72px;gap:6px;overflow-y:auto;overflow-x:hidden;padding-right:2px;flex:1 1 auto;min-height:0;align-content:start}
+@media (min-width:768px){ .ed-tgrid{grid-template-columns:repeat(2,minmax(0,1fr))} }
+.ed-titem{position:relative;height:72px;min-height:72px;border-radius:9px;border:1.5px solid var(--line);background:#08080e;overflow:hidden;cursor:grab;user-select:none;touch-action:none}
+.ed-titem:hover{border-color:var(--cyan)}
+.ed-titem.sel{border-color:var(--yel);box-shadow:0 0 0 2px #ffd16655}
+.ed-titem.used{opacity:.65}
+.ed-titem img{display:block;width:100%;height:68px;object-fit:contain;pointer-events:none}
+.ed-titem .c{position:absolute;left:3px;bottom:3px;background:#07060fe0;color:var(--cyan);font-size:10px;font-weight:900;padding:1px 5px;border-radius:4px}
+.ed-titem .u{position:absolute;right:3px;top:3px;background:#103a26e8;color:var(--ok);font-size:9px;font-weight:900;padding:1px 4px;border-radius:4px}
+.ed-board{display:flex;flex-direction:column;gap:10px;min-height:0;overflow:auto;padding-bottom:18px}
+.ed-line{background:linear-gradient(180deg,#15112c,#0d0b1a);border:1.5px solid var(--line);border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:8px;flex:0 0 auto}
+.ed-lhead{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.ed-ltitle{flex:1 1 200px;background:#080612;border:1px solid var(--line);border-radius:9px;color:var(--cyan);font-size:14px;font-weight:900;padding:6px 10px;outline:none}
+.ed-ltitle:focus{border-color:var(--cyan)}
+.ed-rail{overflow-x:auto;padding-bottom:4px}
+.ed-axis{position:relative;height:20px;border-radius:99px;background:linear-gradient(90deg,#00e6c322,#ffd16622,#ff3d8a22);border:1px dashed #ffffff2b;display:flex;align-items:center;justify-content:space-between;padding:0 10px;font-size:10px;font-weight:800;color:var(--dim);cursor:crosshair;margin-bottom:8px;user-select:none}
+.ed-axis:hover{border-color:var(--cyan);color:var(--ink)}
+.ed-nodes{display:flex;flex-direction:column;gap:8px}
+@media (min-width:768px){
+  .ed-nodes{flex-direction:row;align-items:stretch;gap:10px;min-width:100%}
+}
+.ed-node{background:#090714;border:1.5px solid #ffffff26;border-radius:13px;padding:8px;display:flex;flex-direction:column;gap:6px;flex:0 0 248px;min-width:240px}
+@media (max-width:767px){ .ed-node{flex:1 1 auto;min-width:0} }
+.ed-nhd{display:flex;align-items:center;gap:4px}
+.ed-nhandle{cursor:ew-resize;color:var(--dim);padding:3px 5px;border-radius:6px;background:#ffffff0c;font-size:13px;user-select:none;touch-action:none}
+.ed-nhandle:hover{color:var(--yel);background:#ffffff1c}
+.ed-nlabel{flex:1;min-width:0;background:#131024;border:1px solid var(--line);border-radius:7px;color:var(--yel);font-size:13px;font-weight:900;padding:4px 7px;outline:none}
+.ed-nlabel:focus,.ed-nnick:focus,.ed-ncommon:focus{border-color:var(--yel)}
+.ed-nnick{width:100%;background:#120f22;border:1px solid #ffffff16;border-radius:7px;color:var(--ink);font-size:12px;font-weight:700;padding:4px 7px;outline:none}
+.ed-nact{background:none;border:1px solid transparent;color:var(--dim);border-radius:6px;padding:2px 5px;font-size:11px;cursor:pointer}
+.ed-nact:hover{color:var(--ink);border-color:var(--line)}
+.ed-nact.del:hover{color:var(--hot);border-color:#ff3d8a55}
+.ed-drop{min-height:76px;border:1.5px dashed #ffffff2a;border-radius:10px;padding:5px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;align-content:start;background:#07060f;transition:border-color .15s,background .15s}
+.ed-drop.drop-over{border-color:var(--cyan);background:#00e6c318}
+.ed-drop.tap-ready{border-color:#ffd16688;background:#ffd16610;cursor:pointer}
+.ed-empty-hint{grid-column:1/-1;text-align:center;color:var(--dim);font-size:11px;padding:18px 4px;pointer-events:none}
+.ed-placed{position:relative;border-radius:7px;border:1px solid #ffffff28;background:#0c0c14;overflow:hidden;cursor:grab;user-select:none;touch-action:none}
+.ed-placed:hover{border-color:var(--yel)}
+.ed-placed img{display:block;width:100%;height:54px;object-fit:contain;pointer-events:none}
+.ed-placed .c{position:absolute;left:2px;bottom:2px;background:#07060fe0;color:var(--cyan);font-size:9px;font-weight:900;padding:1px 4px;border-radius:4px}
+.ed-placed .rm{position:absolute;right:2px;top:2px;width:16px;height:16px;border-radius:50%;border:none;background:#1c0c18e6;color:#ff86ad;font-size:11px;line-height:1;cursor:pointer;display:grid;place-items:center;padding:0}
+.ed-placed .rm:hover{background:var(--hot);color:#fff}
+.ed-common{display:flex;flex-wrap:wrap;gap:3px;font-size:10px}
+.ed-common span{background:#0e3824;color:var(--ok);border:1px solid #2ee59d44;padding:1px 5px;border-radius:99px;font-weight:700}
+.ed-ncommon{width:100%;min-height:44px;resize:vertical;background:#120f22;border:1px solid #ffffff16;border-radius:7px;color:#dedaf5;font-size:11.5px;line-height:1.3;padding:5px 7px;font-family:inherit;outline:none}
+.ed-ghost{position:fixed;z-index:990;pointer-events:none;width:96px;border-radius:10px;border:2px solid var(--cyan);background:#07060fee;box-shadow:0 12px 30px #000b;overflow:hidden;transform:translate(-50%,-50%)}
+.ed-ghost img{display:block;width:100%;height:64px;object-fit:contain}
+.ed-ghost span{display:block;text-align:center;font-size:11px;font-weight:900;color:var(--cyan);padding:2px}
+#ed-tip{position:fixed;z-index:950;display:none;width:min(440px,calc(100vw - 20px));max-height:min(78dvh,470px);overflow:auto;background:linear-gradient(180deg,#1a1538f5,#0d0b1af7);border:2px solid var(--cyan);border-radius:16px;padding:12px 14px;box-shadow:0 18px 44px #000d;pointer-events:none;backdrop-filter:blur(8px)}
+#ed-tip.on{display:block}
+#ed-tip.mob{pointer-events:auto;left:10px !important;right:10px !important;bottom:10px !important;top:auto !important;width:auto}
+#ed-tip .tcode{font-size:12px;font-weight:900;color:var(--cyan);letter-spacing:.08em;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+#ed-tip .tdx{font-size:17px;font-weight:900;color:var(--yel);line-height:1.25;margin:4px 0 6px}
+#ed-tip .trasgos{background:#090714;border:1px solid #ffffff1e;border-radius:10px;padding:7px 9px;font-size:12px;line-height:1.35;color:#e9e5ff;margin-bottom:6px}
+#ed-tip .tels{display:flex;flex-wrap:wrap;gap:4px}
+#ed-tip .tels span{font-size:11px;padding:2px 7px;border-radius:99px;background:#ffffff10;border:1px solid #ffffff1c;color:#dcd8f5}
+#ed-tip .tels span.g{background:#0e3824;color:var(--ok);border-color:#2ee59d44;font-weight:700}
+.ed-toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:995;background:#103a26;border:1px solid var(--ok);color:#fff;padding:8px 14px;border-radius:99px;font-size:13px;font-weight:800;box-shadow:0 8px 24px #0009}
+
 </style>
 </head>
 <body>
@@ -520,7 +607,7 @@ function setSelector(){
     `<button class="chip ${s.id===currentSetId?"on":""}" data-set="${s.id}">${esc(s.name)}</button>`
   ).join("")}</div>`;
 }
-function switchSet(id){
+function switchSet(id){ edState=null; edUndo=[]; edSelCode=null; edHideTip();
   if(!id||id===currentSetId) return;
   const spec=AVAILABLE_SETS.find(s=>s.id===id);
   if(!spec) return;
@@ -734,6 +821,7 @@ function menu(){
       </div>
       <div class="lv">${levels}</div>
       ${lineaAvailable()?`<button class="ghost" id="btn-linea" style="margin-bottom:8px;border-color:#00e6c344;color:var(--cyan)">🧭 Línea Carnegie & Pollo + Drill</button>`:""}
+      <button class="ghost" id="btn-editor" style="margin-bottom:8px;border-color:#ffd16644;color:var(--yel)">✏️ Editor de línea temporal</button>
       <button class="ghost" id="btn-map">🗺️ Mapa de los secretos</button>
       <button class="ghost" id="btn-free" style="margin-top:8px">${S.free?"★ Juego libre ON (todos los niveles)":"Juego libre: entrar a cualquier nivel"}</button>
     </div>
@@ -750,6 +838,7 @@ function menu(){
   $("btn-exam").onclick=()=>showExamSetup();
   $("btn-learn").onclick=()=>showLearnPick();
   if($("btn-linea")) $("btn-linea").onclick=()=>showLinea();
+  if($("btn-editor")) $("btn-editor").onclick=()=>showEditor();
   $("btn-map").onclick=()=>showMap();
   $("btn-free").onclick=()=>{S.free=!S.free;save();menu();};
   app.querySelectorAll("#sets [data-set]").forEach(b=>b.onclick=()=>switchSet(b.dataset.set));
@@ -1066,6 +1155,9 @@ function examCountdown(){
 
 
 function setPlayLayout(on){
+  document.body.classList.remove("edon");
+  app.classList.remove("edwide");
+  if(typeof edHideTip==="function") edHideTip();
   document.body.classList.toggle("playon", !!on);
   app.classList.toggle("wide", !!on);
   if(!on){ closeLightbox(); stopFitObs(); }
@@ -1626,6 +1718,7 @@ function showLinea(tab){
         <button class="go" id="drill-all" style="flex:1;min-width:210px;margin:0">🎯 Ubícala en la línea (Mixto)</button>
         <button class="chip" id="drill-c">Solo Carnegie (5)</button>
         <button class="chip" id="drill-p">Solo Pollo (2)</button>
+        <button class="chip" id="open-ed" style="color:var(--yel);border-color:#ffd16655">✏️ Editor</button>
       </div>
       <div class="seg" id="ltabs">
         <button data-t="carnegie" class="${isC?"on":""}">Humana C11–23 (26)</button>
@@ -1640,6 +1733,7 @@ function showLinea(tab){
   $("drill-all").onclick=()=>startLineaDrill("all");
   $("drill-c").onclick=()=>startLineaDrill("carnegie");
   $("drill-p").onclick=()=>startLineaDrill("pollo");
+  if($("open-ed")) $("open-ed").onclick=()=>showEditor();
   app.querySelectorAll(".lth").forEach(el=>{
     el.onclick=()=>{
       const p=P.find(x=>x.code===el.dataset.code); if(!p) return;
@@ -1739,6 +1833,718 @@ function lineaDrillDone(){
   $("again").onclick=()=>startLineaDrill(G.scope);
   $("linea").onclick=()=>showLinea();
   $("home").onclick=menu;
+}
+
+
+/* ---------- Editor de línea temporal ---------- */
+const ED_MAX_UNDO = 40;
+let edState = null;
+let edUndo = [];
+let edFilter = "all";
+let edShowCon = false;
+let edSelCode = null;
+let edHoverCode = null;
+let edMobTip = false;
+let edDrag = null;
+
+function edKey(){ return "fb_linea_ed_v1_" + currentSetId; }
+function edUid(p){ return (p||"n") + "_" + Math.random().toString(36).slice(2,8); }
+function edClone(o){ return JSON.parse(JSON.stringify(o)); }
+
+function edMakeProposal(){
+  if(lineaAvailable()){
+    return {
+      v:1, setId:currentSetId,
+      lines:[
+        { id:edUid("l"), name:"Embrión de pollo (somitas / horas / segmentos)",
+          nodes:[
+            {id:edUid("n"), pos:18, label:"Somitas · 5→8 (vista dorsal)", nick:"El Gusano con Bolitas", common:"Vista dorsal desde arriba (NO corte); pares de somitas en hilera; Notocorda, Área pelúcida", placas:["03-01","03-02","03-03","03-04"]},
+            {id:edUid("n"), pos:48, label:"Lupas 12–14 h", nick:"Las Lupas Redondas", common:"Círculo de microscopio sobre fondo blanco; diagnóstico corto sin corte ni vista (12h abierto, 14h cerrado)", placas:["02-07","02-08","02-09","02-10"]},
+            {id:edUid("n"), pos:74, label:"Cinta 16–22 h", nick:"Cinta Rosada (Bulto → Volcán)", common:"Corte transversal plano rosado/naranja; 16h bulto línea primitiva, 20h U, 22h volcán", placas:["02-01","02-02","02-03"]},
+            {id:edUid("n"), pos:92, label:"24–48 h y 35 seg", nick:"Nave Morada y Catedral", common:"Tubo neural cerrado en corte transversal; 26h morado oscuro, 48h carpa, 35 seg domo 3 capas", placas:["02-04","02-05","02-06","03-05"]}
+          ]
+        },
+        { id:edUid("l"), name:"Embrión etapa Carnegie (etapa / días)",
+          nodes:[
+            {id:edUid("n"), pos:10, label:"C11–12 · 29–30 días", nick:"El Fantasma y el Puente", common:"3D en C cerrada SIN miembros; cavidades vacías / celoma en puente; sin cartílago ni vértebras", placas:["04-01","04-02","04-03","04-04","04-05","04-06","03-06"]},
+            {id:edUid("n"), pos:30, label:"C14–16 · 33–39 días", nick:"El Perro Joven", common:"3D con yemas de miembros; corte estrecho y tejido laxo; arcos faríngeos / máscara con 2 óvalos", placas:["03-07","03-08","03-09"]},
+            {id:edUid("n"), pos:52, label:"C18–19 · 44–47 días", nick:"Muñeco Sexy y Perro Sorprendido", common:"3D con paletas de manos; C18 reloj de arena, C19 cara oscura/azul; cartílago inicial y espacio subaracnoideo", placas:["03-10","05-01","05-02","03-11","05-03","06-01"]},
+            {id:edUid("n"), pos:74, label:"C20–22 · 49–55 días", nick:"Las Manitos y el Perro Viejito", common:"3D con rayos digitales; 05-04 manitos 5 dedos; cartílago hialino nítido, ojo en 05-06 y cabezas C6", placas:["03-12","05-04","06-02","05-05","05-06","06-03","06-04"]},
+            {id:edUid("n"), pos:94, label:"C23 · 56 días", nick:"Bebé Completo (Hígado y Cerebro XL)", common:"3D feto en miniatura; 03-13 hígado rojo gigante + costilla 8; 06-05/06 hemisferio/cráneo completo", placas:["03-13","06-05","06-06"]}
+          ]
+        }
+      ]
+    };
+  }
+  const lines = classIds().map(c=>({
+    id:edUid("l"), name:"Clase "+c+(classShort(c)?": "+classShort(c):""),
+    nodes:[{id:edUid("n"), pos:25, label:"Temprano", nick:"", common:"", placas:[]},{id:edUid("n"), pos:75, label:"Maduro", nick:"", common:"", placas:[]}]
+  }));
+  return { v:1, setId:currentSetId, lines: lines.length?lines:[{id:edUid("l"),name:"Línea 1",nodes:[]}] };
+}
+
+function edMakeEmpty(){
+  return {
+    v:1, setId:currentSetId,
+    lines:[
+      {id:edUid("l"), name:"Embrión de pollo", nodes:[{id:edUid("n"), pos:25, label:"Temprano", nick:"", common:"", placas:[]}]},
+      {id:edUid("l"), name:"Embrión etapa Carnegie", nodes:[{id:edUid("n"), pos:25, label:"Temprano", nick:"", common:"", placas:[]}]}
+    ]
+  };
+}
+
+function edLoad(){
+  try{
+    const raw=localStorage.getItem(edKey());
+    if(raw){
+      const d=JSON.parse(raw);
+      if(d && Array.isArray(d.lines)) return d;
+    }
+  }catch(e){}
+  return edMakeProposal();
+}
+function edSave(){
+  if(!edState) return;
+  try{ localStorage.setItem(edKey(), JSON.stringify(edState)); }catch(e){}
+}
+function edPushUndo(){
+  if(!edState) return;
+  edUndo.push(edClone(edState));
+  if(edUndo.length>ED_MAX_UNDO) edUndo.shift();
+}
+function edCommit(renderNow){
+  edSave();
+  if(renderNow!==false) renderEditor();
+}
+function edToast(msg){
+  const old=document.querySelector(".ed-toast"); if(old) old.remove();
+  const el=document.createElement("div"); el.className="ed-toast"; el.textContent=msg;
+  document.body.appendChild(el);
+  setTimeout(()=>{ if(el.parentNode) el.remove(); }, 2200);
+}
+function edFindPlaca(code){ return P.find(x=>x.code===code); }
+function edPlacedSet(){
+  const set=new Set();
+  if(!edState) return set;
+  edState.lines.forEach(l=>l.nodes.forEach(n=>(n.placas||[]).forEach(c=>set.add(c))));
+  return set;
+}
+function edFindNode(nid){
+  for(const l of (edState?edState.lines:[])){
+    const n=l.nodes.find(x=>x.id===nid);
+    if(n) return {line:l, node:n};
+  }
+  return null;
+}
+function edCommonStructs(codes){
+  if(!codes||!codes.length) return [];
+  const pls=codes.map(edFindPlaca).filter(Boolean);
+  if(!pls.length) return [];
+  if(pls.length===1){
+    const smap={}; STRUCTS.forEach(s=>{ smap[s.key]=s; });
+    const out=[]; const seen=new Set();
+    (pls[0].elements||[]).forEach(e=>{
+      const k=e.key||canon(e.name);
+      if(!k||seen.has(k)) return; seen.add(k);
+      if(smap[k]&&smap[k].color==="green") out.push(e.name);
+    });
+    return out.slice(0,5);
+  }
+  const sets=pls.map(p=>{
+    const m={};
+    (p.elements||[]).forEach(e=>{ const k=e.key||canon(e.name); if(k && !m[k]) m[k]=e.name; });
+    return m;
+  });
+  const first=sets[0];
+  const common=[];
+  Object.keys(first).forEach(k=>{
+    if(sets.every(m=>!!m[k])) common.push(first[k]);
+  });
+  return common;
+}
+function edGroupInfoForCode(code){
+  const g=LINEA_GROUPS.find(x=>x.codes.includes(code));
+  return g || null;
+}
+
+function edHideTip(){
+  edHoverCode=null; edMobTip=false;
+  const tip=$("ed-tip");
+  if(tip){ tip.classList.remove("on","mob"); }
+}
+function edShowTip(code, clientX, clientY, mobileMode){
+  const p=edFindPlaca(code); if(!p) return;
+  let tip=$("ed-tip");
+  if(!tip){
+    tip=document.createElement("div"); tip.id="ed-tip";
+    document.body.appendChild(tip);
+  }
+  edHoverCode=code; edMobTip=!!mobileMode;
+  const smap={}; STRUCTS.forEach(s=>{ smap[s.key]=s; });
+  const grp=edGroupInfoForCode(code);
+  const els=[]; const seen=new Set();
+  (p.elements||[]).forEach((e,idx)=>{
+    const k=e.key||canon(e.name);
+    const isG=smap[k]&&smap[k].color==="green";
+    const lab=(e.id?e.id+". ":"")+e.name;
+    if(!seen.has(k+"|"+e.id)){ seen.add(k+"|"+e.id); els.push({lab, isG}); }
+  });
+  tip.innerHTML=`
+    <div class="tcode"><span>Clase ${p.cls} · ${esc(p.code)} · ${els.length} estructuras</span>${mobileMode?`<button class="ed-btn" id="ed-tip-zoom" style="padding:2px 7px;font-size:11px">🔍 Ampliar</button> <button class="ed-btn" id="ed-tip-x" style="padding:2px 7px;font-size:11px">✕</button>`:""}</div>
+    <div class="tdx">${esc(p.diagnosis)}</div>
+    ${grp?`<div class="trasgos"><b style="color:var(--cyan)">${esc(grp.nickname)}</b> (${esc(grp.range)}): ${esc(grp.tells[0]||"")}</div>`:""}
+    <div class="tels">${els.slice(0,22).map(x=>`<span class="${x.isG?"g":""}">${x.isG?"🟢 ":""}${esc(x.lab)}</span>`).join("")}${els.length>22?`<span>+${els.length-22} más</span>`:""}</div>
+  `;
+  tip.classList.toggle("mob", !!mobileMode);
+  tip.classList.add("on");
+  if(mobileMode){
+    const zx=$("ed-tip-x"), zz=$("ed-tip-zoom");
+    if(zx) zx.onclick=()=>edHideTip();
+    if(zz) zz.onclick=()=>edOpenLightboxCode(code);
+    return;
+  }
+  const tw=tip.offsetWidth||420, th=tip.offsetHeight||280;
+  const tray=$("ed-tray"), tr=tray?tray.getBoundingClientRect():null;
+  let left=(clientX||320)+18, top=(clientY||120)-24;
+  if(tr && clientX <= tr.right+4){ left = tr.right + 10; }
+  if(left+tw > window.innerWidth-10) left=Math.max(10, (clientX||320)-tw-18);
+  if(top+th > window.innerHeight-10) top=Math.max(10, window.innerHeight-th-10);
+  if(top<10) top=10;
+  tip.style.left=left+"px"; tip.style.top=top+"px";
+}
+function edOpenLightboxCode(code){
+  const p=edFindPlaca(code); if(!p) return;
+  edHideTip();
+  const box=document.createElement("div");
+  box.className="imgw";
+  box.innerHTML=`<div class="imgnest"><img class="placa" src="${edShowCon?p.imgCon:p.imgSin}" alt="${p.code}"><span class="tag">Clase ${p.cls} · ${p.code}</span></div>`;
+  openLightbox(box);
+}
+
+function edAddPlacaToNode(code, nid){
+  const found=edFindNode(nid); if(!found) return;
+  if((found.node.placas||[]).includes(code)) return;
+  edPushUndo();
+  found.node.placas=found.node.placas||[];
+  found.node.placas.push(code);
+  edCommit();
+}
+function edMovePlaca(code, fromNid, toNid){
+  if(fromNid===toNid) return;
+  const a=edFindNode(fromNid), b=edFindNode(toNid);
+  if(!b) return;
+  edPushUndo();
+  if(a) a.node.placas=(a.node.placas||[]).filter(c=>c!==code);
+  b.node.placas=b.node.placas||[];
+  if(!b.node.placas.includes(code)) b.node.placas.push(code);
+  edCommit();
+}
+function edRemovePlaca(code, nid){
+  const a=edFindNode(nid); if(!a) return;
+  if(!(a.node.placas||[]).includes(code)) return;
+  edPushUndo();
+  a.node.placas=a.node.placas.filter(c=>c!==code);
+  edCommit();
+}
+
+function edFilteredPlacas(){
+  const placed=edPlacedSet();
+  return P.filter(p=>{
+    if(edFilter==="pollo") return /POLLO/i.test(p.diagnosis);
+    if(edFilter==="carn") return /CARNEGIE/i.test(p.diagnosis);
+    if(edFilter==="free") return !placed.has(p.code);
+    if(/^c\d+$/i.test(edFilter)) return String(p.cls)===edFilter.slice(1);
+    return true;
+  });
+}
+
+function edBuildCanvasJSON(){
+  const nodes=[], edges=[];
+  const lines=edState?edState.lines:[];
+  const colorCycle=["5","3","6","4","2"];
+  let yOff=0;
+  lines.forEach((line, li)=>{
+    const col=colorCycle[li%colorCycle.length];
+    const sorted=[...line.nodes].sort((a,b)=>(a.pos||0)-(b.pos||0));
+    const grpId="grp_"+line.id;
+    let maxH=440;
+    const nodeW=310, gapX=60, padX=40;
+    const grpW=Math.max(520, sorted.length*(nodeW+gapX)+padX);
+    let prevNodeId=null;
+    sorted.forEach((n, ni)=>{
+      const nx=padX + ni*(nodeW+gapX);
+      const ny=yOff + 56;
+      const nid="nd_"+n.id;
+      const commonList=edCommonStructs(n.placas);
+      const pls=(n.placas||[]).map(edFindPlaca).filter(Boolean);
+      const text=[
+        `### ${n.label||"Nodo"}`,
+        n.nick?`*${n.nick}*`:"",
+        n.common?`**En común:** ${n.common}`:"",
+        commonList.length?`**Estructuras repetidas:** ${commonList.join(", ")}`:"",
+        pls.length?pls.map(p=>`- \`${p.code}\` ${p.diagnosis}`).join("\n"):"*(Sin placas)*"
+      ].filter(Boolean).join("\n\n");
+      nodes.push({id:nid, type:"text", x:nx, y:ny, width:nodeW, height:250, color:col, text});
+      if(prevNodeId){
+        edges.push({id:edUid("e"), fromNode:prevNodeId, fromSide:"right", toNode:nid, toSide:"left", color:col});
+      }
+      prevNodeId=nid;
+      pls.forEach((p, pi)=>{
+        const pid="pl_"+n.id+"_"+p.code;
+        const py=ny + 280 + pi*145;
+        const elTop=(p.elements||[]).slice(0,8).map(e=>e.name).join(", ");
+        const ptxt=`**${p.code}** (Clase ${p.cls})\n${p.diagnosis}\n*Estructuras:* ${elTop}`;
+        nodes.push({id:pid, type:"text", x:nx+15, y:py, width:280, height:130, text:ptxt});
+        edges.push({id:edUid("e"), fromNode:nid, fromSide:"bottom", toNode:pid, toSide:"top"});
+        maxH=Math.max(maxH, (py - yOff)+160);
+      });
+    });
+    nodes.unshift({id:grpId, type:"group", x:0, y:yOff, width:grpW, height:maxH, color:col, label:line.name||"Línea"});
+    yOff += maxH + 90;
+  });
+  return {nodes, edges};
+}
+
+function edBuildMarkdown(){
+  const out=[`# Línea temporal · ${currentSetMeta().name||"Primer parcial"}`,""];
+  (edState?edState.lines:[]).forEach(l=>{
+    out.push(`## ${l.name||"Línea"}`);
+    const sorted=[...l.nodes].sort((a,b)=>(a.pos||0)-(b.pos||0));
+    sorted.forEach((n,i)=>{
+      const comm=edCommonStructs(n.placas);
+      out.push(`### ${i+1}. ${n.label||"Nodo"}${n.nick?" — "+n.nick:""}`);
+      if(n.common) out.push(`- **Lo que tienen en común:** ${n.common}`);
+      if(comm.length) out.push(`- **Estructuras en común (dataset):** ${comm.join(", ")}`);
+      (n.placas||[]).forEach(c=>{
+        const p=edFindPlaca(c);
+        if(p) out.push(`  - \`${p.code}\` (C${p.cls}): ${p.diagnosis}`);
+      });
+      out.push("");
+    });
+  });
+  return out.join("\n");
+}
+
+function edDownload(filename, text, mime){
+  const blob=new Blob([text], {type:mime||"text/plain;charset=utf-8"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob); a.download=filename;
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+
+function showEditor(){
+  stopTimer(); clearFB(); setPlayLayout(false); G=null;
+  edState = edState || edLoad();
+  edSave();
+  document.body.classList.add("edon");
+  app.classList.add("edwide");
+  renderEditor();
+}
+
+function renderEditor(){
+  if(!edState) edState=edLoad();
+  const placed=edPlacedSet();
+  const trayList=edFilteredPlacas();
+  const clsFilters=classIds().map(c=>`<button class="ed-pill ${edFilter==="c"+c?"on":""}" data-f="c${c}">C${c}</button>`).join("");
+  const linesHtml=edState.lines.map(line=>{
+    const sorted=[...line.nodes].sort((a,b)=>(a.pos||0)-(b.pos||0));
+    const cntPl=line.nodes.reduce((a,n)=>a+(n.placas?n.placas.length:0),0);
+    const nodesHtml=sorted.map((n,idx)=>{
+      const comm=edCommonStructs(n.placas);
+      const pls=(n.placas||[]).map(c=>{
+        const p=edFindPlaca(c); if(!p) return "";
+        return `<div class="ed-placed" data-drag-code="${p.code}" data-from-node="${n.id}">
+          <img src="${edShowCon?p.imgCon:p.imgSin}" alt="${p.code}">
+          <span class="c">${p.code}</span>
+          <button class="rm" data-rm="${p.code}" data-nid="${n.id}" title="Quitar">×</button>
+        </div>`;
+      }).join("");
+      const dropCls = "ed-drop" + (edSelCode?" tap-ready":"");
+      const emptyMsg = edSelCode?`Toca aquí para colocar ${esc(edSelCode)}`:"Arrastra placas aquí";
+      return `<div class="ed-node" data-nid="${n.id}">
+        <div class="ed-nhd">
+          <span class="ed-nhandle" data-move-node="${n.id}" data-lid="${line.id}" title="Arrastra horizontalmente para reordenar">⠿</span>
+          <input class="ed-nlabel" data-nfield="label" data-nid="${n.id}" value="${esc(n.label||"")}" placeholder="Etapa / edad...">
+          <button class="ed-nact" data-nshift="-1" data-nid="${n.id}" title="Mover a la izquierda">◀</button>
+          <button class="ed-nact" data-nshift="1" data-nid="${n.id}" title="Mover a la derecha">▶</button>
+          <button class="ed-nact del" data-ndel="${n.id}" data-lid="${line.id}" title="Eliminar nodo">✕</button>
+        </div>
+        <input class="ed-nnick" data-nfield="nick" data-nid="${n.id}" value="${esc(n.nick||"")}" placeholder="Apodo / forma...">
+        <div class="${dropCls}" data-drop-node="${n.id}">${pls || `<div class="ed-empty-hint">${emptyMsg}</div>`}</div>
+        ${comm.length?`<div class="ed-common" title="Estructuras en común entre placas de este nodo">${comm.slice(0,5).map(x=>`<span>${esc(x)}</span>`).join("")}</div>`:""}
+        <textarea class="ed-ncommon" data-nfield="common" data-nid="${n.id}" placeholder="Lo que tienen en común...">${esc(n.common||"")}</textarea>
+      </div>`;
+    }).join("");
+    return `<div class="ed-line" data-lid="${line.id}">
+      <div class="ed-lhead">
+        <input class="ed-ltitle" data-ltitle="${line.id}" value="${esc(line.name||"")}" placeholder="Nombre de la línea...">
+        <span style="font-size:11px;color:var(--dim);font-weight:800">${sorted.length} nodos · ${cntPl} placas</span>
+        <button class="ed-btn" data-addnode="${line.id}">+ Nodo</button>
+        ${edState.lines.length>1?`<button class="ed-btn" data-delline="${line.id}" style="color:#ff86ad">✕ Línea</button>`:""}
+      </div>
+      <div class="ed-rail">
+        <div class="ed-axis" data-axis="${line.id}" title="Clic en cualquier punto para crear un nodo ahí">
+          <span>◀ Más temprano</span><span>Clic para + nodo · Arrastra nodos con ⠿</span><span>Más maduro ▶</span>
+        </div>
+        <div class="ed-nodes" data-track="${line.id}">${nodesHtml || `<div style="color:var(--dim);font-size:12px;padding:10px">Sin nodos aún. Clic en "+ Nodo" o en la barra superior.</div>`}</div>
+      </div>
+    </div>`;
+  }).join("");
+
+  app.innerHTML=`
+    <div id="screen-editor" style="display:flex;flex-direction:column;min-height:0;flex:1">
+      <div class="ed-bar">
+        <button class="ib" id="ed-back" style="width:34px;height:34px">◀</button>
+        <h2>✏️ Editor de línea</h2>
+        <button class="ed-btn" id="ed-prop">✨ Cargar propuesta</button>
+        <button class="ed-btn" id="ed-empty">🧹 Empezar vacío</button>
+        <button class="ed-btn" id="ed-undo" ${edUndo.length?"":"disabled"}>↩ Deshacer</button>
+        <button class="ed-btn pri" id="ed-quiz">🎯 Quiz con mi línea</button>
+        <button class="ed-btn vio" id="ed-canvas">Obsidian .canvas</button>
+        <button class="ed-btn" id="ed-md">Markdown</button>
+        <button class="ed-btn" id="ed-copy">📋 Copiar resumen</button>
+        <button class="ed-btn" id="ed-exp">JSON ↓</button>
+        <button class="ed-btn" id="ed-imp">JSON ↑</button>
+        <input type="file" id="ed-file" accept=".json,application/json" style="display:none">
+      </div>
+      <div class="ed-work">
+        <aside class="ed-tray" id="ed-tray">
+          <div class="ed-tctrl">
+            <button class="ed-pill ${!edShowCon?"on":""}" id="ed-sin">Silenciada</button>
+            <button class="ed-pill ${edShowCon?"on":""}" id="ed-con">Con nombres</button>
+            <span style="margin-left:auto;font-size:11px;color:var(--dim);font-weight:800">${placed.size}/${P.length}</span>
+          </div>
+          <div class="ed-tctrl">
+            <button class="ed-pill ${edFilter==="all"?"on":""}" data-f="all">Todas (${P.length})</button>
+            <button class="ed-pill ${edFilter==="pollo"?"on":""}" data-f="pollo">Pollo</button>
+            <button class="ed-pill ${edFilter==="carn"?"on":""}" data-f="carn">Carnegie</button>
+            <button class="ed-pill ${edFilter==="free"?"on":""}" data-f="free">Sin ubicar</button>
+            ${clsFilters}
+          </div>
+          ${edSelCode?`<div style="font-size:11px;color:var(--yel);font-weight:800;display:flex;justify-content:space-between;align-items:center;background:#ffd16614;border:1px solid #ffd16644;border-radius:8px;padding:4px 7px"><span>Seleccionada: ${esc(edSelCode)} (toca un nodo)</span><button class="ed-btn" id="ed-unsel" style="padding:1px 6px;font-size:10px">✕</button></div>`:""}
+          <div class="ed-tgrid">${trayList.map(p=>{
+            const isUsed=placed.has(p.code), isSel=edSelCode===p.code;
+            return `<div class="ed-titem ${isUsed?"used":""} ${isSel?"sel":""}" data-drag-code="${p.code}">
+              <img src="${edShowCon?p.imgCon:p.imgSin}" alt="${p.code}">
+              <span class="c">${p.code}</span>
+              ${isUsed?`<span class="u">✓</span>`:""}
+            </div>`;
+          }).join("")}</div>
+        </aside>
+        <div class="ed-board" id="ed-board">
+          ${linesHtml}
+          <div><button class="ed-btn" id="ed-addline">+ Añadir otra línea</button></div>
+        </div>
+      </div>
+    </div>`;
+
+  // Wire toolbar
+  $("ed-back").onclick=()=>{ edHideTip(); menu(); };
+  $("ed-prop").onclick=()=>{ edPushUndo(); edState=edMakeProposal(); edSelCode=null; edCommit(); edToast("Propuesta cargada"); };
+  $("ed-empty").onclick=()=>{ edPushUndo(); edState=edMakeEmpty(); edSelCode=null; edCommit(); edToast("Tablero vacío listo"); };
+  $("ed-undo").onclick=()=>{ if(!edUndo.length) return; edState=edUndo.pop(); edCommit(); edToast("Deshecho"); };
+  $("ed-quiz").onclick=()=>startCustomLineaQuiz();
+  $("ed-canvas").onclick=()=>{ edDownload(`linea-${currentSetId}.canvas`, JSON.stringify(edBuildCanvasJSON(), null, 2), "application/json"); edToast("Descargado .canvas para Obsidian"); };
+  $("ed-md").onclick=()=>{ edDownload(`linea-${currentSetId}.md`, edBuildMarkdown(), "text/markdown"); edToast("Descargado Markdown"); };
+  $("ed-exp").onclick=()=>{ edDownload(`linea-${currentSetId}.json`, JSON.stringify(edState, null, 2), "application/json"); edToast("Descargado JSON"); };
+  $("ed-imp").onclick=()=>$("ed-file").click();
+  $("ed-file").onchange=ev=>{
+    const file=ev.target.files && ev.target.files[0]; if(!file) return;
+    const rd=new FileReader();
+    rd.onload=()=>{
+      try{
+        const d=JSON.parse(rd.result);
+        if(!d || !Array.isArray(d.lines)) throw new Error("Formato inválido");
+        edPushUndo(); edState=d; edCommit(); edToast("Línea importada");
+      }catch(e){ alert("No pude leer ese JSON: "+e.message); }
+    };
+    rd.readAsText(file);
+  };
+  $("ed-copy").onclick=()=>{
+    const txt=edBuildMarkdown();
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(()=>edToast("Resumen copiado al portapapeles")).catch(()=>edToast("Resumen listo (usa Markdown ↓)"));
+    } else { edDownload(`linea-${currentSetId}.md`, txt, "text/markdown"); }
+  };
+  $("ed-sin").onclick=()=>{ edShowCon=false; renderEditor(); };
+  $("ed-con").onclick=()=>{ edShowCon=true; renderEditor(); };
+  if($("ed-unsel")) $("ed-unsel").onclick=()=>{ edSelCode=null; edHideTip(); renderEditor(); };
+  app.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{ edFilter=b.dataset.f; renderEditor(); });
+
+  $("ed-addline").onclick=()=>{
+    edPushUndo();
+    edState.lines.push({id:edUid("l"), name:"Nueva línea "+(edState.lines.length+1), nodes:[{id:edUid("n"), pos:30, label:"Etapa 1", nick:"", common:"", placas:[]}]});
+    edCommit();
+  };
+  app.querySelectorAll("[data-ltitle]").forEach(inp=>{
+    inp.onchange=()=>{
+      const l=edState.lines.find(x=>x.id===inp.dataset.ltitle);
+      if(l){ edPushUndo(); l.name=inp.value; edSave(); }
+    };
+  });
+  app.querySelectorAll("[data-delline]").forEach(b=>{
+    b.onclick=()=>{
+      if(edState.lines.length<=1) return;
+      edPushUndo();
+      edState.lines=edState.lines.filter(x=>x.id!==b.dataset.delline);
+      edCommit();
+    };
+  });
+  app.querySelectorAll("[data-addnode]").forEach(b=>{
+    b.onclick=()=>{
+      const l=edState.lines.find(x=>x.id===b.dataset.addnode); if(!l) return;
+      edPushUndo();
+      const maxPos=l.nodes.reduce((m,n)=>Math.max(m, n.pos||0), 0);
+      l.nodes.push({id:edUid("n"), pos:Math.min(100, maxPos+15), label:"Nuevo nodo", nick:"", common:"", placas:[]});
+      edCommit();
+    };
+  });
+  app.querySelectorAll("[data-axis]").forEach(ax=>{
+    ax.onclick=ev=>{
+      const l=edState.lines.find(x=>x.id===ax.dataset.axis); if(!l) return;
+      const r=ax.getBoundingClientRect();
+      const pos=Math.max(0, Math.min(100, Math.round((ev.clientX-r.left)*100/Math.max(1,r.width))));
+      edPushUndo();
+      l.nodes.push({id:edUid("n"), pos, label:"Nodo "+pos+"%", nick:"", common:"", placas:[]});
+      edCommit();
+    };
+  });
+  app.querySelectorAll("[data-ndel]").forEach(b=>{
+    b.onclick=()=>{
+      const l=edState.lines.find(x=>x.id===b.dataset.lid); if(!l) return;
+      edPushUndo();
+      l.nodes=l.nodes.filter(n=>n.id!==b.dataset.ndel);
+      edCommit();
+    };
+  });
+  app.querySelectorAll("[data-nshift]").forEach(b=>{
+    b.onclick=()=>{
+      const f=edFindNode(b.dataset.nid); if(!f) return;
+      const sorted=[...f.line.nodes].sort((a,b)=>(a.pos||0)-(b.pos||0));
+      const idx=sorted.indexOf(f.node), dir=Number(b.dataset.nshift);
+      const nb=sorted[idx+dir];
+      edPushUndo();
+      if(nb){ const t=f.node.pos; f.node.pos=nb.pos; nb.pos=t; }
+      else f.node.pos=Math.max(0, Math.min(100, (f.node.pos||0)+dir*10));
+      edCommit();
+    };
+  });
+  app.querySelectorAll("[data-nfield]").forEach(inp=>{
+    inp.onchange=()=>{
+      const f=edFindNode(inp.dataset.nid); if(!f) return;
+      edPushUndo();
+      f.node[inp.dataset.nfield]=inp.value;
+      edSave();
+    };
+  });
+  app.querySelectorAll("[data-rm]").forEach(b=>{
+    b.onclick=ev=>{ ev.stopPropagation(); edRemovePlaca(b.dataset.rm, b.dataset.nid); };
+  });
+  app.querySelectorAll("[data-drop-node]").forEach(dz=>{
+    dz.onclick=ev=>{
+      if(!edSelCode || ev.target.closest(".ed-placed")) return;
+      const code=edSelCode;
+      edSelCode=null; edHideTip();
+      edAddPlacaToNode(code, dz.dataset.dropNode);
+    };
+  });
+
+  // Hover tooltip (desktop mouse) + Pointer drag (tray/placed placas & node reordering)
+  app.querySelectorAll("[data-drag-code]").forEach(el=>{
+    el.addEventListener("pointerenter", ev=>{
+      if(ev.pointerType==="mouse" && !edDrag) edShowTip(el.dataset.dragCode, ev.clientX, ev.clientY, false);
+    });
+    el.addEventListener("pointermove", ev=>{
+      if(ev.pointerType==="mouse" && !edDrag && edHoverCode===el.dataset.dragCode) edShowTip(el.dataset.dragCode, ev.clientX, ev.clientY, false);
+    });
+    el.addEventListener("pointerleave", ev=>{
+      if(ev.pointerType==="mouse" && !edMobTip) edHideTip();
+    });
+    el.addEventListener("pointerdown", ev=>{
+      if(ev.button!==0 && ev.pointerType==="mouse") return;
+      if(ev.target.closest(".rm")) return;
+      const code=el.dataset.dragCode, fromNode=el.dataset.fromNode||null;
+      const startX=ev.clientX, startY=ev.clientY;
+      let active=false, ghost=null, lastOver=null;
+      const p=edFindPlaca(code);
+      const onMove=mv=>{
+        const dx=mv.clientX-startX, dy=mv.clientY-startY;
+        if(!active && dx*dx+dy*dy>49){
+          active=true; edDrag=true; edHideTip();
+          ghost=document.createElement("div"); ghost.className="ed-ghost";
+          ghost.innerHTML=`<img src="${p?(edShowCon?p.imgCon:p.imgSin):""}"><span>${esc(code)}</span>`;
+          document.body.appendChild(ghost);
+        }
+        if(!active) return;
+        ghost.style.left=mv.clientX+"px"; ghost.style.top=mv.clientY+"px";
+        if(lastOver){ lastOver.classList.remove("drop-over"); lastOver=null; }
+        const under=document.elementsFromPoint(mv.clientX, mv.clientY);
+        const dz=under.find(x=>x.dataset && x.dataset.dropNode);
+        const tr=fromNode?under.find(x=>x.id==="ed-tray"):null;
+        lastOver=dz||tr||null;
+        if(lastOver) lastOver.classList.add("drop-over");
+      };
+      const onUp=up=>{
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerup", onUp);
+        window.removeEventListener("pointercancel", onUp);
+        if(lastOver) lastOver.classList.remove("drop-over");
+        if(ghost) ghost.remove();
+        edDrag=null;
+        if(active){
+          const under=document.elementsFromPoint(up.clientX, up.clientY);
+          const dz=under.find(x=>x.dataset && x.dataset.dropNode);
+          const tr=fromNode?under.find(x=>x.id==="ed-tray"):null;
+          if(dz){
+            if(fromNode) edMovePlaca(code, fromNode, dz.dataset.dropNode);
+            else edAddPlacaToNode(code, dz.dataset.dropNode);
+          } else if(tr && fromNode){
+            edRemovePlaca(code, fromNode);
+          }
+          return;
+        }
+        // Tap / click
+        if(fromNode){
+          if(up.pointerType==="touch"){ edShowTip(code, up.clientX, up.clientY, true); }
+          else edOpenLightboxCode(code);
+        } else {
+          edSelCode = (edSelCode===code)?null:code;
+          if(up.pointerType==="touch" && edSelCode){ renderEditor(); edShowTip(code, up.clientX, up.clientY, true); }
+          else renderEditor();
+        }
+      };
+      window.addEventListener("pointermove", onMove);
+      window.addEventListener("pointerup", onUp);
+      window.addEventListener("pointercancel", onUp);
+    });
+  });
+
+  // Drag node horizontally along line
+  app.querySelectorAll("[data-move-node]").forEach(h=>{
+    h.addEventListener("pointerdown", ev=>{
+      ev.preventDefault();
+      const nid=h.dataset.moveNode, lid=h.dataset.lid;
+      const track=app.querySelector(`[data-track="${lid}"]`);
+      const found=edFindNode(nid);
+      if(!track || !found) return;
+      const startX=ev.clientX, trRect=track.getBoundingClientRect();
+      let moved=false;
+      const onMove=mv=>{
+        if(Math.abs(mv.clientX-startX)>6) moved=true;
+      };
+      const onUp=up=>{
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerup", onUp);
+        if(!moved) return;
+        const pct=Math.max(0, Math.min(100, Math.round((up.clientX-trRect.left)*100/Math.max(1,trRect.width))));
+        edPushUndo();
+        found.node.pos=pct;
+        edCommit();
+      };
+      window.addEventListener("pointermove", onMove);
+      window.addEventListener("pointerup", onUp);
+    });
+  });
+}
+
+function startCustomLineaQuiz(){
+  edState = edState || edLoad();
+  edHideTip();
+  const nonEmpty=[];
+  edState.lines.forEach(l=>{
+    [...l.nodes].sort((a,b)=>(a.pos||0)-(b.pos||0)).forEach(n=>{
+      if(n.placas && n.placas.length) nonEmpty.push({line:l, node:n});
+    });
+  });
+  if(nonEmpty.length<2){
+    alert("Necesitas al menos 2 nodos con placas puestas para hacer el quiz con tu línea.");
+    return;
+  }
+  const items=[];
+  nonEmpty.forEach(entry=>{
+    entry.node.placas.forEach(c=>{
+      const p=edFindPlaca(c);
+      if(p) items.push({placa:p, entry});
+    });
+  });
+  const qs=shuffle(items).map(it=>{
+    const sameLine=nonEmpty.filter(e=>e!==it.entry && e.line===it.entry.line);
+    const otherLine=nonEmpty.filter(e=>e!==it.entry && e.line!==it.entry.line);
+    const poolOpts=shuffle(sameLine).concat(shuffle(otherLine)).slice(0,8);
+    const opts=[it.entry, ...poolOpts];
+    opts.sort((a,b)=>{
+      const li=edState.lines.indexOf(a.line)-edState.lines.indexOf(b.line);
+      return li!==0?li:(a.node.pos||0)-(b.node.pos||0);
+    });
+    return { kind:"customlinea", placa:it.placa, entry:it.entry, opts, prompt:"Según TU línea: ¿en qué nodo va esta placa?" };
+  });
+  G={mode:"customlinea", qs, i:0, ok:0, bad:0, t0:Date.now(), locked:false};
+  beep("go"); showCustomLineaQ();
+}
+
+function showCustomLineaQ(){
+  stopTimer(); clearFB(); scrollTop();
+  if(!G || G.mode!=="customlinea") return;
+  if(G.i>=G.qs.length){
+    setPlayLayout(false);
+    const t=Math.round((Date.now()-G.t0)/1000);
+    const acc=G.qs.length?Math.round(G.ok*100/G.qs.length):0;
+    app.innerHTML=`<div class="results" id="screen-results">
+      <div class="k" style="color:var(--cyan);letter-spacing:.16em;font-weight:800;font-size:12px">QUIZ CON MI LÍNEA</div>
+      <h2>${acc>=90?"TU LÍNEA FUNCIONA":acc>=75?"BIEN AFINADO":"REVISA TUS NODOS"}</h2>
+      <div class="bigscore">${acc}%</div>
+      <p>${G.ok}/${G.qs.length} placas · ${t}s</p>
+      <button class="go" id="again">Otra ronda</button>
+      <button class="go alt" id="back-ed">Volver al editor</button>
+      <button class="go alt" id="home">Menú principal</button>
+    </div>`;
+    $("again").onclick=()=>startCustomLineaQuiz();
+    $("back-ed").onclick=()=>showEditor();
+    $("home").onclick=menu;
+    return;
+  }
+  const q=G.qs[G.i], p=q.placa;
+  G.locked=false;
+  setPlayLayout(true);
+  const gridCls=q.opts.length>5?" lgrid":"";
+  app.innerHTML=playWrap({
+    hud:`<div class="hud" id="screen-cl-drill">
+      <button class="ib" id="back" style="width:36px;height:36px">◀</button>
+      <div>Quiz con mi línea</div><div>${G.i+1}/${G.qs.length}</div>
+      <div class="sp">${G.ok}✓ ${G.bad?G.bad+"✗":""}</div>
+    </div>`,
+    prompt:`<div class="prompt">${esc(q.prompt)}</div>`,
+    img:placaHTML({id:"iw", tag:`Clase ${p.cls} · ${p.code}`, src:p.imgSin, alt:"Placa "+p.code, on:true}),
+    body:`<div class="opts${gridCls}" id="opts">${q.opts.map((e,idx)=>
+      `<button class="opt" data-nid="${e.node.id}" data-v="${idx}">${esc(e.node.label||"Nodo")}<small>${esc(e.node.nick||e.line.name)}</small></button>`
+    ).join("")}</div>`
+  });
+  $("back").onclick=()=>showEditor();
+  bindPlacaImg(q, false); wirePlacaClicks();
+  app.querySelectorAll("#opts .opt").forEach(b=>{
+    b.onclick=()=>{
+      if(G.locked) return;
+      G.locked=true;
+      const ok=b.dataset.nid===q.entry.node.id;
+      if(ok){ G.ok++; b.classList.add("ok"); beep("ok"); vibe(12); }
+      else {
+        G.bad++; b.classList.add("bad"); beep("bad"); vibe([30,30,30]);
+        const gb=app.querySelector(`#opts .opt[data-nid="${q.entry.node.id}"]`);
+        if(gb) gb.classList.add("ok");
+      }
+      app.querySelectorAll("#opts .opt").forEach(x=>x.classList.add("lock"));
+      const fb=document.createElement("div");
+      fb.className="fb "+(ok?"good":"nope"); fb.id="screen-fb";
+      fb.innerHTML=`<h3>${ok?"¡Exacto!":"Va en: "+esc(q.entry.node.label||"Nodo")}</h3>
+        <div class="dx">${esc(p.diagnosis)}</div>
+        ${q.entry.node.common?`<div class="els">${esc(q.entry.node.common)}</div>`:""}
+        <button class="go" id="btn-next">${G.i+1<G.qs.length?"Siguiente":"Ver resultado"}</button>`;
+      $("playbody").appendChild(fb);
+      pinSideActions(); bindPlacaImg(q, true);
+      $("btn-next").onclick=()=>{ G.i++; showCustomLineaQ(); };
+    };
+  });
 }
 
 function showMap(){
@@ -2506,7 +3312,7 @@ function auditQuestions(nRandom){
 }
 
 window.FB={ start, menu, showMap, showSettings, showLearnPick, startLearn,
-  showExamSetup, startExam, showExamQ, examReveal, showQ, showLearnQ, showLinea, startLineaDrill, showLineaQ, pickExamPlacas, examTarget, examProgressOn, setExamKind, switchSet, openLightbox, closeLightbox, auditQuestions, canon, sameAns, pickOptions, makeDx, makePart, makeSt, makeZone, makeAbsent,
+  showExamSetup, startExam, showExamQ, examReveal, showQ, showLearnQ, showLinea, startLineaDrill, showLineaQ, showEditor, startCustomLineaQuiz, edBuildCanvasJSON, edBuildMarkdown, edShowTip, edHideTip, pickExamPlacas, examTarget, examProgressOn, setExamKind, switchSet, openLightbox, closeLightbox, auditQuestions, canon, sameAns, pickOptions, makeDx, makePart, makeSt, makeZone, makeAbsent,
   get state(){return G;}, getS:()=>S, setS(p){ Object.assign(S,p); save(); },
   unlockAll(){ S.free=true; save(); } };
 bindDataset();
