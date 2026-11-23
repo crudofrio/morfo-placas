@@ -166,6 +166,82 @@ input[type=range]{width:100%;height:32px;accent-color:#00e6c3}
 .row > .chip.wide{flex:1 0 100%;text-align:center}
 .dualimg{display:grid;gap:8px;margin-bottom:8px}
 
+
+
+/* ---- desktop play layout (phone unchanged below 768px) ---- */
+.imgnest{position:relative;display:block;width:100%}
+.imgw .zoombtn{position:absolute;right:8px;top:8px;z-index:4;width:36px;height:36px;border-radius:10px;
+  border:1px solid #ffffff33;background:#07060fcc;color:#fff;font-size:18px;cursor:zoom-in;display:none}
+.desk-hint{display:none;font-size:11px;color:#6f6a8d;text-align:center;margin-top:auto;padding-top:8px;line-height:1.35}
+.img-tabs{display:none;gap:6px;margin:0 0 8px}
+.img-tabs button{flex:1;border:1px solid var(--line);background:#1a1633;border-radius:10px;padding:8px;font-weight:800;min-height:40px}
+.img-tabs button.on{border-color:var(--cyan);color:var(--cyan);background:#123}
+#lightbox{position:fixed;inset:0;z-index:80;background:#000e;display:none;touch-action:none}
+#lightbox.on{display:block}
+#lightbox .lb-stage{position:absolute;inset:0;overflow:hidden;cursor:grab}
+#lightbox .lb-stage.drag{cursor:grabbing}
+#lightbox .imgnest{position:absolute;left:50%;top:50%;width:max-content;max-width:96vw;
+  transform:translate(-50%,-50%) scale(var(--z,1)) translate(var(--x,0px),var(--y,0px));
+  transform-origin:center center}
+#lightbox .imgnest img{display:block;width:auto;height:auto;max-width:96vw;max-height:96vh;object-fit:contain;user-select:none;-webkit-user-drag:none}
+#lightbox .mark{pointer-events:none}
+#lightbox .lb-ui{position:absolute;right:12px;top:12px;display:flex;gap:8px;z-index:2}
+#lightbox .lb-ui button{width:44px;height:44px;border-radius:12px;border:1px solid #ffffff33;background:#07060fcc;color:#fff;font-size:20px;font-weight:800}
+#lightbox .lb-help{position:absolute;left:12px;bottom:12px;color:#ffffffaa;font-size:12px;font-weight:700}
+.grow.focus{outline:2px solid var(--cyan);outline-offset:1px}
+@media (min-width:768px){
+  #app.wide{max-width:1100px;width:100%}
+  body.playon{padding:8px 12px;overflow:hidden;height:100dvh}
+  body.playon #app.wide{height:100%}
+  .playwrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,360px);grid-template-rows:auto minmax(0,1fr);
+    grid-template-areas:"img head" "img side";gap:10px 16px;height:calc(100dvh - 16px);min-height:0;align-items:stretch}
+  .playwrap>.stick{display:contents;position:static;margin:0;padding:0;box-shadow:none;background:transparent;top:auto}
+  .stage-head{grid-area:head;min-width:0;background:linear-gradient(180deg,#14102acc,#0c0a18cc);border:1px solid var(--line);
+    border-radius:16px 16px 0 0;padding:10px 12px 8px;border-bottom:none}
+  .stage-img{grid-area:img;container-type:size;min-width:0;min-height:0;height:100%;
+    display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .stage-side{grid-area:side;min-width:0;min-height:0;overflow:hidden;display:flex;flex-direction:column;
+    background:linear-gradient(180deg,#0c0a18cc,#0c0a18cc);border:1px solid var(--line);border-top:none;
+    border-radius:0 0 16px 16px;padding:8px 12px 10px}
+  .stage-side #playbody{flex:1 1 auto;min-height:0;overflow:auto}
+  .stage-head .hud{margin-bottom:8px}
+  .stage-img .dualimg{flex:1;min-height:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column}
+  .stage-img>.imgw,.stage-img .dualimg .imgw{flex:0 0 auto;width:auto;max-width:100%;max-height:100%;
+    height:auto;min-height:0;min-width:0;margin:0;cursor:zoom-in}
+  .stage-img .imgw .imgnest{position:relative;width:auto;height:auto;max-width:none;container-type:inline-size}
+  .stage-img .imgw img.placa{width:auto;height:auto;min-height:0;object-fit:fill;display:block}
+  .stage-img .imgw .zoombtn{display:grid;place-items:center}
+  .imgw .mark{width:clamp(16px, 3.2cqi, 32px);height:auto;aspect-ratio:1;min-height:16px;max-height:32px;
+    font-size:clamp(9px, 1.6cqi, 15px);border-width:2px}
+  .desk-hint{display:block}
+  .img-tabs{display:flex;width:100%;flex:0 0 auto}
+  .playwrap.grade .stage-img{justify-content:flex-start}
+  .playwrap.grade .dualimg .imgw{display:none;max-height:100%}
+  .playwrap.grade .dualimg .imgw.on{display:block}
+  .opts .opt{position:relative;padding-left:36px}
+  .opts .opt:nth-child(1)::before,.opts .opt:nth-child(2)::before,.opts .opt:nth-child(3)::before,.opts .opt:nth-child(4)::before,
+  .packrow .chips .tchip:nth-child(1)::before,.packrow .chips .tchip:nth-child(2)::before,.packrow .chips .tchip:nth-child(3)::before,.packrow .chips .tchip:nth-child(4)::before,
+  #opts.chips .tchip:nth-child(1)::before,#opts.chips .tchip:nth-child(2)::before,#opts.chips .tchip:nth-child(3)::before,#opts.chips .tchip:nth-child(4)::before{
+    position:absolute;left:10px;top:50%;transform:translateY(-50%);width:18px;height:18px;border-radius:5px;
+    border:1px solid var(--line);display:grid;place-items:center;font-size:10px;font-weight:800;color:var(--dim);background:#0004}
+  .opts .opt:nth-child(1)::before,.packrow .chips .tchip:nth-child(1)::before,#opts.chips .tchip:nth-child(1)::before{content:"1"}
+  .opts .opt:nth-child(2)::before,.packrow .chips .tchip:nth-child(2)::before,#opts.chips .tchip:nth-child(2)::before{content:"2"}
+  .opts .opt:nth-child(3)::before,.packrow .chips .tchip:nth-child(3)::before,#opts.chips .tchip:nth-child(3)::before{content:"3"}
+  .opts .opt:nth-child(4)::before,.packrow .chips .tchip:nth-child(4)::before,#opts.chips .tchip:nth-child(4)::before{content:"4"}
+  .packrow .tchip,#opts.chips .tchip{position:relative;padding-left:32px}
+  .stage-side .go.pinned{flex:0 0 auto;margin-bottom:0;margin-top:8px}
+  .stage-side .desk-hint{flex:0 0 auto}
+  @media (max-height:640px){ .desk-hint{display:none} }
+}
+@media (min-width:1100px){
+  #app.wide{max-width:1400px}
+  .playwrap{grid-template-columns:minmax(0,1fr) minmax(340px,420px);gap:12px 20px;height:calc(100dvh - 16px)}
+}
+@media (min-width:1100px) and (min-height:900px){
+  .playwrap.grade .img-tabs{display:none}
+  .playwrap.grade .dualimg{flex:1;display:grid !important;grid-template-columns:1fr;grid-template-rows:1fr 1fr;gap:10px;min-height:0;width:100%;height:100%}
+  .playwrap.grade .dualimg .imgw{display:flex !important;max-height:100%;height:100%;max-width:100%;align-items:center;justify-content:center}
+}
 </style>
 </head>
 <body>
@@ -248,7 +324,9 @@ function vibe(ms){ try{ if(!S.mute && navigator.vibrate) navigator.vibrate(ms);}
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 function uniq(a){ return [...new Set(a)]; }
 function esc(s){ return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])); }
-function stopTimer(){ if(raf){cancelAnimationFrame(raf);raf=null;} }
+let countGen=0;
+function stopCountdown(){ countGen++; }
+function stopTimer(){ if(raf){cancelAnimationFrame(raf);raf=null;} stopCountdown(); }
 function clearFB(){ if(fbTimer){clearTimeout(fbTimer);fbTimer=null;} app.onclick=null; }
 function pool(cls){ return (!cls||cls==="all") ? P.slice() : P.filter(p=>p.cls===String(cls)); }
 function prog(cls){ return S.progress[cls] || (S.progress[cls]={}); }
@@ -367,7 +445,7 @@ function cheatOn(cls){
 
 /* ---------- screens ---------- */
 function menu(){
-  stopTimer(); clearFB(); G=null;
+  stopTimer(); clearFB(); setPlayLayout(false); G=null;
   const n = nextLevel(selCls);
   const counts=["2","3","4","5","6"].map(c=>{
     const k=(META.classes&&META.classes[c]&&META.classes[c].count)||pool(c).length;
@@ -425,7 +503,7 @@ function menu(){
 }
 
 function showSettings(){
-  stopTimer(); clearFB();
+  stopTimer(); clearFB(); setPlayLayout(false);
   const tm=S.timeMode||"level";
   const adv=S.advance||"manual";
   const pack=S.pack||1;
@@ -599,7 +677,7 @@ function pickSpread(p, n){
 }
 
 function showExamSetup(){
-  stopTimer(); clearFB(); G=null;
+  stopTimer(); clearFB(); setPlayLayout(false); G=null;
   const cls=S.examCls||"all";
   const list=pool(cls).filter(p=>pickSpread(p,4));
   const maxN=Math.max(1, list.length);
@@ -693,19 +771,307 @@ function startExam(opts){
   }).filter(q=>q.targets&&q.targets.length===4);
   if(!qs.length){ alert("No hay placas con 4 estructuras bien ubicadas."); return; }
   G={mode:"exam", cls, qs, i:0, t0:Date.now(), log:[], limit:examTarget(), prog:examProgressOn(), repeat:!!opts.only};
-  beep("go"); examCountdown();
+  beep("go");
+  if(opts.skipCount) showExamQ();
+  else examCountdown();
 }
 
 function examCountdown(){
+  const gen=++countGen;
   let n=3;
   const tick=()=>{
+    if(gen!==countGen) return;
     app.innerHTML=`<div class="count" id="screen-count"><div class="k" style="color:var(--cyan);letter-spacing:.16em;font-weight:800;font-size:12px">EXAMEN SIMULADO · ${G.cls==="all"?"TODO EL PARCIAL":"CLASE "+G.cls}</div><b>${n}</b><p style="color:var(--dim)">${G.qs.length} placas · ${G.limit} s c/u · lápiz y papel. Suéltalo.</p></div>`;
     beep("go"); vibe(18);
     if(n>1){ n--; setTimeout(tick,500); }
-    else setTimeout(()=>{beep("combo");showExamQ();},500);
+    else setTimeout(()=>{ if(gen!==countGen) return; beep("combo");showExamQ();},500);
   };
   tick();
 }
+
+
+function setPlayLayout(on){
+  document.body.classList.toggle("playon", !!on);
+  app.classList.toggle("wide", !!on);
+  if(!on){ closeLightbox(); stopFitObs(); }
+}
+function placaHTML(opts){
+  const id=opts.id||"iw", tag=opts.tag||"", src=opts.src||"", alt=opts.alt||"Placa";
+  const on=opts.on? " on":"";
+  return `<div class="imgw${on}" id="${id}" role="button" tabindex="0" title="Clic o F para ampliar">
+    <div class="imgnest">
+      <img class="placa" alt="${esc(alt)}" src="${src}" decoding="async" fetchpriority="high">
+      <span class="tag">${tag}</span>
+      <button type="button" class="zoombtn" aria-label="Ampliar placa">⤢</button>
+    </div>
+  </div>`;
+}
+function playWrap(parts){
+  return `<div class="playwrap${parts.grade?" grade":""}" id="playwrap">
+    <div class="stick" id="stick">
+      <div class="stage-head">
+        ${parts.hud||""}
+        ${parts.bar||""}
+        ${parts.sheet||""}
+        ${parts.prompt||""}
+        ${parts.sub||""}
+      </div>
+      <div class="stage-img">${parts.img||""}</div>
+    </div>
+    <div class="stage-side">
+      <div id="playbody">${parts.body||""}</div>
+      <p class="desk-hint">Atajos: 1–4 opciones · Enter/Espacio Listo · Y/V o N/X para calificar · F ampliar · Esc cierra</p>
+    </div>
+  </div>`;
+}
+function pinSideActions(){
+  if(!window.matchMedia("(min-width:768px)").matches) return;
+  const side=document.querySelector(".stage-side");
+  if(!side) return;
+  const btn=side.querySelector("#playbody .go, #playbody #btn-next, #playbody #okz");
+  if(!btn) return;
+  btn.classList.add("pinned");
+  const hint=side.querySelector(".desk-hint");
+  side.insertBefore(btn, hint||null);
+}
+function wirePlacaClicks(){
+  startFitObs();
+  pinSideActions();
+  document.querySelectorAll(".imgw").forEach(box=>{
+    if(box.dataset.zoomBound) return;
+    box.dataset.zoomBound="1";
+    const open=ev=>{
+      if(ev && ev.target && (ev.target.closest("button.gbtn") || ev.target.closest(".img-err button"))) return;
+      ev && ev.preventDefault();
+      openLightbox(box);
+    };
+    box.addEventListener("click", ev=>{
+      if(ev.target.closest(".zoombtn") || ev.target.closest("img.placa") || ev.target===box || ev.target.classList.contains("imgnest") || ev.target.classList.contains("tag") || ev.target.classList.contains("mark")) open(ev);
+    });
+    const zb=box.querySelector(".zoombtn");
+    if(zb) zb.addEventListener("click", ev=>{ ev.stopPropagation(); open(ev); });
+  });
+  document.querySelectorAll(".img-tabs button").forEach(b=>{
+    b.onclick=()=>{
+      document.querySelectorAll(".img-tabs button").forEach(x=>x.classList.toggle("on", x===b));
+      const show=b.dataset.show;
+      const a=$("iw"), c=$("iw2");
+      if(a) a.classList.toggle("on", show!=="con");
+      if(c) c.classList.toggle("on", show==="con");
+    };
+  });
+}
+
+
+let fitObs=null;
+function stopFitObs(){ if(fitObs){ fitObs.disconnect(); fitObs=null; } }
+function clearFit(el){
+  if(!el) return;
+  el.style.width=""; el.style.height=""; el.style.maxWidth=""; el.style.maxHeight="";
+}
+function fitPlacas(){
+  const desk=window.matchMedia("(min-width:768px)").matches;
+  document.querySelectorAll(".stage-img img.placa").forEach(img=>{
+    const nest=img.closest(".imgnest");
+    const box=img.closest(".imgw");
+    if(!desk){ clearFit(img); clearFit(nest); clearFit(box); return; }
+    const stage=img.closest(".stage-img");
+    if(!stage) return;
+    const dual=img.closest(".dualimg");
+    const dualGrid=dual && getComputedStyle(dual).display==="grid";
+    let availW=stage.clientWidth, availH=stage.clientHeight;
+    if(dualGrid){
+      const cs=getComputedStyle(dual);
+      const cols=cs.gridTemplateColumns.split(" ").filter(s=>s && s!=="none");
+      const rows=cs.gridTemplateRows.split(" ").filter(s=>s && s!=="none");
+      const gap=parseFloat(cs.gap)||10;
+      if(cols.length>=2){
+        availW=Math.max(80, Math.floor((dual.clientWidth-gap*(cols.length-1))/cols.length));
+        availH=Math.max(80, dual.clientHeight);
+      } else {
+        const n=Math.max(2, rows.length||2);
+        availW=Math.max(80, dual.clientWidth);
+        availH=Math.max(80, Math.floor((dual.clientHeight-gap*(n-1))/n));
+      }
+    }
+    availW=Math.max(80, availW);
+    availH=Math.max(80, availH);
+    const nw=img.naturalWidth||0, nh=img.naturalHeight||0;
+    if(!nw||!nh){
+      img.style.maxWidth=availW+"px";
+      img.style.maxHeight=availH+"px";
+      return;
+    }
+    const scale=Math.min(availW/nw, availH/nh);
+    const w=Math.max(1, Math.round(nw*scale));
+    const h=Math.max(1, Math.round(nh*scale));
+    img.style.maxWidth="none";
+    img.style.maxHeight="none";
+    img.style.width=w+"px";
+    img.style.height=h+"px";
+    if(nest){ nest.style.width=w+"px"; nest.style.height=h+"px"; nest.style.maxWidth="none"; }
+    if(box){ box.style.width=w+"px"; box.style.height=h+"px"; box.style.maxWidth="none"; box.style.maxHeight="none"; }
+  });
+}
+function startFitObs(){
+  stopFitObs();
+  const el=$("playwrap")||document.querySelector(".stage-img");
+  if(!el || !window.ResizeObserver){ fitPlacas(); return; }
+  fitObs=new ResizeObserver(()=>fitPlacas());
+  fitObs.observe(el);
+  const st=el.querySelector(".stage-img");
+  if(st) fitObs.observe(st);
+  el.querySelectorAll("img.placa").forEach(img=>{
+    if(!img.dataset.fitBound){ img.dataset.fitBound="1"; img.addEventListener("load", fitPlacas); }
+  });
+  fitPlacas();
+}
+
+let lbState=null;
+function openLightbox(fromBox){
+  const srcBox=fromBox||document.querySelector(".imgw.on")||$("iw")||document.querySelector(".imgw");
+  if(!srcBox) return;
+  let lb=$("lightbox");
+  if(!lb){
+    lb=document.createElement("div");
+    lb.id="lightbox";
+    lb.innerHTML=`<div class="lb-stage" id="lbstage"></div>
+      <div class="lb-ui"><button type="button" id="lbclose" aria-label="Cerrar">✕</button></div>
+      <div class="lb-help">Rueda o pellizco = zoom · arrastra = mover · F o Esc = cerrar</div>`;
+    document.body.appendChild(lb);
+    $("lbclose").onclick=e=>{ e.stopPropagation(); closeLightbox(); };
+    lb.addEventListener("click", ev=>{ if(ev.target===lb) closeLightbox(); });
+  }
+  const stage=$("lbstage");
+  const nest=srcBox.querySelector(".imgnest");
+  stage.innerHTML="";
+  const clone=(nest||srcBox).cloneNode(true);
+  clone.querySelectorAll(".zoombtn,.img-err").forEach(n=>n.remove());
+  if(!clone.classList.contains("imgnest")) clone.classList.add("imgnest");
+  stage.appendChild(clone);
+  lb.classList.add("on");
+  const st={z:1,x:0,y:0,px:0,py:0,drag:false,pid:null,pinch:0};
+  lbState=st;
+  const apply=()=>{
+    clone.style.setProperty("--z", st.z);
+    clone.style.setProperty("--x", st.x+"px");
+    clone.style.setProperty("--y", st.y+"px");
+  };
+  apply();
+  const zoomAt=(factor)=>{
+    st.z=Math.max(1, Math.min(8, st.z*factor));
+    if(st.z===1){ st.x=0; st.y=0; }
+    apply();
+  };
+  stage.onwheel=ev=>{ ev.preventDefault(); zoomAt(ev.deltaY<0?1.12:1/1.12); };
+  stage.onpointerdown=ev=>{
+    if(ev.pointerType==="touch" && ev.isPrimary===false) return;
+    st.drag=true; st.pid=ev.pointerId; st.px=ev.clientX; st.py=ev.clientY;
+    stage.classList.add("drag");
+    try{ stage.setPointerCapture(ev.pointerId); }catch(e){}
+  };
+  stage.onpointermove=ev=>{
+    if(!st.drag || ev.pointerId!==st.pid) return;
+    st.x+=(ev.clientX-st.px)/st.z;
+    st.y+=(ev.clientY-st.py)/st.z;
+    st.px=ev.clientX; st.py=ev.clientY;
+    apply();
+  };
+  const end=ev=>{
+    if(ev && ev.pointerId!==st.pid) return;
+    st.drag=false; st.pid=null; stage.classList.remove("drag");
+  };
+  stage.onpointerup=end; stage.onpointercancel=end;
+  stage.ondblclick=ev=>{ ev.preventDefault(); if(st.z>1.05){ st.z=1; st.x=0; st.y=0; } else st.z=2.5; apply(); };
+  // pinch
+  const dist=(a,b)=>Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);
+  stage.ontouchstart=ev=>{
+    if(ev.touches.length===2){ st.pinch=dist(ev.touches[0], ev.touches[1]); }
+  };
+  stage.ontouchmove=ev=>{
+    if(ev.touches.length===2 && st.pinch){
+      ev.preventDefault();
+      const d=dist(ev.touches[0], ev.touches[1]);
+      zoomAt(d/st.pinch);
+      st.pinch=d;
+    }
+  };
+  stage.ontouchend=()=>{ st.pinch=0; };
+}
+function closeLightbox(){
+  const lb=$("lightbox");
+  if(lb) lb.classList.remove("on");
+  lbState=null;
+}
+function isTypingTarget(el){
+  if(!el) return false;
+  const t=(el.tagName||"").toLowerCase();
+  return t==="input"||t==="textarea"||t==="select"||el.isContentEditable;
+}
+function clickFirst(sels){
+  for(const s of sels){
+    const el=document.querySelector(s);
+    if(el && el.offsetParent!==null){ el.click(); return true; }
+  }
+  return false;
+}
+function deskKey(ev){
+  if(isTypingTarget(ev.target)) return;
+  const lb=$("lightbox");
+  const lbOn=lb && lb.classList.contains("on");
+  const playing=document.body.classList.contains("playon");
+  const k=ev.key;
+  if(k==="Escape"){
+    if(lbOn){ ev.preventDefault(); closeLightbox(); }
+    return;
+  }
+  if((k==="f"||k==="F") && (playing||lbOn||document.querySelector(".imgw img.placa"))){
+    ev.preventDefault();
+    if(lbOn) closeLightbox();
+    else openLightbox();
+    return;
+  }
+  if(lbOn || !playing) return;
+  if(k==="Enter" || k===" "){
+    if(clickFirst(["#btn-next","#okz"])) ev.preventDefault();
+    return;
+  }
+  const gradeRows=[...document.querySelectorAll("#grades .grow")];
+  if(gradeRows.length){
+    if(["y","Y","v","V","n","N","x","X","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(k) || /^[1-5]$/.test(k)){
+      ev.preventDefault();
+      let i=gradeRows.findIndex(r=>r.classList.contains("focus"));
+      if(i<0) i=0;
+      if(k==="ArrowUp"||k==="ArrowLeft") i=Math.max(0,i-1);
+      else if(k==="ArrowDown"||k==="ArrowRight") i=Math.min(gradeRows.length-1,i+1);
+      else if(/^[1-5]$/.test(k)) i=Math.min(gradeRows.length-1, +k-1);
+      gradeRows.forEach((r,j)=>r.classList.toggle("focus", j===i));
+      if(["y","Y","v","V","n","N","x","X"].includes(k)){
+        const yes=/^[yYvV]$/.test(k);
+        const btn=gradeRows[i].querySelector(yes?".gbtn.yes":".gbtn.no");
+        if(btn) btn.click();
+        if(i<gradeRows.length-1){ gradeRows[i].classList.remove("focus"); gradeRows[i+1].classList.add("focus"); }
+      }
+    }
+    return;
+  }
+  if(/^[1-4]$/.test(k)){
+    const n=+k-1;
+    const packOn=document.querySelector(".packrow");
+    if(packOn){
+      const rows=[...document.querySelectorAll(".packrow")];
+      let row=rows.find(r=>r.classList.contains("focus"))||rows.find(r=>!r.querySelector(".tchip.on"))||rows[0];
+      rows.forEach(r=>r.classList.toggle("focus", r===row));
+      const chips=[...row.querySelectorAll(".tchip")];
+      if(chips[n]) chips[n].click();
+      ev.preventDefault();
+      return;
+    }
+    const opts=[...document.querySelectorAll("#opts .opt, #opts .tchip")];
+    if(opts[n]){ ev.preventDefault(); opts[n].click(); }
+  }
+}
+document.addEventListener("keydown", deskKey);
 
 function showExamQ(){
   stopTimer(); clearFB(); scrollTop();
@@ -716,26 +1082,23 @@ function showExamQ(){
   G.placaT0=Date.now();
   G.deadline=Date.now()+G.limit*1000;
   const sheetNum=G.i+1;
-  app.innerHTML=`
-    <div class="stick" id="stick">
-      <div class="hud" id="screen-exam">
+  setPlayLayout(true);
+  app.innerHTML=playWrap({
+    hud:`<div class="hud" id="screen-exam">
         <button class="ib" id="back" style="width:36px;height:36px">◀</button>
         <div>Examen</div>
         <div>${sheetNum}/${G.qs.length}</div>
         <div class="chrono" id="eup">⏱ 0:00</div>
         <div class="down" id="etleft">⬇ ${G.limit}s</div>
-      </div>
-      <div class="bar" id="tbar"><i id="tfill"></i></div>
-      <div class="sheet"><b>Placa ${sheetNum}: Dx + 1–4</b><span>Escríbelo en tu hoja y toca Listo. El cronómetro cuenta lo que tardas.</span></div>
-      <div class="imgw" id="iw"><span class="tag">Clase ${p.cls} · ${p.code}</span>
-        <img class="placa" alt="Placa ${p.code}" src="${p.imgSin}" decoding="async" fetchpriority="high">
-      </div>
-    </div>
-    <div id="playbody">
-      <button class="go" id="okz">Listo</button>
-    </div>`;
+      </div>`,
+    bar:`<div class="bar" id="tbar"><i id="tfill"></i></div>`,
+    sheet:`<div class="sheet"><b>Placa ${sheetNum}: Dx + 1–4</b><span>Escríbelo en tu hoja y toca Listo. El cronómetro cuenta lo que tardas.</span></div>`,
+    img: placaHTML({id:"iw", tag:`Clase ${p.cls} · ${p.code}`, src:p.imgSin, alt:"Placa "+p.code, on:true}),
+    body:`<button class="go" id="okz">Listo</button>`
+  });
   $("back").onclick=()=>{ if(confirm("¿Salir del examen? Se pierde esta ronda.")) showExamSetup(); };
   bindPlacaImg(q,false);
+  wirePlacaClicks();
   $("okz").onclick=()=>{ if(!G.locked) examReveal(false); };
   runExamTimer();
 }
@@ -768,28 +1131,32 @@ function examReveal(timeout){
   if(timeout){ beep("bad"); vibe([30,30,30]); } else { beep("ok"); vibe(12); }
   const marks=q.targets||[];
   q.grade={dx:null, st:marks.map(()=>null)};
-  app.innerHTML=`
-    <div class="hud"><div class="lives" style="color:var(--dim)">Califícate</div>
+  setPlayLayout(true);
+  app.innerHTML=playWrap({
+    grade:true,
+    hud:`<div class="hud"><div class="lives" style="color:var(--dim)">Califícate</div>
       <div class="chrono">⏱ ${fmtClock(elapsed)}</div>
-      <div>${G.i+1}/${G.qs.length}</div></div>
-    <p class="lead" style="margin:0 0 8px">${timeout?"Se acabó el tiempo. ":"Lo escribiste en "+fmtClock(elapsed)+". "}Mira la respuesta oficial (tal cual la diapo) y marca qué acertaste.</p>
-    <div class="dualimg">
-      <div class="imgw" id="iw"><span class="tag">Silenciada · 1–4</span>
-        <img class="placa" alt="Placa ${p.code}" src="${p.imgSin}" decoding="async">
+      <div>${G.i+1}/${G.qs.length}</div></div>`,
+    prompt:`<p class="lead" style="margin:0 0 8px">${timeout?"Se acabó el tiempo. ":"Lo escribiste en "+fmtClock(elapsed)+". "}Mira la respuesta oficial (tal cual la diapo) y marca qué acertaste.</p>`,
+    img: `<div class="img-tabs" id="itabs">
+        <button type="button" class="on" data-show="sin">Silenciada</button>
+        <button type="button" data-show="con">Con nombres</button>
       </div>
-      <div class="imgw" id="iw2"><span class="tag">Con nombres</span>
-        <img class="placa" alt="Placa ${p.code} con nombres" src="${p.imgCon}" decoding="async">
-      </div>
-    </div>
-    <div id="grades">
-      <div class="grow" data-k="dx"><div class="lab"><span style="color:var(--dim);font-size:11px">Diagnóstico</span><br>${esc(p.diagnosis)}</div>
+      <div class="dualimg" id="dual">
+        ${placaHTML({id:"iw", tag:"Silenciada · 1–4", src:p.imgSin, alt:"Placa "+p.code, on:true})}
+        ${placaHTML({id:"iw2", tag:"Con nombres", src:p.imgCon, alt:"Placa "+p.code+" con nombres"})}
+      </div>`,
+    body: `<div id="grades">
+      <div class="grow focus" data-k="dx"><div class="lab"><span style="color:var(--dim);font-size:11px">Diagnóstico</span><br>${esc(p.diagnosis)}</div>
         <button class="gbtn yes" data-v="1">✓</button><button class="gbtn no" data-v="0">✗</button></div>
       ${marks.map((t,i)=>`<div class="grow" data-k="st" data-i="${i}"><div class="lab"><span style="color:var(--yel);font-weight:900">(${esc(t.id)})</span> ${esc(t.name)}</div>
         <button class="gbtn yes" data-v="1">✓</button><button class="gbtn no" data-v="0">✗</button></div>`).join("")}
     </div>
-    <p class="foot">Si no marcas una, cuenta como fallo. 5 puntos por placa (Dx + 4 estructuras).</p>
-    <button class="go" id="btn-next">Siguiente</button>`;
+    <p class="foot">Si no marcas una, cuenta como fallo. 5 puntos por placa (Dx + 4 estructuras). En teclado: 1–5 elige renglón, Y/V o N/X califica.</p>
+    <button class="go" id="btn-next">Siguiente</button>`
+  });
   bindPlacaImg(q,false);
+  wirePlacaClicks();
   const setBtn=(row,val)=>{
     row.querySelectorAll(".gbtn").forEach(b=>b.classList.toggle("on", +b.dataset.v===val));
   };
@@ -815,7 +1182,7 @@ function examReveal(timeout){
 }
 
 function examResults(){
-  stopTimer(); clearFB();
+  stopTimer(); clearFB(); setPlayLayout(false);
   const t=Math.round((Date.now()-G.t0)/1000);
   const score=G.log.reduce((a,r)=>a+r.pts,0);
   const max=G.log.length*5;
@@ -869,6 +1236,7 @@ function examResults(){
 }
 
 function showMap(){
+  setPlayLayout(false);
   const cls=selCls;
   const cov=COVER[cls]||COVER.all;
   const codes=new Set(pool(cls).map(p=>p.code));
@@ -918,7 +1286,7 @@ function showStruct(key){
 
 /* ---------- aprender estructuras ---------- */
 function showLearnPick(){
-  stopTimer(); clearFB(); G=null;
+  stopTimer(); clearFB(); setPlayLayout(false); G=null;
   const list=pool(selCls).filter(p=>p.structureOK && p.elements.some(e=>e.poly&&e.poly.length>=4));
   app.innerHTML=`
     <div class="top">
@@ -981,23 +1349,21 @@ function showLearnQ(){
   G.q=q; G.locked=false;
   const total=G.rounds.reduce((a,r)=>a+r.els.length,0);
   const done=G.rounds.slice(0,G.ri).reduce((a,r)=>a+r.els.length,0)+G.qi;
-  app.innerHTML=`
-    <div class="stick" id="stick">
-      <div class="hud" id="screen-learn-q">
+  setPlayLayout(true);
+  app.innerHTML=playWrap({
+    hud:`<div class="hud" id="screen-learn-q">
         <button class="ib" id="back" style="width:36px;height:36px">◀</button>
         <div>${p.code}</div>
         <div>${Math.min(total,done+chunk.length)}/${total}</div>
         <div class="sp">${G.ok}✓ ${G.bad?G.bad+"✗":""}</div>
-      </div>
-      <div class="prompt">${esc(q.prompt)}</div>
-      ${q.sub?`<div class="sub">${esc(q.sub)}</div>`:""}
-      <div class="imgw" id="iw"><span class="tag">Clase ${p.cls} · ${p.code}</span>
-        <img class="placa" alt="Placa ${p.code}" src="${p.imgSin}" decoding="async" fetchpriority="high">
-      </div>
-    </div>
-    <div id="playbody"></div>`;
+      </div>`,
+    prompt:`<div class="prompt">${esc(q.prompt)}</div>`,
+    sub: q.sub?`<div class="sub">${esc(q.sub)}</div>`:"",
+    img: placaHTML({id:"iw", tag:`Clase ${p.cls} · ${p.code}`, src:p.imgSin, alt:"Placa "+p.code, on:true})
+  });
   $("back").onclick=()=>{ if(confirm("¿Salir de esta ronda?")) showLearnPick(); };
   bindPlacaImg(q, false);
+  wirePlacaClicks();
   renderBody(q, true);
 }
 
@@ -1033,23 +1399,24 @@ function learnCheck(okAll, detail){
 function learnReveal(){
   const R=G.rounds[G.ri], p=R.placa;
   const missed=R.missed;
-  app.innerHTML=`
-    <div class="top"><button class="ib" id="back">◀</button>
-      <div class="brand"><div class="k">${p.code}</div><h1 style="font-size:20px">Placa con nombres</h1></div></div>
-    <div class="imgw" id="iw"><span class="tag">Clase ${p.cls} · ${p.code}</span>
-      <img class="placa" alt="Placa ${p.code} con nombres" src="${p.imgCon}" decoding="async">
-    </div>
-    <div class="fb good" style="margin-top:10px">
+  setPlayLayout(true);
+  app.innerHTML=playWrap({
+    hud:`<div class="hud"><button class="ib" id="back" style="width:36px;height:36px">◀</button>
+      <div class="k">${p.code}</div><div>Con nombres</div></div>`,
+    img: placaHTML({id:"iw", tag:`Clase ${p.cls} · ${p.code}`, src:p.imgCon, alt:"Placa "+p.code+" con nombres", on:true}),
+    body: `<div class="fb good">
       <div class="dx">${esc(p.diagnosis)}</div>
       <div class="els"><b>Estructuras:</b> ${esc(namesOf(p).join(" · "))}</div>
     </div>
     ${missed.length?`<p class="lead">Se te fueron ${missed.length}: ${esc(uniqueByKey(missed.map(e=>e.name)).join(" · "))}</p>
       <button class="go" id="rep">Repetir las que fallé</button>`:`<p class="lead">Esta placa, limpia. Bien.</p>`}
     <button class="go ${missed.length?"alt":""}" id="nxt">${G.ri+1<G.rounds.length?"Siguiente placa":"Terminé"}</button>
-    <button class="ghost" id="home">Volver al listado</button>`;
+    <button class="ghost" id="home">Volver al listado</button>`
+  });
   $("back").onclick=showLearnPick;
   $("home").onclick=showLearnPick;
   bindPlacaImg({kind:"dx", placa:p}, true);
+  wirePlacaClicks();
   if($("rep")) $("rep").onclick=()=>{
     R.els=shuffle(uniqueByKeyEls(missed));
     R.missed=[];
@@ -1250,12 +1617,14 @@ function makeAbsent(p){
 }
 
 function countdown(){
+  const gen=++countGen;
   let n=3;
   const tick=()=>{
+    if(gen!==countGen) return;
     app.innerHTML=`<div class="count" id="screen-count"><div class="k" style="color:var(--cyan);letter-spacing:.16em;font-weight:800;font-size:12px">NIVEL ${G.level} · ${LNAMES[G.level]} · ${G.cls==="all"?"CLASES 2–6":"CLASE "+G.cls}</div><b>${n}</b><p style="color:var(--dim)">Placa silenciada. Suéltalo.</p></div>`;
     beep("go"); vibe(18);
     if(n>1){ n--; setTimeout(tick,500); }
-    else setTimeout(()=>{beep("combo");showQ();},500);
+    else setTimeout(()=>{ if(gen!==countGen) return; beep("combo");showQ();},500);
   };
   tick();
 }
@@ -1283,21 +1652,19 @@ function showQ(){
   G.locked=false;
   const life = G.isBoss? `<div class="lives">${"♥".repeat(G.lives)}${"♡".repeat(Math.max(0,3-G.lives))}</div>` :
     `<div class="lives" style="color:var(--dim)">${LNAMES[G.level]}</div>`;
-  app.innerHTML=`
-    <div class="stick" id="stick">
-      <div class="hud" id="screen-play">${life}
+  setPlayLayout(true);
+  app.innerHTML=playWrap({
+    hud:`<div class="hud" id="screen-play">${life}
         <div class="combo">${G.combo?("x"+G.combo):"x0"}</div>
         <div>${G.i+1}/${G.qs.length}</div>
-        <div class="sp">${G.score}</div></div>
-      <div class="bar ${limit?"":"off"}" id="tbar"><i id="tfill"></i></div>
-      <div class="prompt">${esc(q.prompt)}</div>
-      ${q.sub?`<div class="sub">${esc(q.sub)}</div>`:""}
-      <div class="imgw" id="iw"><span class="tag">Clase ${p.cls} · ${p.code}</span>
-        <img class="placa" alt="Placa ${p.code}" src="${p.imgSin}" decoding="async" fetchpriority="high">
-      </div>
-    </div>
-    <div id="playbody"></div>`;
+        <div class="sp">${G.score}</div></div>`,
+    bar:`<div class="bar ${limit?"":"off"}" id="tbar"><i id="tfill"></i></div>`,
+    prompt:`<div class="prompt">${esc(q.prompt)}</div>`,
+    sub: q.sub?`<div class="sub">${esc(q.sub)}</div>`:"",
+    img: placaHTML({id:"iw", tag:`Clase ${p.cls} · ${p.code}`, src:p.imgSin, alt:"Placa "+p.code, on:true})
+  });
   bindPlacaImg(q,false);
+  wirePlacaClicks();
   renderBody(q,false);
   runTimer();
   const nxt=G.qs[G.i+1];
@@ -1306,6 +1673,7 @@ function showQ(){
 
 function bindPlacaImg(q, labeled){
   const p=q.placa, iw=$("iw"); if(!iw||!p) return;
+  const host=iw.querySelector(".imgnest")||iw;
   const gen=++imgGen;
   let img=iw.querySelector("img.placa");
   if(!img){
@@ -1313,11 +1681,12 @@ function bindPlacaImg(q, labeled){
     img.className="placa";
     img.alt="Placa "+p.code;
     img.decoding="async";
-    iw.appendChild(img);
+    host.appendChild(img);
   }
   const src=labeled? p.imgCon : p.imgSin;
   const paintMarks=()=>{
-    iw.querySelectorAll(".mark,.zonebox,.img-err").forEach(n=>n.remove());
+    host.querySelectorAll(".mark,.zonebox,.img-err").forEach(n=>n.remove());
+    iw.querySelectorAll(":scope > .img-err").forEach(n=>n.remove());
     if(labeled) return;
     const marks=(!labeled && q.targets && q.targets.length) ? q.targets : (!labeled && q.target ? [q.target] : []);
     marks.forEach(el=>{
@@ -1327,7 +1696,7 @@ function bindPlacaImg(q, labeled){
       m.className="mark";
       m.textContent=el.id||"•";
       m.style.left=x+"%"; m.style.top=y+"%";
-      iw.appendChild(m);
+      host.appendChild(m);
     });
     if(q.kind==="zone" && q.box){
       const b=document.createElement("div");
@@ -1336,7 +1705,7 @@ function bindPlacaImg(q, labeled){
       const x1=Math.min(100,q.box.x1), y1=Math.min(100,q.box.y1);
       b.style.left=x0+"%"; b.style.top=y0+"%";
       b.style.width=Math.max(4,x1-x0)+"%"; b.style.height=Math.max(4,y1-y0)+"%";
-      iw.appendChild(b);
+      host.appendChild(b);
     }
   };
   let tries=0;
@@ -1355,6 +1724,7 @@ function bindPlacaImg(q, labeled){
       if(gen!==imgGen || !iw.isConnected) return;
       iw.querySelectorAll(".img-err").forEach(n=>n.remove());
       paintMarks();
+      if(typeof fitPlacas==="function") fitPlacas();
     };
     img.onerror=()=>{
       if(gen!==imgGen || !iw.isConnected) return;
@@ -1532,7 +1902,7 @@ function judge(ok,q,btn,chosen,timeout){
 }
 
 function results(){
-  stopTimer(); app.onclick=null;
+  stopTimer(); app.onclick=null; setPlayLayout(false);
   const t=Math.round((Date.now()-G.t0)/1000);
   const total=G.ok+G.bad;
   const acc=total?Math.round(G.ok*100/total):0;
@@ -1621,7 +1991,7 @@ function auditQuestions(nRandom){
 }
 
 window.FB={ start, menu, showMap, showSettings, showLearnPick, startLearn,
-  showExamSetup, startExam, pickExamPlacas, examTarget, examProgressOn, auditQuestions, canon, sameAns, pickOptions, makeDx, makePart, makeSt, makeZone, makeAbsent,
+  showExamSetup, startExam, showExamQ, examReveal, showQ, pickExamPlacas, examTarget, examProgressOn, openLightbox, closeLightbox, auditQuestions, canon, sameAns, pickOptions, makeDx, makePart, makeSt, makeZone, makeAbsent,
   get state(){return G;}, getS:()=>S, setS(p){ Object.assign(S,p); save(); },
   unlockAll(){ S.free=true; save(); } };
 preloadAll();
