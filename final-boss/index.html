@@ -141,6 +141,20 @@ input[type=range]{width:100%;height:32px;accent-color:#00e6c3}
 .packrow{margin:8px 0;padding:8px;border:1px solid var(--line);border-radius:14px;background:#14102a}
 .packrow .lab{font-weight:900;color:var(--yel);margin-bottom:6px;font-size:14px}
 .hide{display:none}
+.pulse.exam{background:linear-gradient(135deg,var(--pur),#c44dff);color:#fff;box-shadow:0 8px 24px #8b6cff66;font-size:18px}
+.sheet{border:1px dashed #ffd16688;background:#2a2208;border-radius:14px;padding:10px 12px;margin:0 0 8px;font-weight:800}
+.sheet b{color:var(--yel)}
+.sheet span{display:block;font-size:12px;color:var(--dim);font-weight:600;margin-top:2px}
+.grow{display:flex;align-items:center;gap:8px;width:100%;text-align:left;border:1px solid var(--line);
+  background:#14102a;border-radius:14px;padding:10px;margin:0 0 7px;min-height:56px}
+.grow .lab{flex:1;font-weight:800;font-size:13.5px;line-height:1.3}
+.grow .gbtn{width:46px;height:44px;border-radius:12px;border:1px solid var(--line);background:#ffffff10;font-weight:900;font-size:18px;flex-shrink:0}
+.grow .gbtn.on.yes{background:#0d3a22;border-color:var(--ok);color:var(--ok)}
+.grow .gbtn.on.no{background:#3a0d1c;border-color:var(--bad);color:#ffb3c5}
+.hist{margin:10px 0;font-size:13px}
+.hist div{padding:7px 0;border-bottom:1px solid var(--line);color:var(--dim)}
+.dualimg{display:grid;gap:8px;margin-bottom:8px}
+
 </style>
 </head>
 <body>
@@ -168,7 +182,8 @@ const TIME_DEF = {1:13,2:16,3:16,4:20};
 const DEFAULTS = {
   mute:false,best:0,bestCombo:0,mastery:{},sm:{},progress:{},free:false,
   timeMode:"level", timeSec:16, timeL:{1:13,2:16,3:16,4:20},
-  advance:"manual", autoMs:2000, pack:1
+  advance:"manual", autoMs:2000, pack:1,
+  examSec:60, examN:10, examHist:[]
 };
 const load = () => {
   try {
@@ -180,6 +195,9 @@ const load = () => {
     s.pack=[1,2,4].includes(+s.pack)?+s.pack:1;
     s.timeSec=Math.max(10,Math.min(60,+s.timeSec||16));
     s.autoMs=Math.max(600,Math.min(8000,+s.autoMs||2000));
+    s.examSec=Math.max(20,Math.min(180,+s.examSec||60));
+    s.examN=[10,20,"all"].includes(s.examN)?s.examN:(+s.examN===P.length?"all":10);
+    s.examHist=Array.isArray(s.examHist)?s.examHist.slice(0,20):[];
     return s;
   } catch(e){ return Object.assign({}, DEFAULTS, {timeL:Object.assign({},TIME_DEF)}); }
 };
@@ -216,34 +234,78 @@ function passed(cls,lv){ return !!(prog(cls)[lv] && prog(cls)[lv].passed); }
 function unlocked(cls,lv){ return S.free || lv===1 || passed(cls,lv-1); }
 function nextLevel(cls){ for(const lv of [1,2,3,4]) if(!passed(cls,lv)) return lv; return 4; }
 function centroid(poly){ let x=0,y=0; for(const pt of poly){x+=pt[0];y+=pt[1];} return [x/poly.length,y/poly.length]; }
-function keysOf(p){ return new Set(p.elements.map(e=>e.key || norm(e.name))); }
-function namesOf(p){ return uniq(p.elements.map(e=>e.name)); }
-function norm(s){ return (s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[.,;:()[\]¿?¡!]+/g," ").replace(/\s+/g," ").trim(); }
+function keysOf(p){ return new Set(p.elements.map(e=>canon(e.name))); }
+function namesOf(p){ return uniqueByKey(p.elements.map(e=>e.name)); }
+function norm(s){
+  return String(s||"").toLowerCase().normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .replace(/([a-zñ])[-–—](?=\d)/gi,"$1")
+    .replace(/[^\p{L}\p{N}]+/gu," ")
+    .replace(/\s+/g," ")
+    .trim();
+}
+const ALIAS = (() => {
+  const m=Object.create(null);
+  const set=(a,b)=>{ const A=norm(a); if(A) m[A]=norm(b); };
+  for(const p of P) for(const e of p.elements){
+    const ck=norm(e.key||e.name);
+    set(e.name, ck);
+    if(e.key) set(e.key, ck);
+  }
+  const extras=[
+    ["espacio subacnoideo","espacio subaracnoideo"],
+    ["Ganglio trigeminal (NC V)","ganglio trigémino (NC V)"],
+    ["Orbitosfenoide","orbitoesfenoides"],
+    ["Eminencia mandibular del arco faríngeo 1","Prominencia mandibular del arco faríngeo 1"],
+    ["Eminencia maxilar del arco faríngeo 1","prominencia maxilar del arco faríngeo 1"]
+  ];
+  for(const [a,b] of extras){
+    const C=m[norm(b)]||norm(b);
+    set(a,C); set(b,C);
+  }
+  return m;
+})();
+function canon(s){ const k=norm(s); return ALIAS[k]||k; }
+function sameAns(a,b){ return canon(a)===canon(b); }
+function sameSet(A,B){
+  const a=new Set((A||[]).map(canon)), b=new Set((B||[]).map(canon));
+  if(a.size!==b.size) return false;
+  for(const x of a) if(!b.has(x)) return false;
+  return true;
+}
 function scrollTop(){ try{ window.scrollTo(0,0); document.documentElement.scrollTop=0; document.body.scrollTop=0; }catch(e){} }
 
 function uniqueByKey(names){
   const seen=new Set(), out=[];
-  for(const n of names){ const k=norm(n); if(!k||seen.has(k)) continue; seen.add(k); out.push(n); }
+  for(const n of names){ const k=canon(n); if(!k||seen.has(k)) continue; seen.add(k); out.push(n); }
   return out;
+}
+function pickOptions(correct, pool, k){
+  const rest=uniqueByKey((pool||[]).filter(v=>!sameAns(v,correct)));
+  const distractors=shuffle(rest).slice(0,k);
+  return shuffle(uniqueByKey([correct, ...distractors]));
 }
 
 function nearDx(correct, list, k){
-  const others = uniq(list.map(p=>p.diagnosis)).filter(d=>d!==correct);
-  const extra = uniq(P.map(p=>p.diagnosis)).filter(d=>d!==correct && !others.includes(d));
+  const others = uniqueByKey(list.map(p=>p.diagnosis)).filter(d=>!sameAns(d,correct));
+  const extra = uniqueByKey(P.map(p=>p.diagnosis)).filter(d=>!sameAns(d,correct) && !others.some(o=>sameAns(o,d)));
   const score = d => {
-    const A=new Set(correct.split(/\s+/)), B=d.split(/\s+/);
+    const A=new Set(norm(correct).split(/\s+/)), B=norm(d).split(/\s+/);
     let c=0; for(const w of B) if(A.has(w)) c++;
-    return c + (list.some(p=>p.diagnosis===d)?3:0);
+    return c + (list.some(p=>sameAns(p.diagnosis,d))?3:0);
   };
   others.sort((a,b)=>score(b)-score(a));
-  const out=others.slice(0,k);
-  for(const d of shuffle(extra)){ if(out.length>=k) break; if(!out.includes(d)) out.push(d); }
-  return shuffle(out).slice(0,k);
+  const out=[];
+  for(const d of others.concat(shuffle(extra))){
+    if(out.length>=k) break;
+    if(!sameAns(d,correct) && !out.some(o=>sameAns(o,d))) out.push(d);
+  }
+  return out;
 }
 function partBank(key){
   const vals=[];
-  for(const p of P) for(const part of (p.parts||[])) if(part.key===key && !vals.includes(part.value)) vals.push(part.value);
-  return vals;
+  for(const p of P) for(const part of (p.parts||[])) if(part.key===key) vals.push(part.value);
+  return uniqueByKey(vals);
 }
 function offNames(p, k){
   const have=keysOf(p);
@@ -251,20 +313,20 @@ function offNames(p, k){
   for(const q of shuffle(P)){
     if(q.code===p.code) continue;
     for(const n of namesOf(q)){
-      const key=norm(n);
-      if(!have.has(key) && !out.includes(n)) out.push(n);
+      const key=canon(n);
+      if(!have.has(key) && !out.some(o=>sameAns(o,n))) out.push(n);
       if(out.length>=k) return out;
     }
   }
   return out;
 }
 function similarOff(p, target, k){
-  const bag=uniqueByKey(offNames(p, 80));
+  const bag=offNames(p, 80);
   const pref=bag.filter(n=>{
-    const a=norm(target).split(" ")[0], b=norm(n).split(" ")[0];
-    return a===b || /ganglio|nervio|ventriculo|placa|arteria|vena|talamo|hipotalamo/.test(norm(n));
+    const a=canon(target).split(" ")[0], b=canon(n).split(" ")[0];
+    return a===b || /ganglio|nervio|ventriculo|placa|arteria|vena|talamo|hipotalamo/.test(canon(n));
   });
-  return uniq(pref.concat(bag)).slice(0,k);
+  return uniqueByKey(pref.concat(bag)).filter(n=>!sameAns(n,target)).slice(0,k);
 }
 
 function coreKeys(cls){
@@ -307,6 +369,7 @@ function menu(){
     </div>
     <div id="screen-menu">
       <p class="lead">Placas <b style="color:var(--yel)">silenciadas</b>, como en el examen. El diagnóstico va palabra por palabra (sin número de sección). Toca, no escribas.</p>
+      <button class="pulse exam" id="btn-exam">EXAMEN SIMULADO<small>60 s por placa · escribes en tu hoja: diagnóstico + 4 estructuras. Acá no se tipea.</small></button>
       <button class="pulse alt" id="btn-learn">APRENDER ESTRUCTURAS<small>Placa por placa, flechas numeradas, ${packLab}. Luego ves la placa con nombres.</small></button>
       <button class="pulse" id="btn-play">JUGAR · ${LNAMES[n]}<small>${selCls==="all"?"Todo el parcial":"Clase "+selCls} · desbloquea el siguiente con ${PASS}%</small></button>
       <div class="row" id="cls">
@@ -327,6 +390,7 @@ function menu(){
   $("mute").onclick=()=>{S.mute=!S.mute;save();menu();};
   $("btn-set").onclick=showSettings;
   $("btn-play").onclick=()=>{ beep("go"); start({level:n, cls:selCls}); };
+  $("btn-exam").onclick=()=>showExamSetup();
   $("btn-learn").onclick=()=>showLearnPick();
   $("btn-map").onclick=()=>showMap();
   $("btn-free").onclick=()=>{S.free=!S.free;save();menu();};
@@ -386,6 +450,12 @@ function showSettings(){
         </div>
       </div>
       <div class="cardset">
+        <b>Examen simulado</b>
+        <p class="lead" style="margin:4px 0 0">Tiempo fijo por placa, como en el parcial. Por defecto 60 s. Tú escribes en papel.</p>
+        <div class="slabel">Segundos por placa <span id="exsecv">${S.examSec||60} s</span></div>
+        <input type="range" id="exsec" min="20" max="180" step="5" value="${S.examSec||60}">
+      </div>
+      <div class="cardset">
         <b>Estructuras por pregunta</b>
         <p class="lead" style="margin:4px 0 0">En Nivel 3, Jefe y Aprender. Si pides 4, el timer es de al menos 30 s (~10 s por una).</p>
         <div class="seg" id="pack">
@@ -416,11 +486,232 @@ function showSettings(){
   app.querySelectorAll("#pack [data-p]").forEach(b=>b.onclick=()=>{
     S.pack=+b.dataset.p; save(); showSettings();
   });
+  const exsec=$("exsec");
+  if(exsec) exsec.oninput=()=>{ S.examSec=+exsec.value; $("exsecv").textContent=S.examSec+" s"; save(); };
   $("reset").onclick=()=>{
-    const keep={mute:S.mute,best:S.best,bestCombo:S.bestCombo,mastery:S.mastery,sm:S.sm,progress:S.progress,free:S.free};
-    S=Object.assign({}, DEFAULTS, keep, {timeL:Object.assign({},TIME_DEF)});
+    const keep={mute:S.mute,best:S.best,bestCombo:S.bestCombo,mastery:S.mastery,sm:S.sm,progress:S.progress,free:S.free,examHist:S.examHist};
+    S=Object.assign({}, DEFAULTS, keep, {timeL:Object.assign({},TIME_DEF), examHist:S.examHist||[]});
     save(); showSettings();
   };
+}
+
+
+/* ---------- examen simulado ---------- */
+function examLimit(){ return Math.max(20, Math.min(180, +S.examSec||60)); }
+function pickSpread(p, n){
+  const els=uniqueByKeyEls((p.elements||[]).filter(e=>e.poly&&e.poly.length>=4));
+  if(els.length<n) return null;
+  const withC=els.map(e=>({e,c:centroid(e.poly)}));
+  const start=withC[Math.floor(Math.random()*withC.length)];
+  const out=[start], left=withC.filter(x=>x!==start);
+  while(out.length<n && left.length){
+    let best=0, bestD=-1;
+    for(let i=0;i<left.length;i++){
+      const d=Math.min(...out.map(o=>{
+        const dx=o.c[0]-left[i].c[0], dy=o.c[1]-left[i].c[1];
+        return dx*dx+dy*dy;
+      }));
+      if(d>bestD){ bestD=d; best=i; }
+    }
+    out.push(left.splice(best,1)[0]);
+  }
+  return shuffle(out).map((x,i)=>({id:String(i+1), name:x.e.name, poly:x.e.poly, origId:x.e.id, key:x.e.key||canon(x.e.name)}));
+}
+
+function showExamSetup(){
+  stopTimer(); clearFB(); G=null;
+  const list=pool(selCls).filter(p=>pickSpread(p,4));
+  const nChoice=S.examN||10;
+  const last=(S.examHist||[]).slice(0,5);
+  const hist=last.length?`<div class="hist"><b>Historial</b>${last.map(h=>{
+    const when=new Date(h.ts).toLocaleString("es-CO",{dateStyle:"short",timeStyle:"short"});
+    return `<div>${esc(when)} · ${h.cls==="all"?"Todo":"C"+h.cls} · ${h.n} placas · <b style="color:var(--yel)">${h.score}/${h.max}</b></div>`;
+  }).join("")}</div>`:"";
+  app.innerHTML=`
+    <div class="top">
+      <button class="ib" id="back">◀</button>
+      <div class="brand"><div class="k">Como el parcial</div><h1 style="font-size:22px">Examen simulado</h1></div>
+      <button class="ib" id="btn-set" title="Ajustes">⚙️</button>
+    </div>
+    <div id="screen-exam-setup">
+      <p class="lead">Te muestro la placa <b style="color:var(--yel)">silenciada</b> con 4 flechas. En tu hoja escribes el diagnóstico y las estructuras 1–4. Acá no se tipea. Al acabar el tiempo (o Listo) ves la respuesta oficial y te calificas tú.</p>
+      <div class="row" id="ecls">
+        <button class="chip ${selCls==="all"?"on":""}" data-cls="all">TODO (${P.length})</button>
+        ${["2","3","4","5","6"].map(c=>`<button class="chip ${selCls===c?"on":""}" data-cls="${c}">C${c}</button>`).join("")}
+      </div>
+      <div class="slabel">Cuántas placas <span>${list.length} disponibles</span></div>
+      <div class="seg" id="en">
+        <button data-n="10" class="${nChoice==10?"on":""}">10</button>
+        <button data-n="20" class="${nChoice==20?"on":""}">20</button>
+        <button data-n="all" class="${nChoice==="all"?"on":""}">Todas</button>
+      </div>
+      <p class="lead">${examLimit()} s por placa · lo cambias en Ajustes.</p>
+      <button class="go" id="goexam">Empezar</button>
+      ${hist}
+    </div>`;
+  $("back").onclick=menu;
+  $("btn-set").onclick=showSettings;
+  app.querySelectorAll("#ecls [data-cls]").forEach(b=>b.onclick=()=>{selCls=b.dataset.cls;showExamSetup();});
+  app.querySelectorAll("#en [data-n]").forEach(b=>b.onclick=()=>{
+    S.examN=b.dataset.n==="all"?"all":+b.dataset.n; save(); showExamSetup();
+  });
+  $("goexam").onclick=()=>startExam({cls:selCls, n:S.examN||10, list});
+}
+
+function startExam(opts){
+  const bag=shuffle((opts.list||pool(opts.cls||selCls)).filter(p=>{
+    const t=pickSpread(p,4); return t&&t.length===4;
+  }));
+  let n=opts.n==="all"?bag.length:Math.min(+opts.n||10, bag.length);
+  if(opts.only) n=opts.only.length;
+  const pick=opts.only? opts.only.map(code=>bag.find(p=>p.code===code)||P.find(p=>p.code===code)).filter(Boolean) : bag.slice(0,n);
+  const qs=pick.map(p=>{
+    const targets=pickSpread(p,4);
+    return {kind:"exam", placa:p, targets, prompt:"Escribe en tu hoja el diagnóstico y las estructuras 1–4.", marks:null};
+  }).filter(q=>q.targets&&q.targets.length===4);
+  if(!qs.length){ alert("No hay placas con 4 estructuras bien ubicadas."); return; }
+  G={mode:"exam", cls:opts.cls||selCls, qs, i:0, t0:Date.now(), log:[], limit:examLimit(), repeat:!!opts.only};
+  beep("go"); examCountdown();
+}
+
+function examCountdown(){
+  let n=3;
+  const tick=()=>{
+    app.innerHTML=`<div class="count" id="screen-count"><div class="k" style="color:var(--cyan);letter-spacing:.16em;font-weight:800;font-size:12px">EXAMEN SIMULADO · ${G.cls==="all"?"CLASES 2–6":"CLASE "+G.cls}</div><b>${n}</b><p style="color:var(--dim)">${G.limit} s por placa · lápiz y papel. Suéltalo.</p></div>`;
+    beep("go"); vibe(18);
+    if(n>1){ n--; setTimeout(tick,500); }
+    else setTimeout(()=>{beep("combo");showExamQ();},500);
+  };
+  tick();
+}
+
+function showExamQ(){
+  stopTimer(); clearFB(); scrollTop();
+  if(!G||G.mode!=="exam") return;
+  if(G.i>=G.qs.length) return examResults();
+  const q=G.qs[G.i], p=q.placa;
+  G.phase="ask"; G.locked=false;
+  G.deadline=Date.now()+G.limit*1000;
+  const sheetNum=G.i+1;
+  app.innerHTML=`
+    <div class="stick" id="stick">
+      <div class="hud" id="screen-exam">
+        <button class="ib" id="back" style="width:36px;height:36px">◀</button>
+        <div>Examen</div>
+        <div>${sheetNum}/${G.qs.length}</div>
+        <div class="sp" id="etleft">${G.limit}s</div>
+      </div>
+      <div class="bar" id="tbar"><i id="tfill"></i></div>
+      <div class="sheet"><b>Placa ${sheetNum}: Dx + 1–4</b><span>Escríbelo en tu hoja. No se tipea acá.</span></div>
+      <div class="imgw" id="iw"><span class="tag">Clase ${p.cls} · ${p.code}</span>
+        <img class="placa" alt="Placa ${p.code}" src="${p.imgSin}" decoding="async" fetchpriority="high">
+      </div>
+    </div>
+    <div id="playbody">
+      <button class="go" id="okz">Listo</button>
+    </div>`;
+  $("back").onclick=()=>{ if(confirm("¿Salir del examen? Se pierde esta ronda.")) showExamSetup(); };
+  bindPlacaImg(q,false);
+  $("okz").onclick=()=>{ if(!G.locked) examReveal(false); };
+  runExamTimer();
+}
+
+function runExamTimer(){
+  const fill=$("tfill"), bar=$("tbar"), lab=$("etleft");
+  if(!fill) return;
+  const total=G.deadline-Date.now();
+  const step=()=>{
+    if(!G||G.mode!=="exam"||G.locked||G.phase!=="ask") return;
+    const left=G.deadline-Date.now();
+    fill.style.transform=`scaleX(${Math.max(0,left/total)})`;
+    if(lab) lab.textContent=Math.max(0,Math.ceil(left/1000))+"s";
+    if(left<5000 && bar) bar.classList.add("low");
+    if(left<=0){ examReveal(true); return; }
+    raf=requestAnimationFrame(step);
+  };
+  raf=requestAnimationFrame(step);
+}
+
+function examReveal(timeout){
+  if(!G||G.mode!=="exam"||G.phase==="grade") return;
+  G.phase="grade"; G.locked=true; stopTimer(); clearFB(); scrollTop();
+  const q=G.qs[G.i], p=q.placa;
+  if(timeout){ beep("bad"); vibe([30,30,30]); } else { beep("ok"); vibe(12); }
+  const marks=q.targets||[];
+  q.grade={dx:null, st:marks.map(()=>null)};
+  app.innerHTML=`
+    <div class="hud"><div class="lives" style="color:var(--dim)">Califícate</div>
+      <div>${G.i+1}/${G.qs.length}</div></div>
+    <p class="lead" style="margin:0 0 8px">${timeout?"Se acabó el tiempo. " :""}Mira la respuesta oficial (tal cual la diapo) y marca qué acertaste.</p>
+    <div class="dualimg">
+      <div class="imgw" id="iw"><span class="tag">Silenciada · 1–4</span>
+        <img class="placa" alt="Placa ${p.code}" src="${p.imgSin}" decoding="async">
+      </div>
+      <div class="imgw" id="iw2"><span class="tag">Con nombres</span>
+        <img class="placa" alt="Placa ${p.code} con nombres" src="${p.imgCon}" decoding="async">
+      </div>
+    </div>
+    <div id="grades">
+      <div class="grow" data-k="dx"><div class="lab"><span style="color:var(--dim);font-size:11px">Diagnóstico</span><br>${esc(p.diagnosis)}</div>
+        <button class="gbtn yes" data-v="1">✓</button><button class="gbtn no" data-v="0">✗</button></div>
+      ${marks.map((t,i)=>`<div class="grow" data-k="st" data-i="${i}"><div class="lab"><span style="color:var(--yel);font-weight:900">(${esc(t.id)})</span> ${esc(t.name)}</div>
+        <button class="gbtn yes" data-v="1">✓</button><button class="gbtn no" data-v="0">✗</button></div>`).join("")}
+    </div>
+    <p class="foot">Si no marcas una, cuenta como fallo. 5 puntos por placa (Dx + 4 estructuras).</p>
+    <button class="go" id="btn-next">Siguiente</button>`;
+  bindPlacaImg(q,false);
+  const setBtn=(row,val)=>{
+    row.querySelectorAll(".gbtn").forEach(b=>b.classList.toggle("on", +b.dataset.v===val));
+  };
+  document.querySelectorAll(".grow").forEach(row=>{
+    row.querySelectorAll(".gbtn").forEach(b=>{
+      b.onclick=()=>{
+        const val=+b.dataset.v;
+        setBtn(row,val);
+        if(row.dataset.k==="dx") q.grade.dx=!!val;
+        else q.grade.st[+row.dataset.i]=!!val;
+        vibe(8);
+      };
+    });
+  });
+  $("btn-next").onclick=()=>{
+    const dx=!!q.grade.dx;
+    const st=(q.grade.st||[]).map(v=>!!v);
+    const pts=(dx?1:0)+st.filter(Boolean).length;
+    G.log.push({code:p.code, cls:p.cls, dx:p.diagnosis, okDx:dx, st:marks.map((t,i)=>({id:t.id,name:t.name,ok:!!st[i]})), pts, max:5});
+    record(p, pts>=5, {kind:"exam", answer:p.diagnosis});
+    G.i++; showExamQ();
+  };
+}
+
+function examResults(){
+  stopTimer(); clearFB();
+  const t=Math.round((Date.now()-G.t0)/1000);
+  const score=G.log.reduce((a,r)=>a+r.pts,0);
+  const max=G.log.length*5;
+  const failed=G.log.filter(r=>r.pts<5);
+  const acc=max?Math.round(score*100/max):0;
+  const rec={ts:Date.now(), cls:G.cls, n:G.log.length, score, max, sec:G.limit, failed:failed.map(f=>({code:f.code,pts:f.pts,dx:f.dx})), duration:t};
+  S.examHist=[rec, ...(S.examHist||[])].slice(0,20);
+  save();
+  const title=acc===100?"LIMPIO":acc>=80?"MUY SÓLIDO":acc>=50?"HAY QUE REPASAR":"OTRA RONDA";
+  app.innerHTML=`
+    <div class="results" id="screen-exam-results">
+      <div class="k" style="color:var(--cyan);letter-spacing:.16em;font-weight:800;font-size:12px">EXAMEN SIMULADO</div>
+      <h2>${title}</h2>
+      <div class="bigscore">${score}<span style="font-size:22px;color:var(--dim)">/${max}</span></div>
+      <p>${G.log.length} placas · ${acc}% · ${t}s · ${G.limit}s c/u</p>
+      <div class="miss"><b>Por placa (5 pts = Dx + 4 estructuras)</b>
+        ${G.log.map(r=>`<div>${r.code}: <b style="color:${r.pts===5?"var(--ok)":"var(--yel)"}">${r.pts}/5</b> · Dx ${r.okDx?"✓":"✗"} · ${r.st.map(s=>(s.ok?"✓":"✗")+s.id).join(" ")}<br><span style="color:var(--dim)">${esc(r.dx)}</span></div>`).join("")}
+      </div>
+      ${failed.length?`<p class="lead">Falladas: ${failed.map(f=>f.code).join(" · ")}</p>
+        <button class="go" id="rep">Repetir falladas</button>`:""}
+      <button class="go ${failed.length?"alt":""}" id="again">Otro examen</button>
+      <button class="go alt" id="home">Volver al menú</button>
+    </div>`;
+  if($("rep")) $("rep").onclick=()=>startExam({cls:G.cls, n:failed.length, only:failed.map(f=>f.code)});
+  $("again").onclick=()=>showExamSetup();
+  $("home").onclick=menu;
 }
 
 function showMap(){
@@ -572,7 +863,7 @@ function learnCheck(okAll, detail){
   fb.id="screen-fb";
   const lines=(q.items||[{target:q.target,answer:q.answer,pick:null}]).map(it=>{
     const good=it.pick==null? it.answer : it.pick;
-    const right=it.pick==null || it.pick===it.answer;
+    const right=it.pick==null || sameAns(it.pick,it.answer);
     return `<div class="els">${esc(it.target.id||"")} · ${right?"✓":"✗"} <b style="color:${right?"var(--ok)":"var(--bad)"}">${esc(it.answer)}</b>${!right && it.pick?` <span style="color:var(--dim)">(dijiste ${esc(it.pick)})</span>`:""}</div>`;
   }).join("");
   fb.innerHTML=`<h3>${okAll?"¡Exacto!":"Mira el correcto."}</h3>${lines}
@@ -615,7 +906,7 @@ function learnReveal(){
 }
 function uniqueByKeyEls(els){
   const seen=new Set(), out=[];
-  for(const e of els){ const k=e.key||norm(e.name); if(seen.has(k)) continue; seen.add(k); out.push(e); }
+  for(const e of els){ const k=canon(e.name); if(!k||seen.has(k)) continue; seen.add(k); out.push(e); }
   return out;
 }
 function learnDone(){
@@ -701,14 +992,16 @@ function buildQuestions(list, level, cls){
 }
 
 function makeDx(p,list){
-  const opts=shuffle([p.diagnosis, ...nearDx(p.diagnosis,list,3)]);
+  const opts=pickOptions(p.diagnosis, nearDx(p.diagnosis,list,8), 3);
   if(opts.length<2) return null;
+  if(opts.filter(o=>sameAns(o,p.diagnosis)).length!==1) return null;
   return {kind:"dx", placa:p, options:opts, answer:p.diagnosis, prompt:"¿Cuál es el diagnóstico exacto?"};
 }
 function makePart(p, part){
-  const bank=partBank(part.key).filter(v=>v!==part.value);
+  const bank=partBank(part.key).filter(v=>!sameAns(v,part.value));
   if(bank.length<1) return null;
-  const opts=shuffle([part.value, ...shuffle(bank).slice(0,3)]);
+  const opts=pickOptions(part.value, bank, 3);
+  if(opts.length<2 || opts.filter(o=>sameAns(o,part.value)).length!==1) return null;
   return {kind:"part", placa:p, part, options:opts, answer:part.value, prompt:part.prompt,
     sub: (p.parts||[]).map(x=>x.key===part.key? "…": x.value).join("  ·  ")};
 }
@@ -720,29 +1013,27 @@ function makeStruct(p, kind){
   return makeSt(p);
 }
 function makeSt(p){
-  const els=p.elements.filter(e=>e.poly && e.poly.length>=4);
+  const els=uniqueByKeyEls(p.elements.filter(e=>e.poly && e.poly.length>=4));
   if(!els.length) return null;
   const el=els[Math.floor(Math.random()*els.length)];
-  const wrong=similarOff(p, el.name, 3);
-  if(wrong.length<2) return null;
+  const wrong=similarOff(p, el.name, 8);
+  const opts=pickOptions(el.name, wrong, 3);
+  if(opts.length<3 || opts.filter(o=>sameAns(o,el.name)).length!==1) return null;
   const lab=el.id||"•";
-  const opts=uniqueByKey([el.name, ...wrong]);
-  if(opts.length<3) return null;
-  return {kind:"st", placa:p, target:el, targets:[el], items:[{target:el,options:shuffle(opts),answer:el.name}], options:shuffle(opts), answer:el.name,
+  return {kind:"st", placa:p, target:el, targets:[el], items:[{target:el,options:opts,answer:el.name}], options:opts, answer:el.name,
     prompt:`¿Cuál es esta estructura?  (${lab})`};
 }
 function makeStPack(p, n){
-  const els=p.elements.filter(e=>e.poly && e.poly.length>=4);
+  const els=uniqueByKeyEls(p.elements.filter(e=>e.poly && e.poly.length>=4));
   if(!els.length) return null;
   n=Math.min(Math.max(1,n||1), els.length);
   if(n===1) return makeSt(p);
   const targets=shuffle(els).slice(0,n);
   const items=[];
   for(const el of targets){
-    const wrong=similarOff(p, el.name, 3);
-    const opts=uniqueByKey([el.name, ...wrong]);
-    if(opts.length<3) continue;
-    items.push({target:el, options:shuffle(opts), answer:el.name});
+    const opts=pickOptions(el.name, similarOff(p, el.name, 8), 3);
+    if(opts.length<3 || opts.filter(o=>sameAns(o,el.name)).length!==1) continue;
+    items.push({target:el, options:opts, answer:el.name});
   }
   if(items.length<2) return items.length===1? makeSt(p): null;
   return {kind:"stpack", placa:p, targets:items.map(i=>i.target), items,
@@ -781,25 +1072,25 @@ function makeZone(p){
   }
   if(!tries.length) return null;
   const t=tries[Math.floor(Math.random()*tries.length)];
-  const correct=uniq(t.inn.map(x=>x.e.name));
-  const ckeys=new Set(t.inn.map(x=>x.e.key||norm(x.e.name)));
-  const outNames=uniq(t.out.map(x=>x.e.name)).filter(n=>!ckeys.has(norm(n)));
-  const extra=offNames(p,4);
-  const wrong=uniq(outNames.concat(extra)).filter(n=>!correct.includes(n)).slice(0, Math.max(2, 6-correct.length));
+  const correct=uniqueByKey(t.inn.map(x=>x.e.name));
+  const outNames=uniqueByKey(t.out.map(x=>x.e.name)).filter(n=>!correct.some(c=>sameAns(c,n)));
+  const extra=offNames(p,8);
+  const wrong=uniqueByKey(outNames.concat(extra)).filter(n=>!correct.some(c=>sameAns(c,n))).slice(0, Math.max(2, 6-correct.length));
   if(wrong.length<1 || correct.length<2) return null;
   const opts=uniqueByKey(correct.concat(wrong));
-  return {kind:"zone", placa:p, box:t.box, correct:uniqueByKey(correct), options:shuffle(opts),
+  if(correct.some(c=>opts.filter(o=>sameAns(o,c)).length!==1)) return null;
+  return {kind:"zone", placa:p, box:t.box, correct, options:shuffle(opts),
     prompt:"En esta zona, ¿qué estructuras encuentras?", sub:"Toca todas las que sí van · luego Listo"};
 }
 function makeAbsent(p){
   const on=namesOf(p);
   if(on.length<3) return null;
-  const off=offNames(p,8);
+  const off=offNames(p,16).filter(n=>!on.some(y=>sameAns(y,n)));
   if(!off.length) return null;
   const yes=shuffle(on).slice(0,3);
   const no=off[0];
   const opts=uniqueByKey(yes.concat([no]));
-  if(opts.length<4) return null;
+  if(opts.length<4 || opts.filter(o=>sameAns(o,no)).length!==1) return null;
   return {kind:"absent", placa:p, options:shuffle(opts), answer:no,
     prompt:"¿Qué estructura NO encuentras en esta placa?"};
 }
@@ -874,7 +1165,7 @@ function bindPlacaImg(q, labeled){
   const paintMarks=()=>{
     iw.querySelectorAll(".mark,.zonebox,.img-err").forEach(n=>n.remove());
     if(labeled) return;
-    const marks=(q.kind==="stpack"||q.kind==="st") ? (q.targets|| (q.target?[q.target]:[])) : [];
+    const marks=(!labeled && q.targets && q.targets.length) ? q.targets : (!labeled && q.target ? [q.target] : []);
     marks.forEach(el=>{
       if(!el||!el.poly) return;
       const [x,y]=centroid(el.poly);
@@ -941,7 +1232,7 @@ function renderBody(q, isLearn){
     $("okz").onclick=()=>{
       if(G.locked) return;
       const sel=[...picked].map(i=>q.options[i]);
-      const ok = sel.length===q.correct.length && q.correct.every(c=>sel.includes(c)) && sel.every(c=>q.correct.includes(c));
+      const ok = sameSet(sel, q.correct);
       if(isLearn) learnCheck(ok, null);
       else judge(ok,q,null,sel.join(" · ")||"(nada)");
     };
@@ -966,7 +1257,7 @@ function renderBody(q, isLearn){
     });
     $("okz").onclick=()=>{
       if(G.locked) return;
-      const detail=q.items.map(it=>it.pick===it.answer);
+      const detail=q.items.map(it=>it.pick!=null && sameAns(it.pick,it.answer));
       const ok=detail.every(Boolean) && q.items.every(it=>it.pick);
       const chosen=q.items.map(it=>it.pick||"(nada)").join(" · ");
       if(isLearn) learnCheck(ok, detail);
@@ -981,8 +1272,8 @@ function renderBody(q, isLearn){
       const val=q.options[+b.dataset.v];
       if(isLearn){
         if(q.items&&q.items[0]) q.items[0].pick=val;
-        learnCheck(val===q.answer, [val===q.answer]);
-      } else judge(val===q.answer,q,b,val);
+        learnCheck(sameAns(val,q.answer), [sameAns(val,q.answer)]);
+      } else judge(sameAns(val,q.answer),q,b,val);
     };
   });
 }
@@ -996,7 +1287,7 @@ function runTimer(){
     const left=G.deadline-Date.now();
     fill.style.transform=`scaleX(${Math.max(0,left/total)})`;
     if(left<3000) bar.classList.add("low");
-    if(left<=0){ judge(false,G.qs[G.i],null,"(tiempo)",true); return; }
+    if(left<=0){ if(G.mode==="exam") examReveal(true); else judge(false,G.qs[G.i],null,"(tiempo)",true); return; }
     raf=requestAnimationFrame(step);
   };
   raf=requestAnimationFrame(step);
@@ -1039,9 +1330,9 @@ function judge(ok,q,btn,chosen,timeout){
       $("opts").querySelectorAll(".opt,.tchip").forEach(b=>{
         const val=q.options[+b.dataset.v];
         if(q.kind==="zone"){
-          if(q.correct.includes(val)) b.classList.add("ok");
+          if(q.correct.some(c=>sameAns(c,val))) b.classList.add("ok");
           else if(b.classList.contains("on")) b.classList.add("bad");
-        } else if(val===q.answer) b.classList.add("ok");
+        } else if(sameAns(val,q.answer)) b.classList.add("ok");
         b.classList.add("lock");
       });
     }
@@ -1049,7 +1340,7 @@ function judge(ok,q,btn,chosen,timeout){
       document.querySelectorAll(".packrow .tchip").forEach(b=>{
         const it=q.items[+b.dataset.i];
         const val=it.options[+b.dataset.j];
-        if(val===it.answer) b.classList.add("ok");
+        if(sameAns(val,it.answer)) b.classList.add("ok");
         else if(b.classList.contains("on")) b.classList.add("bad");
         b.classList.add("lock");
       });
@@ -1123,7 +1414,60 @@ function preloadAll(){
   P.forEach(p=>{ const a=new Image(); a.src=p.imgSin; const b=new Image(); b.src=p.imgCon; });
 }
 
+function auditQuestions(nRandom){
+  const prevPack=S.pack;
+  const qs=[];
+  const note=q=>{ if(q) qs.push(q); };
+  for(const p of P){
+    note(makeDx(p,P));
+    for(const part of (p.parts||[])) note(makePart(p,part));
+    note(makeSt(p)); note(makeZone(p)); note(makeAbsent(p));
+    note(makeStPack(p,2)); note(makeStPack(p,4));
+  }
+  const classes=["all","2","3","4","5","6"];
+  const target=Math.max(0, +nRandom||2000);
+  let guard=0;
+  while(qs.length<target && guard++<800){
+    S.pack=[1,2,4][guard%3];
+    const cls=classes[guard%classes.length];
+    const lv=1+(guard%4);
+    const built=buildQuestions(pool(cls), lv, cls)||[];
+    built.forEach(note);
+  }
+  S.pack=prevPack;
+  const issues=[];
+  const check=(opts, answer, ctx, multi)=>{
+    const list=opts||[];
+    const seen=new Set();
+    for(const o of list){
+      const k=canon(o);
+      if(seen.has(k)) issues.push({ctx, type:"dup-option", key:k, option:o, options:list.slice()});
+      seen.add(k);
+    }
+    if(multi){
+      for(const c of (answer||[])){
+        const n=list.filter(o=>sameAns(o,c)).length;
+        if(n!==1) issues.push({ctx, type:"correct-count", n, answer:c, options:list.slice()});
+      }
+    } else if(answer!=null){
+      const n=list.filter(o=>sameAns(o,answer)).length;
+      if(n!==1) issues.push({ctx, type:"correct-count", n, answer, options:list.slice()});
+    }
+  };
+  const byKind={};
+  for(const q of qs){
+    const ctx=(q.kind||"?")+" "+((q.placa&&q.placa.code)||"");
+    byKind[q.kind]=(byKind[q.kind]||0)+1;
+    if(q.kind==="stpack"){
+      for(const it of (q.items||[])) check(it.options, it.answer, ctx+" #"+(it.target&&it.target.id));
+    } else if(q.kind==="zone") check(q.options, q.correct, ctx, true);
+    else if(q.options) check(q.options, q.answer, ctx);
+  }
+  return {total:qs.length, issues, byKind};
+}
+
 window.FB={ start, menu, showMap, showSettings, showLearnPick, startLearn,
+  showExamSetup, startExam, auditQuestions, canon, sameAns, pickOptions, makeDx, makePart, makeSt, makeZone, makeAbsent,
   get state(){return G;}, getS:()=>S, setS(p){ Object.assign(S,p); save(); },
   unlockAll(){ S.free=true; save(); } };
 preloadAll();
