@@ -1,0 +1,24 @@
+{
+  "id": "segundo-parcial",
+  "name": "Segundo parcial",
+  "course": "Morfogénesis III · Práctica · Segundo parcial",
+  "uni": "UCSG · Escuela de Medicina",
+  "prof": "Dr. Juan Pablo Herrera Valdivieso",
+  "exam": "Diagnóstico completo palabra por palabra + estructuras. En el examen las placas van silenciadas (sin nombres).",
+  "passScore": 80,
+  "out_js": "data/segundo-parcial.js",
+  "img_dir": "img/segundo-parcial",
+  "dpi_scale": 2.8,
+  "max_width": 2400,
+  "jpeg_quality": 85,
+  "classes": [
+    {
+      "id": "8",
+      "name": "Clase 8 — …",
+      "short": "…",
+      "pdf": "/ruta/absoluta/o/relativa/CLASE 08.pdf",
+      "pages": "2-20",
+      "notes": "Solo páginas que son placas. No inventar diagnósticos ni estructuras."
+    }
+  ]
+}

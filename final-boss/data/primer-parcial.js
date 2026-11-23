@@ -1,4 +1,10 @@
 /* Autogenerado desde materiales de clase. No inventar ni editar a mano. */
+window.FB_SET = {
+  "id": "primer-parcial",
+  "name": "Primer parcial",
+  "course": "Morfogénesis III · Práctica · Primer parcial",
+  "file": "data/primer-parcial.js"
+};
 window.FB_META = {
   "title": "FINAL BOSS",
   "course": "Morfogénesis III · Práctica · Primer parcial",

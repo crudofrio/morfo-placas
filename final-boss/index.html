@@ -164,6 +164,14 @@ input[type=range]{width:100%;height:32px;accent-color:#00e6c3}
 .progline i.now{background:var(--yel);color:#1a0a16}
 .record{font-weight:800;color:var(--yel);margin:6px 0}
 .row > .chip.wide{flex:1 0 100%;text-align:center}
+.kindrow{display:grid;gap:8px;margin:10px 0}
+.kind{text-align:left;border:1px solid var(--line);background:#1a1633;border-radius:14px;padding:10px 12px;min-height:56px}
+.kind b{display:block;font-size:14px;font-weight:800}
+.kind span{display:block;font-size:12px;color:var(--dim);font-weight:600;margin-top:3px;line-height:1.35}
+.kind.on{border-color:var(--cyan);color:var(--cyan);background:#123}
+.kind.on span{color:#9beee0}
+.setrow{margin:0 0 10px}
+@media (min-width:700px){ .kindrow{grid-template-columns:1fr 1fr 1fr} }
 .dualimg{display:grid;gap:8px;margin-bottom:8px}
 
 
@@ -246,13 +254,13 @@ input[type=range]{width:100%;height:32px;accent-color:#00e6c3}
 </head>
 <body>
 <div id="app"></div>
-<script src="data.js"></script>
+<script src="data/primer-parcial.js"></script>
 <script>
 (function(){
-const P = window.FB_PLACAS || [];
-const META = window.FB_META || {};
-const STRUCTS = window.FB_STRUCTS || [];
-const COVER = window.FB_COVER || {};
+let P = window.FB_PLACAS || [];
+let META = window.FB_META || {};
+let STRUCTS = window.FB_STRUCTS || [];
+let COVER = window.FB_COVER || {};
 const $ = id => document.getElementById(id);
 const app = $("app");
 const LS = "fb_morfo_v2";
@@ -271,15 +279,59 @@ const DEFAULTS = {
   timeMode:"level", timeSec:16, timeL:{1:13,2:16,3:16,4:20},
   advance:"manual", autoMs:2000, pack:1,
   examSec:60, examN:4, examCls:"all", examProg:true, examLimit:80,
-  examHist:[], examBestAvg:null, examBestPlaca:null, examNV2:true
+  examHist:[], examBestAvg:null, examBestPlaca:null, examNV2:true,
+  examKind:"full", examKinds:null
 };
-const EXAM_LADDER=[80,75,70,65,60,55,50,45];
+const EXAM_KINDS={
+  dx:{
+    id:"dx", title:"Solo diagnósticos",
+    blurb:"Placa silenciada, sin flechas. En tu hoja solo el diagnóstico, palabra por palabra.",
+    setupLead:"Calentamiento: ves la placa silenciada (sin flechas), escribes solo el Dx y te calificas con ✓ o ✗.",
+    sheet:"Diagnóstico", sheetSub:"Escríbelo en tu hoja y toca Listo. El cronómetro cuenta lo que tardas.",
+    tag:"Silenciada",
+    countdown:"solo el diagnóstico",
+    resultsNote:"1 punto por placa (solo el Dx).",
+    missTitle:"Por placa (1 pt = diagnóstico)",
+    ladder:[30,27,24,21,18,15], defaultLimit:30, defaultSec:30,
+    arrows:0, gradeDx:true, gradeSt:false, ptsPer:1
+  },
+  st:{
+    id:"st", title:"Solo estructuras",
+    blurb:"4 flechas. En tu hoja las estructuras 1–4, tal cual la diapo.",
+    setupLead:"Calentamiento: ves la placa silenciada con 4 flechas, escribes las 1–4 y te calificas cada una.",
+    sheet:"Estructuras 1–4", sheetSub:"Escríbelas en tu hoja y toca Listo. El cronómetro cuenta lo que tardas.",
+    tag:"Silenciada · 1–4",
+    countdown:"las estructuras 1–4",
+    resultsNote:"4 puntos por placa (una por estructura).",
+    missTitle:"Por placa (4 pts = estructuras 1–4)",
+    ladder:[60,55,50,45,40,35], defaultLimit:60, defaultSec:60,
+    arrows:4, gradeDx:false, gradeSt:true, ptsPer:4
+  },
+  full:{
+    id:"full", title:"Completo",
+    blurb:"Como el parcial: diagnóstico + 4 estructuras, 80 s y vas bajando hasta 60.",
+    setupLead:"El parcial real va unas 4–6 placas, 60 s cada una, variadas entre todo el curso. Ves la placa silenciada con 4 flechas, escribes en tu hoja el Dx y las 1–4, y tocas Listo. Acá no se tipea.",
+    sheet:"Dx + 1–4", sheetSub:"Escríbelo en tu hoja y toca Listo. El cronómetro cuenta lo que tardas.",
+    tag:"Silenciada · 1–4",
+    countdown:"el diagnóstico y las 1–4",
+    resultsNote:"5 puntos por placa (Dx + 4 estructuras).",
+    missTitle:"Por placa (5 pts = Dx + 4 estructuras)",
+    ladder:[80,75,70,65,60], defaultLimit:80, defaultSec:60,
+    arrows:4, gradeDx:true, gradeSt:true, ptsPer:5
+  }
+};
 const EXAM_CHIPS=[1,4,5,6,10,20,30];
 const EXAM_PASS=80;
+function examKindDef(id){ return EXAM_KINDS[id] || EXAM_KINDS.full; }
+function emptyKindState(id){
+  const d=examKindDef(id);
+  return {prog:true, sec:d.defaultSec, limit:d.defaultLimit, hist:[], bestAvg:null, bestPlaca:null};
+}
 
+function lsKey(){ return currentSetId==="primer-parcial" ? LS : LS+"__"+currentSetId; }
 const load = () => {
   try {
-    const raw=JSON.parse(localStorage.getItem(LS)||"{}");
+    const raw=JSON.parse(localStorage.getItem(lsKey())||"{}");
     const s=Object.assign({}, DEFAULTS, raw);
     s.timeL=Object.assign({}, TIME_DEF, raw.timeL||{});
     if(!["level","custom","off"].includes(s.timeMode)) s.timeMode="level";
@@ -287,22 +339,175 @@ const load = () => {
     s.pack=[1,2,4].includes(+s.pack)?+s.pack:1;
     s.timeSec=Math.max(10,Math.min(60,+s.timeSec||16));
     s.autoMs=Math.max(600,Math.min(8000,+s.autoMs||2000));
-    s.examSec=Math.max(20,Math.min(180,+s.examSec||60));
     if(!raw.examNV2 && (raw.examN==null || raw.examN===10)) s.examN=4;
     if(s.examN==="all") s.examN="all";
-    else s.examN=Math.max(1, Math.min(P.length, +s.examN||4));
-    s.examCls=["2","3","4","5","6"].includes(String(s.examCls))?String(s.examCls):"all";
-    s.examProg=s.examProg!==false;
-    s.examLimit=EXAM_LADDER.includes(+s.examLimit)?+s.examLimit:80;
-    s.examHist=Array.isArray(s.examHist)?s.examHist.slice(0,20):[];
+    else s.examN=Math.max(1, Math.min(Math.max(1,P.length), +s.examN||4));
+    s.examCls=classValid(s.examCls)?String(s.examCls):"all";
+    s.examKind=["dx","st","full"].includes(s.examKind)?s.examKind:"full";
+    const kinds={};
+    for(const id of Object.keys(EXAM_KINDS)){
+      kinds[id]=Object.assign(emptyKindState(id), (raw.examKinds&&raw.examKinds[id])||{});
+      kinds[id].hist=Array.isArray(kinds[id].hist)?kinds[id].hist.slice(0,20):[];
+      const lad=examKindDef(id).ladder;
+      kinds[id].limit=lad.includes(+kinds[id].limit)?+kinds[id].limit:examKindDef(id).defaultLimit;
+      kinds[id].sec=Math.max(15,Math.min(180,+kinds[id].sec||examKindDef(id).defaultSec));
+      kinds[id].prog=kinds[id].prog!==false;
+    }
+    // migrate previous completo records (one-time)
+    if(!raw.examKinds && Array.isArray(raw.examHist) && raw.examHist.length){
+      kinds.full.hist=raw.examHist.slice(0,20);
+      if(raw.examBestAvg!=null) kinds.full.bestAvg=raw.examBestAvg;
+      if(raw.examBestPlaca!=null) kinds.full.bestPlaca=raw.examBestPlaca;
+      const lad=EXAM_KINDS.full.ladder;
+      if(lad.includes(+raw.examLimit)) kinds.full.limit=+raw.examLimit;
+      else if(+raw.examLimit>60) kinds.full.limit=60;
+      kinds.full.sec=Math.max(15,Math.min(180,+raw.examSec||60));
+      kinds.full.prog=raw.examProg!==false;
+    }
+    s.examKinds=kinds;
+    const st=kinds[s.examKind];
+    s.examSec=st.sec; s.examProg=st.prog; s.examLimit=st.limit;
+    s.examHist=st.hist; s.examBestAvg=st.bestAvg; s.examBestPlaca=st.bestPlaca;
     s.examNV2=true;
     return s;
-  } catch(e){ return Object.assign({}, DEFAULTS, {timeL:Object.assign({},TIME_DEF)}); }
+  } catch(e){ return Object.assign({}, DEFAULTS, {timeL:Object.assign({},TIME_DEF), examKinds:{dx:emptyKindState("dx"),st:emptyKindState("st"),full:emptyKindState("full")}}); }
 };
-const save = () => localStorage.setItem(LS, JSON.stringify(S));
+function syncKindAliases(){
+  const st=kindState();
+  if(!st) return;
+  st.sec=S.examSec; st.prog=S.examProg; st.limit=S.examLimit;
+  st.hist=S.examHist; st.bestAvg=S.examBestAvg; st.bestPlaca=S.examBestPlaca;
+  S.examKinds[S.examKind]=st;
+}
+const save = () => { syncKindAliases(); localStorage.setItem(lsKey(), JSON.stringify(S)); };
+let currentSetId=(window.FB_SET&&window.FB_SET.id)||"primer-parcial";
+const SET_CACHE={};
+const AVAILABLE_SETS=[{id:"primer-parcial", name:"Primer parcial", src:"data/primer-parcial.js", required:true, loaded:true}];
 let S = load();
 let selCls = "all";
 let G=null, raf=null, imgGen=0, audioCtx=null, fbTimer=null;
+
+function classIds(){
+  const ids=META.classes?Object.keys(META.classes):[];
+  if(ids.length) return ids;
+  return [...new Set(P.map(p=>String(p.cls)))].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
+}
+function classValid(c){ return c==="all" || classIds().includes(String(c)); }
+function classShort(c){
+  const m=META.classes&&META.classes[c];
+  if(m&&m.short) return m.short;
+  const fallback={2:"Gastro",3:"Tubo",4:"Cresta",5:"SNA",6:"Prosencéfalo"};
+  if(fallback[c]) return fallback[c];
+  if(m&&m.name){
+    const n=String(m.name).replace(/^Clase\s+\S+\s*[—–-]\s*/,"").trim();
+    return (n.split(/\s+/)[0]||("C"+c)).slice(0,16);
+  }
+  return "C"+c;
+}
+function classChips(sel, mode){
+  const allLab=mode==="exam"?("Todo el parcial ("+P.length+")"):(mode==="compact"?"TODO":("TODO ("+P.length+")"));
+  const all=`<button class="chip ${mode==="exam"?"wide ":""}${sel==="all"?"on":""}" data-cls="all">${allLab}</button>`;
+  const rest=classIds().map(c=>{
+    const k=(META.classes&&META.classes[c]&&META.classes[c].count)||pool(c).length;
+    const lab=mode==="exam"||mode==="compact"?("C"+c):(c+" · "+classShort(c)+" ("+k+")");
+    return `<button class="chip ${sel===c?"on":""}" data-cls="${c}">${lab}</button>`;
+  }).join("");
+  return all+rest;
+}
+function normalizePlaca(p){
+  if(!p||typeof p!=="object") return p;
+  p.cls=String(p.cls||p.class||"");
+  p.diagnosis=p.diagnosis||p.diagnosis_exact||p.diagnosisExact||"";
+  p.imgSin=p.imgSin||p.img_sin||p.imgSilenciada||p.img_silenciada||"";
+  p.imgCon=p.imgCon||p.img_con||p.imgConNombres||p.img_con_nombres||"";
+  if((!p.elements||!p.elements.length) && Array.isArray(p.structures)){
+    p.elements=p.structures.map(s=>{
+      const id=String(s.n??s.id??"");
+      const name=s.label||s.name||"";
+      let poly=s.poly;
+      if((!poly||poly.length<4) && s.x!=null && s.y!=null){
+        const x=+s.x, y=+s.y, w=+(s.w||6), h=+(s.h||5);
+        poly=[[x-w/2,y-h/2],[x+w/2,y-h/2],[x+w/2,y+h/2],[x-w/2,y+h/2]];
+      }
+      return {id, name, poly, key:s.key||canon(name)};
+    });
+  }
+  if(!Array.isArray(p.parts)) p.parts=p.parts||[];
+  return p;
+}
+function bindDataset(){
+  P=(window.FB_PLACAS||[]).map(normalizePlaca);
+  META=window.FB_META||{};
+  STRUCTS=window.FB_STRUCTS||[];
+  COVER=window.FB_COVER||{};
+  currentSetId=(window.FB_SET&&window.FB_SET.id)||currentSetId||"primer-parcial";
+  cacheSet(currentSetId);
+}
+function cacheSet(id){
+  SET_CACHE[id]={
+    SET:window.FB_SET, META:window.FB_META,
+    PLACAS:window.FB_PLACAS, STRUCTS:window.FB_STRUCTS, COVER:window.FB_COVER
+  };
+}
+function applyCachedSet(id){
+  const c=SET_CACHE[id]; if(!c) return false;
+  window.FB_SET=c.SET; window.FB_META=c.META;
+  window.FB_PLACAS=c.PLACAS; window.FB_STRUCTS=c.STRUCTS; window.FB_COVER=c.COVER;
+  bindDataset();
+  return true;
+}
+function currentSetMeta(){
+  return AVAILABLE_SETS.find(s=>s.id===currentSetId)||{id:currentSetId,name:(window.FB_SET&&window.FB_SET.name)||"Primer parcial"};
+}
+function setSelector(){
+  return `<div class="row setrow" id="sets">${AVAILABLE_SETS.map(s=>
+    `<button class="chip ${s.id===currentSetId?"on":""}" data-set="${s.id}">${esc(s.name)}</button>`
+  ).join("")}</div>`;
+}
+function switchSet(id){
+  if(!id||id===currentSetId) return;
+  const spec=AVAILABLE_SETS.find(s=>s.id===id);
+  if(!spec) return;
+  const go=()=>{
+    currentSetId=id;
+    selCls="all";
+    S=load();
+    menu();
+  };
+  cacheSet(currentSetId);
+  if(applyCachedSet(id)){ go(); return; }
+  const sc=document.createElement("script");
+  sc.src=spec.src+(spec.src.indexOf("?")>=0?"&":"?")+"t="+Date.now();
+  sc.onload=()=>{ cacheSet(id); bindDataset(); spec.loaded=true; go(); };
+  sc.onerror=()=>alert("No pude cargar el set "+spec.name+".");
+  document.head.appendChild(sc);
+}
+async function discoverExtraSets(){
+  const extras=[{id:"segundo-parcial", name:"Segundo parcial", src:"data/segundo-parcial.js"}];
+  let added=false;
+  for(const s of extras){
+    if(AVAILABLE_SETS.some(x=>x.id===s.id)) continue;
+    try{
+      const r=await fetch(s.src,{cache:"no-store"});
+      if(!r.ok) continue;
+      const t=await r.text();
+      if(!/window\.FB_(PLACAS|SET)\s*=/.test(t)) continue;
+      AVAILABLE_SETS.push(Object.assign({loaded:false}, s));
+      added=true;
+    }catch(e){}
+  }
+  if(added && $("screen-menu")) menu();
+}
+function kindState(id){ id=id||S.examKind||"full"; S.examKinds=S.examKinds||{}; if(!S.examKinds[id]) S.examKinds[id]=emptyKindState(id); return S.examKinds[id]; }
+function setExamKind(id){
+  if(!EXAM_KINDS[id]) id="full";
+  syncKindAliases();
+  S.examKind=id;
+  const st=kindState(id);
+  S.examSec=st.sec; S.examProg=st.prog; S.examLimit=st.limit;
+  S.examHist=st.hist; S.examBestAvg=st.bestAvg; S.examBestPlaca=st.bestPlaca;
+  save();
+}
 
 function beep(type){
   if (S.mute) return;
@@ -447,11 +652,6 @@ function cheatOn(cls){
 function menu(){
   stopTimer(); clearFB(); setPlayLayout(false); G=null;
   const n = nextLevel(selCls);
-  const counts=["2","3","4","5","6"].map(c=>{
-    const k=(META.classes&&META.classes[c]&&META.classes[c].count)||pool(c).length;
-    const short={2:"Gastro",3:"Tubo",4:"Cresta",5:"SNA",6:"Prosencéfalo"}[c];
-    return `<button class="chip ${selCls===c?"on":""}" data-cls="${c}">${c} · ${short} (${k})</button>`;
-  }).join("");
   const levels=[1,2,3,4].map(lv=>{
     const lock=!unlocked(selCls,lv);
     const pr=prog(selCls)[lv];
@@ -463,18 +663,18 @@ function menu(){
   const packLab={1:"de a una",2:"en duplas",4:"de a 4"}[S.pack]||"de a una";
   app.innerHTML = `
     <div class="top">
-      <div class="brand"><div class="k">Morfogénesis III · Práctica</div><h1>FINAL BOSS</h1></div>
+      <div class="brand"><div class="k">${esc((META.course||"Morfogénesis III · Práctica"))}</div><h1>FINAL BOSS</h1></div>
       <button class="ib" id="btn-set" title="Ajustes">⚙️</button>
       <button class="ib ${S.mute?"":"on"}" id="mute">${S.mute?"🔇":"🔊"}</button>
     </div>
     <div id="screen-menu">
+      ${setSelector()}
       <p class="lead">Placas <b style="color:var(--yel)">silenciadas</b>, como en el examen. El diagnóstico va palabra por palabra (sin número de sección). Toca, no escribas.</p>
-      <button class="pulse exam" id="btn-exam">EXAMEN SIMULADO<small>4 placas variadas, como el parcial. Escribes en tu hoja. Empiezas en 80 s y vas apretando el tiempo.</small></button>
+      <button class="pulse exam" id="btn-exam">EXAMEN SIMULADO<small>Como el parcial, o calienta con solo diagnósticos o solo estructuras. Escribes en tu hoja.</small></button>
       <button class="pulse alt" id="btn-learn">APRENDER ESTRUCTURAS<small>Placa por placa, flechas numeradas, ${packLab}. Luego ves la placa con nombres.</small></button>
       <button class="pulse" id="btn-play">JUGAR · ${LNAMES[n]}<small>${selCls==="all"?"Todo el parcial":"Clase "+selCls} · desbloquea el siguiente con ${PASS}%</small></button>
       <div class="row" id="cls">
-        <button class="chip ${selCls==="all"?"on":""}" data-cls="all">TODO (${P.length})</button>
-        ${counts}
+        ${classChips(selCls,"menu")}
       </div>
       <div class="lv">${levels}</div>
       <button class="ghost" id="btn-map">🗺️ Mapa de los secretos</button>
@@ -485,7 +685,7 @@ function menu(){
       <div class="stat"><b>${S.bestCombo?("x"+S.bestCombo):"—"}</b><span>Combo</span></div>
       <div class="stat"><b>${P.length}</b><span>Placas</span></div>
     </div>
-    <p class="foot">41 placas reales de las diapos (clases 2–6). Clase 1 son reglas y la 7 es notas. <a href="../index.html">App de estudio 2–4</a></p>
+    <p class="foot">${P.length} placas reales de las diapos${META.footer?(" · "+esc(META.footer)):"."} ${currentSetId==="primer-parcial"?'<a href="../index.html">App de estudio 2–4</a>':""}</p>
   `;
   $("mute").onclick=()=>{S.mute=!S.mute;save();menu();};
   $("btn-set").onclick=showSettings;
@@ -494,6 +694,7 @@ function menu(){
   $("btn-learn").onclick=()=>showLearnPick();
   $("btn-map").onclick=()=>showMap();
   $("btn-free").onclick=()=>{S.free=!S.free;save();menu();};
+  app.querySelectorAll("#sets [data-set]").forEach(b=>b.onclick=()=>switchSet(b.dataset.set));
   app.querySelectorAll("#cls [data-cls]").forEach(b=>b.onclick=()=>{selCls=b.dataset.cls;menu();});
   app.querySelectorAll(".lvc").forEach(b=>b.onclick=()=>{
     const lv=+b.dataset.lv;
@@ -551,12 +752,12 @@ function showSettings(){
       </div>
       <div class="cardset">
         <b>Examen simulado</b>
-        <p class="lead" style="margin:4px 0 0">«Mejorar tiempos» (recomendado): arrancas en 80 s. Si sacas ≥80%, baja 5 s (80→75→…→60, y de reto 55/50/45). Si no llegas, se mantiene. El cronómetro cuenta lo que tardas. También puedes fijar un tiempo.</p>
+        <p class="lead" style="margin:4px 0 0">Cada modo (Solo diagnósticos, Solo estructuras, Completo) tiene su propia escalera y su récord. Completo: 80→75→70→65→60 s. Diagnósticos parte en 30 s; estructuras, en 60 s. Si sacas ≥80%, baja un peldaño; si no, se queda. El cronómetro cuenta lo que tardas.</p>
         <div class="seg" id="emode">
           <button data-m="prog" class="${S.examProg!==false?"on":""}">Mejorar tiempos</button>
           <button data-m="fixed" class="${S.examProg===false?"on":""}">Tiempo fijo</button>
         </div>
-        <p class="lead" id="elimhint">${S.examProg!==false?("Ahora: "+(EXAM_LADDER.includes(+S.examLimit)?S.examLimit:80)+" s"+(function(){ const c=EXAM_LADDER.includes(+S.examLimit)?+S.examLimit:80; const i=EXAM_LADDER.indexOf(c); const nxt=i>=0&&i<EXAM_LADDER.length-1?EXAM_LADDER[i+1]:null; return nxt?" · si pasas, sigue "+nxt+" s":" · reto máximo"; })()):("Fijo: "+(S.examSec||60)+" s")}</p>
+        <p class="lead" id="elimhint">${(function(){ const d=examKindDef(S.examKind); const lad=d.ladder; if(S.examProg!==false){ const c=lad.includes(+S.examLimit)?+S.examLimit:d.defaultLimit; const i=lad.indexOf(c); const nxt=i>=0&&i<lad.length-1?lad[i+1]:null; return d.title+" · ahora "+c+" s"+(nxt?" · si pasas, sigue "+nxt+" s":" · reto máximo"); } return d.title+" · fijo: "+(S.examSec||d.defaultSec)+" s"; })()}</p>
         <div id="exfixed" class="${S.examProg===false?"":"hide"}">
           <div class="slabel">Segundos por placa <span id="exsecv">${S.examSec||60} s</span></div>
           <input type="range" id="exsec" min="20" max="180" step="5" value="${S.examSec||60}">
@@ -600,25 +801,29 @@ function showSettings(){
   if(exsec) exsec.oninput=()=>{ S.examSec=+exsec.value; $("exsecv").textContent=S.examSec+" s"; save(); };
   $("reset").onclick=()=>{
     const keep={mute:S.mute,best:S.best,bestCombo:S.bestCombo,mastery:S.mastery,sm:S.sm,progress:S.progress,free:S.free,
-      examHist:S.examHist, examBestAvg:S.examBestAvg, examBestPlaca:S.examBestPlaca, examLimit:S.examLimit};
-    S=Object.assign({}, DEFAULTS, keep, {timeL:Object.assign({},TIME_DEF), examHist:S.examHist||[], examLimit:S.examLimit||80, examNV2:true});
+      examKind:S.examKind, examKinds:S.examKinds, examHist:S.examHist, examBestAvg:S.examBestAvg, examBestPlaca:S.examBestPlaca, examLimit:S.examLimit};
+    S=Object.assign({}, DEFAULTS, keep, {timeL:Object.assign({},TIME_DEF), examNV2:true, examKinds:keep.examKinds, examKind:keep.examKind||"full"});
+    setExamKind(S.examKind);
     save(); showSettings();
   };
 }
 
 
 /* ---------- examen simulado ---------- */
-function examLimit(){ return Math.max(20, Math.min(180, +S.examSec||60)); }
+function examLimit(){ const d=examKindDef(S.examKind); return Math.max(15, Math.min(180, +S.examSec||d.defaultSec)); }
 function examProgressOn(){ return S.examProg!==false; }
+function examLadder(){ return examKindDef(S.examKind).ladder; }
 function examTarget(){
+  const d=examKindDef(S.examKind);
   if(!examProgressOn()) return examLimit();
-  return EXAM_LADDER.includes(+S.examLimit)?+S.examLimit:80;
+  return examLadder().includes(+S.examLimit)?+S.examLimit:d.defaultLimit;
 }
 function nextExamLimit(cur, passed){
   if(!passed) return cur;
-  const i=EXAM_LADDER.indexOf(cur);
-  if(i<0) return EXAM_LADDER[0];
-  return EXAM_LADDER[Math.min(EXAM_LADDER.length-1, i+1)];
+  const lad=examLadder();
+  const i=lad.indexOf(cur);
+  if(i<0) return lad[0];
+  return lad[Math.min(lad.length-1, i+1)];
 }
 function fmtClock(sec){
   sec=Math.max(0,Math.round(sec||0));
@@ -678,14 +883,15 @@ function pickSpread(p, n){
 
 function showExamSetup(){
   stopTimer(); clearFB(); setPlayLayout(false); G=null;
+  const kind=examKindDef(S.examKind||"full");
   const cls=S.examCls||"all";
-  const list=pool(cls).filter(p=>pickSpread(p,4));
+  const list=pool(cls).filter(p=>kind.arrows? !!pickSpread(p, kind.arrows) : !!(p.diagnosis));
   const maxN=Math.max(1, list.length);
   let nChoice=S.examN==="all"?"all":Math.max(1, Math.min(maxN, +S.examN||4));
   const nVal=nChoice==="all"?maxN:nChoice;
   const last=(S.examHist||[]).slice(0,5);
-  const rec=S.examBestAvg?`<div class="record">Récord: ${(+S.examBestAvg).toFixed(+S.examBestAvg%1?1:0)} s/placa${S.examBestPlaca!=null?" · placa más rápida "+S.examBestPlaca+" s":""}</div>`:"";
-  const hist=last.length?`<div class="hist"><b>Historial</b>${last.map(h=>{
+  const rec=S.examBestAvg?`<div class="record">Récord (${kind.title}): ${(+S.examBestAvg).toFixed(+S.examBestAvg%1?1:0)} s/placa${S.examBestPlaca!=null?" · placa más rápida "+S.examBestPlaca+" s":""}</div>`:"";
+  const hist=last.length?`<div class="hist"><b>Historial · ${esc(kind.title)}</b>${last.map(h=>{
     const when=new Date(h.ts).toLocaleString("es-CO",{dateStyle:"short",timeStyle:"short"});
     const avg=h.avg!=null?` · ${h.avg} s/placa`:"";
     return `<div>${esc(when)} · ${h.cls==="all"?"Todo el parcial":"C"+h.cls} · ${h.n} placas · <b style="color:var(--yel)">${h.score}/${h.max}</b>${avg} · tope ${h.sec}s</div>`;
@@ -695,18 +901,24 @@ function showExamSetup(){
   const nxt=examProgressOn()? nextExamLimit(lim,true) : null;
   const timeLead=examProgressOn()
     ? `Mejorar tiempos: ahora ${lim} s por placa`+(nxt && nxt!==lim?` · si sacas ≥${EXAM_PASS}%, baja a ${nxt} s`:" · reto máximo")+"."
-    : `Tiempo fijo: ${lim} s por placa (lo cambias en Ajustes).`;
+    : `Tiempo fijo: ${lim} s por placa.`;
+  const kinds=Object.keys(EXAM_KINDS).map(id=>{
+    const d=EXAM_KINDS[id], on=d.id===(S.examKind||"full");
+    const st=kindState(id);
+    const now=d.ladder.includes(+st.limit)?st.limit:d.defaultLimit;
+    return `<button type="button" class="kind ${on?"on":""}" data-k="${d.id}"><b>${esc(d.title)}</b><span>${esc(d.blurb)} Escalera: ${d.ladder[0]}→${d.ladder[d.ladder.length-1]} s${st.bestAvg!=null?" · récord "+st.bestAvg+" s/placa":""}.</span></button>`;
+  }).join("");
   app.innerHTML=`
     <div class="top">
       <button class="ib" id="back">◀</button>
-      <div class="brand"><div class="k">Como el parcial</div><h1 style="font-size:22px">Examen simulado</h1></div>
+      <div class="brand"><div class="k">Lápiz y papel</div><h1 style="font-size:22px">Examen simulado</h1></div>
       <button class="ib" id="btn-set" title="Ajustes">⚙️</button>
     </div>
     <div id="screen-exam-setup">
-      <p class="lead">El parcial real va unas <b style="color:var(--yel)">4–6 placas</b>, 60 s cada una, <b style="color:var(--yel)">variadas</b> entre todo el curso. Ves la placa silenciada con 4 flechas, escribes en tu hoja el Dx y las 1–4, y tocas Listo. Acá no se tipea.</p>
+      <div class="kindrow" id="ekind">${kinds}</div>
+      <p class="lead">${kind.setupLead.replace(/4–6 placas/g,'<b style="color:var(--yel)">4–6 placas</b>').replace(/60 s cada una/g,'<b style="color:var(--yel)">60 s</b> cada una').replace(/variadas/g,'<b style="color:var(--yel)">variadas</b>')}</p>
       <div class="row" id="ecls">
-        <button class="chip wide ${cls==="all"?"on":""}" data-cls="all">Todo el parcial (${P.length})</button>
-        ${["2","3","4","5","6"].map(c=>`<button class="chip ${cls===c?"on":""}" data-cls="${c}">C${c}</button>`).join("")}
+        ${classChips(cls,"exam")}
       </div>
       <div class="slabel">Cuántas placas <span id="exnv">${nChoice==="all"?"Todas ("+maxN+")":nVal+" / "+maxN}</span></div>
       <div class="step">
@@ -731,6 +943,7 @@ function showExamSetup(){
     </div>`;
   $("back").onclick=menu;
   $("btn-set").onclick=showSettings;
+  app.querySelectorAll("#ekind [data-k]").forEach(b=>b.onclick=()=>{ setExamKind(b.dataset.k); showExamSetup(); });
   app.querySelectorAll("#ecls [data-cls]").forEach(b=>b.onclick=()=>{ S.examCls=b.dataset.cls; save(); showExamSetup(); });
   function setN(v, refresh){
     if(v==="all") S.examN="all";
@@ -758,19 +971,22 @@ function showExamSetup(){
 }
 
 function startExam(opts){
+  const kindId=opts.kind||S.examKind||"full";
+  const kind=examKindDef(kindId);
   const cls=opts.cls||S.examCls||"all";
   const bag=(opts.list||pool(cls)).filter(p=>{
-    const t=pickSpread(p,4); return t&&t.length===4;
+    if(kind.arrows){ const t=pickSpread(p,kind.arrows); return t&&t.length===kind.arrows; }
+    return !!(p&&p.diagnosis);
   });
   let n=opts.n==="all"?bag.length:Math.min(+opts.n||4, bag.length);
   if(opts.only) n=opts.only.length;
   const pick=opts.only? opts.only.map(code=>bag.find(p=>p.code===code)||P.find(p=>p.code===code)).filter(Boolean) : pickExamPlacas(bag, n);
   const qs=pick.map(p=>{
-    const targets=pickSpread(p,4);
-    return {kind:"exam", placa:p, targets, prompt:"Escribe en tu hoja el diagnóstico y las estructuras 1–4.", marks:null};
-  }).filter(q=>q.targets&&q.targets.length===4);
-  if(!qs.length){ alert("No hay placas con 4 estructuras bien ubicadas."); return; }
-  G={mode:"exam", cls, qs, i:0, t0:Date.now(), log:[], limit:examTarget(), prog:examProgressOn(), repeat:!!opts.only};
+    const targets=kind.arrows? pickSpread(p, kind.arrows) : [];
+    return {kind:"exam", examKind:kindId, placa:p, targets:targets||[], prompt:"Escribe en tu hoja "+kind.countdown+".", marks:null};
+  }).filter(q=>!kind.arrows || (q.targets&&q.targets.length===kind.arrows));
+  if(!qs.length){ alert(kind.arrows?"No hay placas con "+kind.arrows+" estructuras bien ubicadas.":"No hay placas con diagnóstico para este set."); return; }
+  G={mode:"exam", examKind:kindId, cls, qs, i:0, t0:Date.now(), log:[], limit:examTarget(), prog:examProgressOn(), repeat:!!opts.only, ptsPer:kind.ptsPer, gradeDx:kind.gradeDx, gradeSt:kind.gradeSt, arrows:kind.arrows};
   beep("go");
   if(opts.skipCount) showExamQ();
   else examCountdown();
@@ -781,7 +997,8 @@ function examCountdown(){
   let n=3;
   const tick=()=>{
     if(gen!==countGen) return;
-    app.innerHTML=`<div class="count" id="screen-count"><div class="k" style="color:var(--cyan);letter-spacing:.16em;font-weight:800;font-size:12px">EXAMEN SIMULADO · ${G.cls==="all"?"TODO EL PARCIAL":"CLASE "+G.cls}</div><b>${n}</b><p style="color:var(--dim)">${G.qs.length} placas · ${G.limit} s c/u · lápiz y papel. Suéltalo.</p></div>`;
+    const kind=examKindDef(G.examKind);
+    app.innerHTML=`<div class="count" id="screen-count"><div class="k" style="color:var(--cyan);letter-spacing:.16em;font-weight:800;font-size:12px">EXAMEN · ${esc(kind.title).toUpperCase()} · ${G.cls==="all"?"TODO EL PARCIAL":"CLASE "+G.cls}</div><b>${n}</b><p style="color:var(--dim)">${G.qs.length} placas · ${G.limit} s c/u · ${kind.countdown}. Suéltalo.</p></div>`;
     beep("go"); vibe(18);
     if(n>1){ n--; setTimeout(tick,500); }
     else setTimeout(()=>{ if(gen!==countGen) return; beep("combo");showExamQ();},500);
@@ -1092,7 +1309,7 @@ function showExamQ(){
         <div class="down" id="etleft">⬇ ${G.limit}s</div>
       </div>`,
     bar:`<div class="bar" id="tbar"><i id="tfill"></i></div>`,
-    sheet:`<div class="sheet"><b>Placa ${sheetNum}: Dx + 1–4</b><span>Escríbelo en tu hoja y toca Listo. El cronómetro cuenta lo que tardas.</span></div>`,
+    sheet:`<div class="sheet"><b>Placa ${sheetNum}: ${esc(examKindDef(G.examKind).sheet)}</b><span>${esc(examKindDef(G.examKind).sheetSub)}</span></div>`,
     img: placaHTML({id:"iw", tag:`Clase ${p.cls} · ${p.code}`, src:p.imgSin, alt:"Placa "+p.code, on:true}),
     body:`<button class="go" id="okz">Listo</button>`
   });
@@ -1129,8 +1346,9 @@ function examReveal(timeout){
   const elapsed=Math.max(1, Math.min(G.limit, Math.round((Date.now()-(G.placaT0||Date.now()))/1000)));
   q.elapsed=elapsed;
   if(timeout){ beep("bad"); vibe([30,30,30]); } else { beep("ok"); vibe(12); }
-  const marks=q.targets||[];
-  q.grade={dx:null, st:marks.map(()=>null)};
+  const kind=examKindDef(G.examKind);
+  const marks=kind.gradeSt?(q.targets||[]):[];
+  q.grade={dx:kind.gradeDx?null:true, st:marks.map(()=>null)};
   setPlayLayout(true);
   app.innerHTML=playWrap({
     grade:true,
@@ -1143,16 +1361,16 @@ function examReveal(timeout){
         <button type="button" data-show="con">Con nombres</button>
       </div>
       <div class="dualimg" id="dual">
-        ${placaHTML({id:"iw", tag:"Silenciada · 1–4", src:p.imgSin, alt:"Placa "+p.code, on:true})}
+        ${placaHTML({id:"iw", tag:kind.tag, src:p.imgSin, alt:"Placa "+p.code, on:true})}
         ${placaHTML({id:"iw2", tag:"Con nombres", src:p.imgCon, alt:"Placa "+p.code+" con nombres"})}
       </div>`,
     body: `<div id="grades">
-      <div class="grow focus" data-k="dx"><div class="lab"><span style="color:var(--dim);font-size:11px">Diagnóstico</span><br>${esc(p.diagnosis)}</div>
-        <button class="gbtn yes" data-v="1">✓</button><button class="gbtn no" data-v="0">✗</button></div>
-      ${marks.map((t,i)=>`<div class="grow" data-k="st" data-i="${i}"><div class="lab"><span style="color:var(--yel);font-weight:900">(${esc(t.id)})</span> ${esc(t.name)}</div>
+      ${kind.gradeDx?`<div class="grow focus" data-k="dx"><div class="lab"><span style="color:var(--dim);font-size:11px">Diagnóstico</span><br>${esc(p.diagnosis)}</div>
+        <button class="gbtn yes" data-v="1">✓</button><button class="gbtn no" data-v="0">✗</button></div>`:""}
+      ${marks.map((t,i)=>`<div class="grow ${!kind.gradeDx&&i===0?"focus":""}" data-k="st" data-i="${i}"><div class="lab"><span style="color:var(--yel);font-weight:900">(${esc(t.id)})</span> ${esc(t.name)}</div>
         <button class="gbtn yes" data-v="1">✓</button><button class="gbtn no" data-v="0">✗</button></div>`).join("")}
     </div>
-    <p class="foot">Si no marcas una, cuenta como fallo. 5 puntos por placa (Dx + 4 estructuras). En teclado: 1–5 elige renglón, Y/V o N/X califica.</p>
+    <p class="foot">Si no marcas una, cuenta como fallo. ${esc(kind.resultsNote)} En teclado: ${kind.gradeDx?"1–5":"1–4"} elige renglón, Y/V o N/X califica.</p>
     <button class="go" id="btn-next">Siguiente</button>`
   });
   bindPlacaImg(q,false);
@@ -1172,11 +1390,12 @@ function examReveal(timeout){
     });
   });
   $("btn-next").onclick=()=>{
-    const dx=!!q.grade.dx;
-    const st=(q.grade.st||[]).map(v=>!!v);
-    const pts=(dx?1:0)+st.filter(Boolean).length;
-    G.log.push({code:p.code, cls:p.cls, dx:p.diagnosis, okDx:dx, st:marks.map((t,i)=>({id:t.id,name:t.name,ok:!!st[i]})), pts, max:5, elapsed:q.elapsed||elapsed});
-    record(p, pts>=5, {kind:"exam", answer:p.diagnosis});
+    const dx=kind.gradeDx? !!q.grade.dx : true;
+    const st=kind.gradeSt? (q.grade.st||[]).map(v=>!!v) : [];
+    const pts=(kind.gradeDx?(dx?1:0):0)+st.filter(Boolean).length;
+    const max=kind.ptsPer;
+    G.log.push({code:p.code, cls:p.cls, dx:p.diagnosis, okDx:kind.gradeDx?dx:null, st:marks.map((t,i)=>({id:t.id,name:t.name,ok:!!st[i]})), pts, max, elapsed:q.elapsed||elapsed, examKind:kind.id});
+    record(p, pts>=max, {kind:"exam-"+kind.id, answer:p.diagnosis});
     G.i++; showExamQ();
   };
 }
@@ -1184,9 +1403,10 @@ function examReveal(timeout){
 function examResults(){
   stopTimer(); clearFB(); setPlayLayout(false);
   const t=Math.round((Date.now()-G.t0)/1000);
+  const kind=examKindDef(G.examKind);
   const score=G.log.reduce((a,r)=>a+r.pts,0);
-  const max=G.log.length*5;
-  const failed=G.log.filter(r=>r.pts<5);
+  const max=G.log.reduce((a,r)=>a+(r.max||kind.ptsPer),0);
+  const failed=G.log.filter(r=>r.pts<(r.max||kind.ptsPer));
   const acc=max?Math.round(score*100/max):0;
   const times=G.log.map(r=>+r.elapsed||0).filter(x=>x>0);
   const avg=times.length? times.reduce((a,b)=>a+b,0)/times.length : 0;
@@ -1207,22 +1427,27 @@ function examResults(){
   const title=acc===100?"LIMPIO":passed?"MUY SÓLIDO":acc>=50?"HAY QUE REPASAR":"OTRA RONDA";
   const recLine=S.examBestAvg!=null?`<div class="record">Récord: ${(+S.examBestAvg).toFixed(+S.examBestAvg%1?1:0)} s/placa${S.examBestPlaca!=null?" · más rápida "+S.examBestPlaca+" s":""}</div>`:"";
   const progNote=G.prog?(passed?(newLimit<prevLimit?`Pasaste (≥${EXAM_PASS}%). El tope baja: ${prevLimit}s → ${newLimit}s.`:`Reto máximo: te quedas en ${prevLimit} s.`):`No llegaste al ${EXAM_PASS}%. El tope se queda en ${prevLimit} s.`):`Tiempo fijo: ${prevLimit} s.`;
-  const pips=G.prog?`<div class="progline">${EXAM_LADDER.map(s=>`<i class="${s===newLimit?"now":s>=newLimit?"on":""}">${s}</i>`).join("")}</div>`:"";
+  const pips=G.prog?`<div class="progline">${examLadder().map(s=>`<i class="${s===newLimit?"now":s>=newLimit?"on":""}">${s}</i>`).join("")}</div>`:"";
   const recent=(S.examHist||[]).slice(0,6).map(h=>{
     const when=new Date(h.ts).toLocaleString("es-CO",{dateStyle:"short",timeStyle:"short"});
     return `<div>${esc(when)} · ${h.score}/${h.max}${h.avg!=null?" · "+h.avg+" s/placa":""} · tope ${h.sec}s${h.passed?" ✓":""}</div>`;
   }).join("");
   app.innerHTML=`
     <div class="results" id="screen-exam-results">
-      <div class="k" style="color:var(--cyan);letter-spacing:.16em;font-weight:800;font-size:12px">EXAMEN SIMULADO</div>
+      <div class="k" style="color:var(--cyan);letter-spacing:.16em;font-weight:800;font-size:12px">EXAMEN · ${esc(kind.title).toUpperCase()}</div>
       <h2>${title}</h2>
       <div class="bigscore">${score}<span style="font-size:22px;color:var(--dim)">/${max}</span></div>
       <p>${G.log.length} placas · ${acc}% · esta ronda ${avgR||"—"} s/placa (mejor ${best||"—"} s) · tope ${prevLimit}s</p>
       ${recLine}
       <p class="lead">${progNote}</p>
       ${pips}
-      <div class="miss"><b>Por placa (5 pts = Dx + 4 estructuras)</b>
-        ${G.log.map(r=>`<div>${r.code}: <b style="color:${r.pts===5?"var(--ok)":"var(--yel)"}">${r.pts}/5</b> · ${r.elapsed?r.elapsed+" s · ":""}Dx ${r.okDx?"✓":"✗"} · ${r.st.map(s=>(s.ok?"✓":"✗")+s.id).join(" ")}<br><span style="color:var(--dim)">${esc(r.dx)}</span></div>`).join("")}
+      <div class="miss"><b>${esc(kind.missTitle)}</b>
+        ${G.log.map(r=>{
+          const cap=r.max||kind.ptsPer;
+          const dxPart=kind.gradeDx?(`Dx ${r.okDx?"✓":"✗"}`):(r.dx?esc(r.dx):"");
+          const stPart=(r.st||[]).length? r.st.map(s=>(s.ok?"✓":"✗")+s.id).join(" ") : "";
+          return `<div>${r.code}: <b style="color:${r.pts===cap?"var(--ok)":"var(--yel)"}">${r.pts}/${cap}</b> · ${r.elapsed?r.elapsed+" s":""}${kind.gradeDx?" · "+dxPart:""}${stPart?" · "+stPart:""}${kind.gradeDx||!r.dx?"":""}<br><span style="color:var(--dim)">${esc(r.dx||"")}</span></div>`;
+        }).join("")}
       </div>
       ${recent?`<div class="hist"><b>Tus rondas</b>${recent}</div>`:""}
       ${failed.length?`<p class="lead">Falladas: ${failed.map(f=>f.code).join(" · ")}</p>
@@ -1230,7 +1455,7 @@ function examResults(){
       <button class="go ${failed.length?"alt":""}" id="again">Otro examen</button>
       <button class="go alt" id="home">Volver al menú</button>
     </div>`;
-  if($("rep")) $("rep").onclick=()=>startExam({cls:G.cls, n:failed.length, only:failed.map(f=>f.code)});
+  if($("rep")) $("rep").onclick=()=>startExam({cls:G.cls, n:failed.length, only:failed.map(f=>f.code), kind:G.examKind});
   $("again").onclick=()=>showExamSetup();
   $("home").onclick=menu;
 }
@@ -1260,7 +1485,7 @@ function showMap(){
       <p class="lead">Verde = se repite en muchas placas (aprende una vez). Rojo = única de una placa. Toca una estructura para ver dónde sale.</p>
       <div class="row" id="mcls">
         <button class="chip ${cls==="all"?"on":""}" data-cls="all">TODO</button>
-        ${["2","3","4","5","6"].map(c=>`<button class="chip ${cls===c?"on":""}" data-cls="${c}">C${c}</button>`).join("")}
+        ${classIds().map(c=>`<button class="chip ${cls===c?"on":""}" data-cls="${c}">C${c}</button>`).join("")}
       </div>
       ${gold}
       ${uniques.length?`<p class="sub">Únicas (rojo): no te las saltes · ${uniques.map(u=>esc(u.name)).join(" · ")}</p>`:""}
@@ -1297,8 +1522,7 @@ function showLearnPick(){
     <div id="screen-learn">
       <p class="lead">Silenciada, con flechas. Te las pido ${S.pack===2?"de a 2":S.pack===4?"de a 4":"una por una"}. Al terminar ves la placa con nombres y repetimos las que se te fueron.</p>
       <div class="row" id="lcls">
-        <button class="chip ${selCls==="all"?"on":""}" data-cls="all">TODO</button>
-        ${["2","3","4","5","6"].map(c=>`<button class="chip ${selCls===c?"on":""}" data-cls="${c}">C${c}</button>`).join("")}
+        ${classChips(selCls,"compact")}
       </div>
       <button class="go" id="allp">Todas las de ${selCls==="all"?"este parcial":"la clase "+selCls} (${list.length})</button>
       <div class="pgrid">
@@ -1991,9 +2215,12 @@ function auditQuestions(nRandom){
 }
 
 window.FB={ start, menu, showMap, showSettings, showLearnPick, startLearn,
-  showExamSetup, startExam, showExamQ, examReveal, showQ, pickExamPlacas, examTarget, examProgressOn, openLightbox, closeLightbox, auditQuestions, canon, sameAns, pickOptions, makeDx, makePart, makeSt, makeZone, makeAbsent,
+  showExamSetup, startExam, showExamQ, examReveal, showQ, pickExamPlacas, examTarget, examProgressOn, setExamKind, switchSet, openLightbox, closeLightbox, auditQuestions, canon, sameAns, pickOptions, makeDx, makePart, makeSt, makeZone, makeAbsent,
   get state(){return G;}, getS:()=>S, setS(p){ Object.assign(S,p); save(); },
   unlockAll(){ S.free=true; save(); } };
+bindDataset();
+S=load();
+discoverExtraSets();
 preloadAll();
 menu();
 })();
