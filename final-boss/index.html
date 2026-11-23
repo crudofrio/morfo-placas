@@ -393,6 +393,52 @@ input[type=range]{width:100%;height:32px;accent-color:#00e6c3}
 #ed-tip .tels span.g{background:#0e3824;color:var(--ok);border-color:#2ee59d44;font-weight:700}
 .ed-toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:995;background:#103a26;border:1px solid var(--ok);color:#fff;padding:8px 14px;border-radius:99px;font-size:13px;font-weight:800;box-shadow:0 8px 24px #0009}
 
+
+/* ---- Modo Historia ---- */
+#app.histwide{max-width:940px;width:100%}
+.hist-map{display:grid;gap:10px;margin:10px 0}
+@media (min-width:768px){ .hist-map{grid-template-columns:repeat(2,minmax(0,1fr))} }
+.hchap{background:linear-gradient(180deg,#171230,#0e0b1c);border:1.5px solid var(--line);border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;text-align:left;color:var(--ink);transition:transform .1s,border-color .15s}
+.hchap:hover:not(.locked){transform:translateY(-1px);border-color:var(--cyan)}
+.hchap.locked{opacity:.48;cursor:not-allowed}
+.hchap.done{border-color:#2ee59d66}
+.hchap .hdoodle{width:54px;height:54px;border-radius:14px;background:#07060f;border:1px solid var(--line);display:grid;place-items:center;flex:0 0 auto}
+.hchap .hdoodle svg{width:44px;height:44px}
+.hchap .htag{font-size:11px;font-weight:800;color:var(--cyan);letter-spacing:.06em;text-transform:uppercase}
+.hchap .htit{font-size:15px;font-weight:900;color:var(--yel);line-height:1.2;margin:2px 0}
+.hchap .hsub{font-size:12px;color:var(--dim)}
+.hchap .hstars{font-size:13px;font-weight:900;color:var(--yel);white-space:nowrap}
+.hist-stage{background:linear-gradient(180deg,#16112d,#0d0a19);border:1.5px solid var(--line);border-radius:20px;padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+.bot-bub{display:flex;gap:12px;align-items:flex-start;background:#090714;border:1.5px solid #00e6c344;border-radius:16px;padding:12px 14px}
+.bot-ava{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#00e6c3,#8b6cff);display:grid;place-items:center;font-size:24px;flex:0 0 auto;box-shadow:0 4px 14px #00e6c333}
+.bot-txt{font-size:15px;line-height:1.42;color:#f3f0ff}
+.bot-txt b{color:var(--yel)}
+.stage-side .bot-bub{padding:8px 10px;gap:8px;margin-bottom:8px}
+.stage-side .bot-ava{width:34px;height:34px;font-size:18px}
+.stage-side .bot-txt{font-size:13px;line-height:1.32}
+.hbadges{display:flex;flex-wrap:wrap;gap:6px}
+.hbadge{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:99px;font-size:13px;font-weight:800;background:#0e3824;color:var(--ok);border:1px solid #2ee59d44}
+.hbadge.red{background:#381224;color:#ff94b2;border-color:#ff3d8a44}
+.hbadge .cnt{background:#ffffff22;color:#fff;padding:1px 6px;border-radius:99px;font-size:11px;font-weight:900}
+.meme-card{background:#0b0915;border:2px solid #ffd16655;border-radius:16px;overflow:hidden}
+.meme-cap{background:#ffd166;color:#120d1d;font-weight:900;font-size:12px;padding:4px 10px;letter-spacing:.06em;text-transform:uppercase;display:flex;justify-content:space-between}
+.meme-body{padding:12px 14px;display:grid;gap:10px}
+.meme-drake{display:grid;grid-template-columns:86px 1fr;gap:10px;align-items:center;background:#151129;border-radius:12px;padding:8px 10px;border:1px solid var(--line)}
+.meme-drake.bad{border-color:#ff3d8a44}
+.meme-drake.good{border-color:#2ee59d55}
+.meme-x{background:#12101f;border:1px solid #ffffff1c;border-radius:14px;padding:12px;font-size:14px;line-height:1.42}
+.meme-x-hd{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:13px;color:var(--dim)}
+.meme-x-hd b{color:#fff}
+.meme-grid3{display:grid;gap:8px}
+@media (min-width:640px){ .meme-grid3{grid-template-columns:repeat(3,1fr)} }
+.meme-tile{background:#16122c;border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center;font-size:13px;line-height:1.32}
+.meme-tile b{display:block;color:var(--cyan);margin-bottom:3px}
+.dx-pill{background:#1a1333;border:1.5px solid #ffd16655;border-radius:12px;padding:9px 12px;font-size:14px;font-weight:900;color:var(--yel);line-height:1.3}
+.stage-side .dx-pill{font-size:12.5px;padding:7px 9px;margin-bottom:8px}
+.hxp-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:9px 12px;margin-bottom:10px;flex-wrap:wrap}
+.hprog{height:6px;background:#ffffff14;border-radius:99px;overflow:hidden;margin-bottom:8px}
+.hprog i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--yel),var(--hot));transition:width .2s}
+
 </style>
 </head>
 <body>
@@ -820,6 +866,7 @@ function menu(){
         ${classChips(selCls,"menu")}
       </div>
       <div class="lv">${levels}</div>
+      ${lineaAvailable()?`<button class="ghost" id="btn-historia" style="margin-bottom:8px;border-color:#ff3d8a66;background:linear-gradient(135deg,#281236,#18102a);color:#fff;font-weight:900">📖 Modo Historia · La Saga de Leo <span style="color:var(--yel);font-size:12px;margin-left:6px">${Object.keys((S.historia&&S.historia.done)||{}).length}/8 caps · ${(S.historia&&S.historia.xp)||0} XP</span></button>`:""}
       ${lineaAvailable()?`<button class="ghost" id="btn-linea" style="margin-bottom:8px;border-color:#00e6c344;color:var(--cyan)">🧭 Línea Carnegie & Pollo + Drill</button>`:""}
       <button class="ghost" id="btn-editor" style="margin-bottom:8px;border-color:#ffd16644;color:var(--yel)">✏️ Editor de línea temporal</button>
       <button class="ghost" id="btn-map">🗺️ Mapa de los secretos</button>
@@ -837,6 +884,7 @@ function menu(){
   $("btn-play").onclick=()=>{ beep("go"); start({level:n, cls:selCls}); };
   $("btn-exam").onclick=()=>showExamSetup();
   $("btn-learn").onclick=()=>showLearnPick();
+  if($("btn-historia")) $("btn-historia").onclick=()=>showHistoriaMap();
   if($("btn-linea")) $("btn-linea").onclick=()=>showLinea();
   if($("btn-editor")) $("btn-editor").onclick=()=>showEditor();
   $("btn-map").onclick=()=>showMap();
@@ -1157,6 +1205,7 @@ function examCountdown(){
 function setPlayLayout(on){
   document.body.classList.remove("edon");
   app.classList.remove("edwide");
+  app.classList.remove("histwide");
   if(typeof edHideTip==="function") edHideTip();
   document.body.classList.toggle("playon", !!on);
   app.classList.toggle("wide", !!on);
@@ -1621,7 +1670,12 @@ const LINEA_DOODLES = {
   loupe:`<svg viewBox="0 0 80 80"><circle cx="34" cy="34" r="21" fill="#e8f3ea" stroke="#00e6c3" stroke-width="4"/><line x1="15" y1="34" x2="53" y2="34" stroke="#ff3d8a" stroke-width="3.5"/><circle cx="34" cy="34" r="5" fill="#ff3d8a"/><line x1="49" y1="49" x2="68" y2="68" stroke="#ffd166" stroke-width="7" stroke-linecap="round"/></svg>`,
   ribbon:`<svg viewBox="0 0 80 80"><path d="M8 46h20l8-18 8 18h28" fill="none" stroke="#ff6b8b" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 56h64" stroke="#ffd166" stroke-width="3" stroke-dasharray="5 4"/><circle cx="36" cy="28" r="5" fill="#00e6c3"/></svg>`,
   caterpillar:`<svg viewBox="0 0 80 80"><rect x="10" y="34" width="58" height="14" rx="7" fill="#ff5a7d" stroke="#ffd166" stroke-width="2.5"/><circle cx="24" cy="41" r="4" fill="#fff2b2"/><circle cx="35" cy="41" r="4" fill="#fff2b2"/><circle cx="46" cy="41" r="4" fill="#fff2b2"/><circle cx="57" cy="41" r="4" fill="#fff2b2"/><circle cx="63" cy="39" r="7" fill="#ff3d8a" stroke="#fff" stroke-width="2"/><circle cx="65" cy="37" r="2" fill="#14102a"/></svg>`,
-  rocket:`<svg viewBox="0 0 80 80"><path d="M10 62c12-18 18-38 30-38s18 20 30 38" fill="#8b6cff33" stroke="#8b6cff" stroke-width="4" stroke-linecap="round"/><ellipse cx="40" cy="34" rx="10" ry="14" fill="#ffd166" stroke="#ff3d8a" stroke-width="3"/><ellipse cx="40" cy="34" rx="4" ry="7" fill="#14102a"/><circle cx="23" cy="42" r="6" fill="#00e6c3"/><circle cx="57" cy="42" r="6" fill="#00e6c3"/></svg>`
+  rocket:`<svg viewBox="0 0 80 80"><path d="M10 62c12-18 18-38 30-38s18 20 30 38" fill="#8b6cff33" stroke="#8b6cff" stroke-width="4" stroke-linecap="round"/><ellipse cx="40" cy="34" rx="10" ry="14" fill="#ffd166" stroke="#ff3d8a" stroke-width="3"/><ellipse cx="40" cy="34" rx="4" ry="7" fill="#14102a"/><circle cx="23" cy="42" r="6" fill="#00e6c3"/><circle cx="57" cy="42" r="6" fill="#00e6c3"/></svg>`,
+  ladder:`<svg viewBox="0 0 84 84"><path d="M10 56h18l8-18 8 18h30" fill="none" stroke="#ff6b8b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="44" cy="24" rx="11" ry="7" fill="#ffd166" stroke="#8b6cff" stroke-width="2.5"/><circle cx="44" cy="24" r="3" fill="#14102a"/><path d="M10 66h64" stroke="#00e6c3" stroke-width="3" stroke-dasharray="6 4"/></svg>`,
+  ditto:`<svg viewBox="0 0 84 84"><path d="M22 24c8-8 16 2 22-4s16 0 18 10 10 14 4 24-12 14-26 14-22-4-24-14-4-22 6-30z" fill="#d8b4fe" stroke="#8b6cff" stroke-width="3"/><circle cx="35" cy="38" r="2.8" fill="#14102a"/><circle cx="49" cy="38" r="2.8" fill="#14102a"/><path d="M32 48q10 5 20 0" stroke="#14102a" stroke-width="2.6" fill="none" stroke-linecap="round"/><rect x="52" y="16" width="18" height="10" rx="3" fill="#14102a"/><path d="M55 21h12" stroke="#ffd166" stroke-width="2"/></svg>`,
+  c2:`<svg viewBox="0 0 84 84"><path d="M24 62V36a4 4 0 0 1 8 0v12V28a4 4 0 0 1 8 0v20V25a4 4 0 0 1 8 0v23V32a4 4 0 0 1 8 0v22c0 8-6 14-16 14h-6c-6 0-10-3-10-6z" fill="#f6c7a7" stroke="#ff3d8a" stroke-width="2.6"/><circle cx="56" cy="20" r="8" fill="#ffd166"/><path d="M52 20h8M56 16v8" stroke="#14102a" stroke-width="2.2" stroke-linecap="round"/></svg>`,
+  pug:`<svg viewBox="0 0 84 84"><path d="M18 26l10-12 10 11M66 26L56 14 46 25" fill="#a864d8"/><ellipse cx="42" cy="46" rx="25" ry="22" fill="#f6c7a7" stroke="#ff3d8a" stroke-width="2.8"/><circle cx="31" cy="41" r="6" fill="#fff" stroke="#14102a" stroke-width="2"/><circle cx="53" cy="41" r="6" fill="#fff" stroke="#14102a" stroke-width="2"/><circle cx="32" cy="41" r="2.5" fill="#14102a"/><circle cx="52" cy="41" r="2.5" fill="#14102a"/><ellipse cx="42" cy="52" rx="6" ry="4" fill="#ff3d8a"/><path d="M35 61q7-5 14 0" stroke="#00e6c3" stroke-width="2.8" fill="none" stroke-linecap="round"/></svg>`,
+  mush:`<svg viewBox="0 0 84 84"><path d="M16 40c0-16 12-26 26-26s26 10 26 26H16z" fill="#ff3d8a" stroke="#ffd166" stroke-width="2.6"/><circle cx="30" cy="28" r="4" fill="#fff"/><circle cx="46" cy="22" r="3.5" fill="#fff"/><circle cx="55" cy="31" r="3" fill="#fff"/><rect x="33" y="40" width="18" height="22" rx="6" fill="#f6e7d8" stroke="#ff3d8a" stroke-width="2.5"/><path d="M37 52q5-4 10 0" stroke="#14102a" stroke-width="2.3" fill="none"/></svg>`
 };
 const LINEA_GROUPS = [
   {id:"c1", track:"carnegie", short:"C11–12 Fantasma", range:"Carnegie 11–12 · 29–30 días", nickname:"El Fantasma y el Puente", doodle:"ghost",
@@ -2547,6 +2601,683 @@ function showCustomLineaQ(){
   });
 }
 
+
+/* ---------- Modo Historia (La Saga de las 41 Placas) ---------- */
+const HIST_CHAPTERS = [
+  {
+    id:"h1", groupId:"p1", track:"Pollo · Cap. 1", doodle:"caterpillar",
+    title:"Somitas 5-8 23/26", nick:"El Gusano con Bolitas",
+    codes:["03-01","03-02","03-03","03-04"],
+    intro:"¡Quiubo parce! Soy el Dr. Micro-Bot 🤖🔬. Arrancamos con el pollo acostado boca arriba: <b>VISTA DORSAL</b>. Aquí el embrión parece un gusano con bolitas (somitas) en fila.",
+    dev:"Embrión de pollo entre 23 y 26 horas formando somitas (5, 7 y 8 pares) vistos desde arriba.",
+    common:[
+      {name:"Notocorda", n:"×4/4"}, {name:"Segmento Mesodérmico", n:"×4/4"}, {name:"Área Pelúcida", n:"×4/4"},
+      {name:"Pliegue Neural", n:"×3/4"}, {name:"Línea Primitiva", n:"×3/4"}, {name:"Neuroporo Anterior", n:"×3/4"}
+    ],
+    uniques:[
+      {code:"03-01", txt:"5 SOMITAS (23h): rojo uniforme · único con Proamnios, Cabeza, Endodermo del Intestino"},
+      {code:"03-02", txt:"7 SOMITAS (24h): rosario rojo largo · único con Cerebro anterior"},
+      {code:"03-03", txt:"7 SOMITAS (24h): ¡ROMBO suelto! Solo 5 estructuras (sin Pliegue Neural ni Línea Primitiva)"},
+      {code:"03-04", txt:"8 SOMITAS (26h): fondo blanco + cabeza oscura · único con Área de los islotes vasculares"}
+    ],
+    meme:{
+      kind:"x", handle:"@TuboNeural_Oficial", name:"Embrión en Vista Dorsal 🪱",
+      body:"Nadie:<br>Absolutamente nadie:<br><b>El pollo de 24 h (03-02 y 03-03):</b><br>«Nos vamos a poner exactamente el mismo diagnóstico — <i>7 SOMITAS (24 HORAS) VISTA DORSAL</i> — pero uno en gusano largo (13 flechas) y el otro en rombo cortito (5 flechas) pa' ver si miras bien la foto 👀»",
+      tiles:[
+        {t:"03-01 (5 somitas)", d:"Rojo parejo, sin fondo blanco"},
+        {t:"03-02 vs 03-03 (7 somitas)", d:"Gusano rojo vs Rombo diamante"},
+        {t:"03-04 (8 somitas)", d:"Fondo blanco + cabeza negra"}
+      ]
+    },
+    placaFocus:[
+      {code:"03-01", cue:"Rojo uniforme alargado, sin fondo blanco. Único con Proamnios y Cabeza.", trap:"Lleva (23 HORAS) VISTA DORSAL."},
+      {code:"03-02", cue:"Rosario rojo intenso con 2 halos claros a la izquierda.", trap:"Único aquí con 'Cerebro anterior'."},
+      {code:"03-03", cue:"Recorte corto en forma de ROMBO flotando solo.", trap:"¡Mismo diagnóstico que 03-02! Pero solo tiene 5 estructuras."},
+      {code:"03-04", cue:"Rodeado de fondo blanco y cabeza bien oscura a la derecha.", trap:"8 SOMITAS (26 HORAS) VISTA DORSAL + islotes vasculares."}
+    ],
+    recap:[
+      "Las 4 dicen VISTA DORSAL (nunca CORTE TRANSVERSAL).",
+      "4 de 4 llevan Notocorda, Segmento Mesodérmico y Área Pelúcida.",
+      "03-02 (gusano, 13 flechas) y 03-03 (rombo, 5 flechas) comparten diagnóstico exacto."
+    ],
+    quiz:[
+      {code:"03-03", q:"Ves este rombo suelto de 5 flechas. ¿Cuál es su diagnóstico EXACTO?", ok:"EMBRIÓN DE POLLO DE 7 SOMITAS (24 HORAS) VISTA DORSAL",
+       opts:["EMBRIÓN DE POLLO DE 7 SOMITAS (24 HORAS) VISTA DORSAL","EMBRIÓN DE POLLO DE 5 SOMITAS (23 HORAS) VISTA DORSAL","EMBRIÓN DE POLLO DE 8 SOMITAS (26 HORAS) VISTA DORSAL","EMBRIÓN DE POLLO DE 7 SOMITAS CORTE TRANSVERSAL"]},
+      {code:"03-04", q:"En el gusano con fondo blanco e islotes vasculares (03-04), ¿qué estructura es ÚNICA de este grupo?", ok:"Área de los islotes vasculares",
+       opts:["Área de los islotes vasculares","Notocorda","Área Pelúcida","Segmento Mesodérmico"]}
+    ]
+  },
+  {
+    id:"h2", groupId:"p2", track:"Pollo · Cap. 2", doodle:"loupe",
+    title:"Lupas 12–14 h", nick:"Las Lupas Redondas",
+    codes:["02-07","02-08","02-09","02-10"],
+    intro:"¡Fácil como comer pan! Si la placa viene metida en un <b>CÍRCULO DE MICROSCOPIO</b> sobre fondo blanco, son <b>Las Lupas Redondas</b> (12 o 14 horas).",
+    dev:"Cierre inicial del tubo neural en pollo: a las 12 h el pliegue sigue abierto en V; a las 14 h ya se cerró en tubo.",
+    common:[
+      {name:"Notocorda", n:"×4/4"}, {name:"Endodermo", n:"×4/4"},
+      {name:"Pliegue / Surco / Cresta neural (12 h)", n:"×2/4"}, {name:"Tubo neural (14 h)", n:"×2/4"}
+    ],
+    uniques:[
+      {code:"02-07", txt:"12 HORAS lejos: V abierta · dice Ectodermo superficial + Pliegue/Surco/Cresta neural"},
+      {code:"02-08", txt:"12 HORAS zoom: mismas 7 estructuras de 02-07"},
+      {code:"02-09", txt:"14 HORAS lejos: círculo cerrado · ya dice Tubo neural + Ectodermo + Mesodermo paraxial/intermedio"},
+      {code:"02-10", txt:"14 HORAS zoom: mismas 6 estructuras de 02-09"}
+    ],
+    meme:{
+      kind:"drake", title:"MEME DEL TUBO NEURAL · 12 H VS 14 H",
+      bad:{emoji:"🙅‍♂️", txt:"Escribir 'CORTE TRANSVERSAL' en las lupas redondas o ponerle Tubo neural a las de 12 h"},
+      good:{emoji:"😎👉", txt:"Lupa abierta en V = 12 h (Pliegue neural) · Lupa cerrada redondita = 14 h (Tubo neural). ¡Sin escribir CORTE!"}
+    },
+    placaFocus:[
+      {code:"02-08", cue:"Círculo con zoom y pliegue neural ABIERTO en V arriba.", trap:"Diagnóstico cortito: EMBRIÓN DE POLLO DE 12 HORAS (sin 'CORTE')."},
+      {code:"02-10", cue:"Círculo con zoom y TUBO NEURAL cerrado como ojito ovalado.", trap:"EMBRIÓN DE POLLO DE 14 HORAS — cambia Pliegue por Tubo neural."}
+    ],
+    recap:[
+      "4 de 4 comparten Notocorda y Endodermo.",
+      "12 h (02-07/08) = V abierta + Ectodermo superficial + Pliegue/Surco/Cresta neural.",
+      "14 h (02-09/10) = Tubo cerrado + Tubo neural + Ectodermo. ¡Ninguna lleva 'CORTE'!"
+    ],
+    quiz:[
+      {code:"02-08", q:"En esta lupa de 12 h con V abierta, ¿cómo se llama la estructura neural que aún NO se cierra?", ok:"Pliegue neural",
+       opts:["Pliegue neural","Tubo neural","Canal central","Arco neural"]},
+      {code:"02-09", q:"¿Cuál es el diagnóstico EXACTO de esta lupa cerrada?", ok:"EMBRIÓN DE POLLO DE 14 HORAS",
+       opts:["EMBRIÓN DE POLLO DE 14 HORAS","EMBRIÓN DE POLLO DE 14 HORAS CORTE TRANSVERSAL","EMBRIÓN DE POLLO DE 12 HORAS","EMBRIÓN DE POLLO DE 14 HORAS VISTA DORSAL"]}
+    ]
+  },
+  {
+    id:"h3", groupId:"p3", track:"Pollo · Cap. 3", doodle:"ladder",
+    title:"Cinta 16–22 h (escalera transversal)", nick:"linea a tubo",
+    codes:["02-01","02-02","02-03","02-04","02-05","03-05","02-06"],
+    intro:"¡La escalera completa de <b>CORTE TRANSVERSAL</b> en pollo! Sube paso a paso: cinta plana con bulto (16h) → U (20h) → volcán (22h) → óvalo (24h) → nave morada (26h) → carpa (48h) → catedral de 3 capas (35 seg).",
+    dev:"Gastrulación en línea primitiva (16 h), elevación de pliegues (20–22 h), tubo neural cerrado (26–48 h) y diferenciación medular en 3 capas (35 segmentos).",
+    common:[
+      {name:"Ectodermo", n:"×5/7"}, {name:"Endodermo", n:"×3/7"}, {name:"Notocorda", n:"×3/7"},
+      {name:"Tubo Neural", n:"×2/7"}, {name:"Mesénquima / Celoma", n:"×2/7"}
+    ],
+    uniques:[
+      {code:"02-01", txt:"16h: cinta plana con bulto sólido · único con Línea Primitiva; texto con '-' y 'LINEA' sin tilde"},
+      {code:"02-02", txt:"20h: hendidura en U · lleva errata 'Lámina Latera' (sin L)"},
+      {code:"02-03", txt:"22h: volcán alto · capas con 'Capa Ectodérmica/Mesodérmica/Endodérmica' + Somático/Esplácnico"},
+      {code:"02-04", txt:"24h: óvalo acostado naranja · Cerebro Medio, Faringe, Pliegue Cefálico"},
+      {code:"02-05", txt:"26h: ¡PLACA MORADA oscura ('nave')! Médula Espinal + Somita"},
+      {code:"02-06", txt:"2 DÍAS (48h): carpa rosada · Aorta Dorsal; texto SIN 'DEL' ('A NIVEL SENO ROMBOIDAL')"},
+      {code:"03-05", txt:"35 SEGMENTOS: catedral roja · Capas Marginal, del Manto y Ependimaria + Arco Neural"}
+    ],
+    meme:{
+      kind:"x", handle:"@ProfeDeMorfo", name:"Escalera del Tubo Neural 🪜",
+      body:"<b>Yo:</b> «¡Listo, ya me sé SENO ROMBOIDAL!»<br><b>El examen:</b><br>• 20 h (02-02) → A NIVEL DEL SENO ROMBOIDAL (hendidura plana + <i>Lámina Latera</i>)<br>• 22 h (02-03) → A NIVEL DEL SENO ROMBOIDAL (volcán con <i>Capa Ectodérmica</i>)<br>• 48 h (02-06) → <b>2 DÍAS (48 HORAS) A NIVEL SENO ROMBOIDAL</b> (sin el 'DEL' 💀)",
+      tiles:[
+        {t:"16h (02-01)", d:"Bulto sólido · LINEA sin tilde"},
+        {t:"26h (02-05)", d:"Nave MORADA oscura"},
+        {t:"35 seg (03-05)", d:"Domo rojo · 3 capas"}
+      ]
+    },
+    placaFocus:[
+      {code:"02-01", cue:"Cinta rosada casi plana con un bultito sólido en medio.", trap:"Única con guion '-' y LINEA sin tilde: ...16 HORAS - CORTE TRANSVERSAL A TRAVÉS DE LA LINEA PRIMITIVA."},
+      {code:"02-03", cue:"Volcán alto con alas bien abiertas a los lados.", trap:"Sus capas dicen 'Capa Ectodérmica / Mesodérmica / Endodérmica'."},
+      {code:"02-05", cue:"Inconfundible: fondo y embrión MORADO oscuro con tubo ovalado + 2 bolitas.", trap:"26 HORAS CORTE TRANSVERSAL A NIVEL DEL TUBO NEURAL."},
+      {code:"02-06", cue:"Carpa/montaña rosada con tubo cerrado en la punta.", trap:"¡2 DÍAS (48 HORAS) CORTE TRANSVERSAL A NIVEL SENO ROMBOIDAL — SIN la palabra DEL!"},
+      {code:"03-05", cue:"Domo grande rojo ladrillo con tubo triangular en medio.", trap:"35 SEGMENTOS CORTE TRANSVERSAL A NIVEL DE LA REGIÓN VERTEBRAL (3 capas medulares)."}
+    ],
+    recap:[
+      "Todas llevan CORTE TRANSVERSAL; 5 de 7 comparten Ectodermo.",
+      "Ojo trampas: 02-01 (LINEA sin tilde), 02-02 (Lámina Latera), 02-06 (2 DÍAS / sin DEL).",
+      "02-05 es la nave morada (26h) y 03-05 el domo rojo de 3 capas (35 segmentos)."
+    ],
+    quiz:[
+      {code:"02-06", q:"Esta carpa rosada es de 2 días (48 horas). ¿Cuál es el diagnóstico EXACTO sin caer en la trampa?", ok:"EMBRIÓN DE POLLO DE 2 DÍAS (48 HORAS) CORTE TRANSVERSAL A NIVEL SENO ROMBOIDAL",
+       opts:["EMBRIÓN DE POLLO DE 2 DÍAS (48 HORAS) CORTE TRANSVERSAL A NIVEL SENO ROMBOIDAL","EMBRIÓN DE POLLO DE 2 DÍAS (48 HORAS) CORTE TRANSVERSAL A NIVEL DEL SENO ROMBOIDAL","EMBRIÓN DE POLLO DE 22 HORAS CORTE TRANSVERSAL A NIVEL DEL SENO ROMBOIDAL","EMBRIÓN DE POLLO DE 48 HORAS VISTA DORSAL"]},
+      {code:"03-05", q:"En el domo rojo de 35 segmentos (03-05), ¿cuáles son las 3 capas del tubo neural?", ok:"Capa Ependimaria, Capa del Manto y Capa Marginal",
+       opts:["Capa Ependimaria, Capa del Manto y Capa Marginal","Ectodermo, Mesodermo y Endodermo","Somato Pleura, Esplacno Pleura y Celoma","Placa alar, Placa basal y Surco limitante"]}
+    ]
+  },
+  {
+    id:"c1", groupId:"c1", track:"Carnegie · Cap. 1", doodle:"ditto",
+    title:"C11–12 · 29–30 días", nick:"Ditto y sus agentes (y 12-30 -.-)",
+    codes:["04-01","04-02","04-03","04-04","04-05","04-06","03-06"],
+    intro:"Cambiamos de especie: ¡hola embrión humano! Desde aquí TODAS tienen el <b>cuadrito 3D con la rayita verde</b> en la esquina. Los de C11–12 parecen un <b>Ditto</b> en C sin brazos ni piernas.",
+    dev:"Etapas Carnegie 11 y 12 (29–30 días): cierre del neuroporo, migración de crestas neurales craneales y gran cavidad pericárdica/celómica.",
+    common:[
+      {name:"Aorta dorsal", n:"×4/7"}, {name:"Cavidad pericárdica", n:"×3/7"},
+      {name:"Inserción del amnios", n:"×3/7"}, {name:"Surco limitante", n:"×3/7"},
+      {name:"Vena cefálica / precardinal / Cresta neural", n:"×2/7"}
+    ],
+    uniques:[
+      {code:"04-01", txt:"C11 (3D oscuro B/N): burbuja pericárdica pálida · Cresta CN VII/VIII, Placa notocordal"},
+      {code:"04-02", txt:"C11 (3D oscuro B/N): masa rosada esponjosa · Rh.D, CN XII, Placa hepática"},
+      {code:"04-03", txt:"C11 (3D oscuro B/N): arco/puente sobre hueco blanco · Intestino medio, Vesícula umbilical"},
+      {code:"04-04", txt:"C11 (3D oscuro B/N): alas abiertas de medusa · Comunicación cavidad peritoneal y celoma"},
+      {code:"04-05", txt:"C12 (3D CREMA): maní compacto chico (8 etiquetas) · Rh.3, Diencéfalo D1/D2"},
+      {code:"04-06", txt:"C12 (3D CREMA): pera con dos 'patitas' colgando · Rh.6, Cresta CN IX, Faringe"},
+      {code:"03-06", txt:"C12 (3D CREMA · C3): corte alto en 8 con corazón gigante · Esclerotomo, Primordio respiratorio"}
+    ],
+    meme:{
+      kind:"drake", title:"TRUCO DE AGENTE SECRETO PARA DITTO (C11 VS C12)",
+      bad:{emoji:"😵‍💫", txt:"Intentar adivinar si un Ditto es C11 (29 días) o C12 (30 días) mirando solo las bolitas rosadas"},
+      good:{emoji:"🕵️‍♂️✨", txt:"Mirar el cuadrito 3D de la esquina: foto OSCURA B/N = C11 / 29 DÍAS (04-01..04) · foto CREMA = C12 / 30 DÍAS (04-05, 04-06, 03-06)"}
+    },
+    placaFocus:[
+      {code:"04-03", cue:"3D negro + puente/arco sobre cavidad blanca gigante.", trap:"C11 / 29 DÍAS — tiene Cavidad de la vesícula umbilical."},
+      {code:"04-04", cue:"3D negro + alas abiertas como fantasma o medusa.", trap:"C11 / 29 DÍAS — Comunicación entre cavidad peritoneal y celoma extraembrionario."},
+      {code:"04-05", cue:"3D CREMA + maní chiquito con solo 8 etiquetas.", trap:"C12 / 30 DÍAS — Diencéfalo D1/D2 y Cresta del VII y VIII."},
+      {code:"03-06", cue:"3D CREMA + el infiltrado largo en forma de 8 vertical (Clase 3).", trap:"C12 / 30 DÍAS — tiene Ventrículo derecho/izquierdo y Primordio respiratorio."}
+    ],
+    recap:[
+      "3D en C cerrada SIN esbozos de miembros ni cartílago.",
+      "Foto 3D oscura B/N = C11 / 29 DÍAS; foto 3D crema = C12 / 30 DÍAS.",
+      "4 de 7 tienen Aorta dorsal; 3 de 7 Cavidad pericárdica, Inserción del amnios y Surco limitante."
+    ],
+    quiz:[
+      {code:"04-04", q:"Mira la foto 3D de la esquina: ¿es C11 (29 días) o C12 (30 días)?", ok:"EMBRIÓN ETAPA CARNEGIE 11 / 29 DÍAS",
+       opts:["EMBRIÓN ETAPA CARNEGIE 11 / 29 DÍAS","EMBRIÓN ETAPA CARNEGIE 12 / 30 DÍAS","EMBRIÓN ETAPA CARNEGIE 14 / 33 DÍAS","EMBRIÓN ETAPA CARNEGIE 15 / 36 DÍAS"]},
+      {code:"03-06", q:"¿Cuál es la estructura repetida en más placas (4 de 7) dentro del grupo de Ditto?", ok:"Aorta dorsal",
+       opts:["Aorta dorsal","Tercer ventrículo","Hipotálamo","Segmento Mesodérmico"]}
+    ]
+  },
+  {
+    id:"c2", groupId:"c2", track:"Carnegie · Cap. 2", doodle:"c2",
+    title:"C14–16 · 33–39 días", nick:"Manitas, sexy y prepucio",
+    codes:["03-07","03-08","03-09"],
+    intro:"Aquí ya salen <b>yemas de brazos</b> en el 3D (todavía sin dedos). Son solo 3 placas de Clase 3 (etiquetas con LETRAS) y las 3 se ven completamente distintas entre sí.",
+    dev:"Etapas Carnegie 14–16 (33–39 días): arcos faríngeos prominentes, conducto mesonéfrico y vesículas cerebrales pálidas.",
+    common:[
+      {name:"Médula espinal (03-07, 03-08)", n:"×2/3"}, {name:"Aorta dorsal (03-07, 03-09)", n:"×2/3"},
+      {name:"Arco faríngeo 2 + Arco 1 (03-07, 03-09)", n:"×2/3"}, {name:"¡0 estructuras en las 3 juntas!", n:"ojo"}
+    ],
+    uniques:[
+      {code:"03-07", txt:"C14 / 33 DÍAS: tótem largo con 29 etiquetas · Arco faríngeo 3, Lengua (agujero ciego), Paraxocordal"},
+      {code:"03-08", txt:"C15 / 36 DÍAS: corte diagonal MORADO oscuro · Conducto mesonéfrico, Mesenterio dorsal, T-9"},
+      {code:"03-09", txt:"C16 / 39 DÍAS: máscara con DOS óvalos pálidos abajo · Faringe laríngea, Arco aórtico 6, Bolsa faríngea 4"}
+    ],
+    meme:{
+      kind:"x", handle:"@CrestaNeural_C3", name:"El Trío de Clase 3 🎭",
+      body:"<b>03-07 (C14):</b> «Tengo 29 flechas y todos los arcos faríngeos 👑»<br><b>03-08 (C15):</b> «Yo me fui pal' abdomen morado con el conducto mesonéfrico 🍆»<br><b>03-09 (C16):</b> «Yo saqué 2 óvalos blancos abajo pa' que me confundan con C18, pero mis etiquetas siguen siendo LETRAS y no tengo vértebras 😜»",
+      tiles:[
+        {t:"03-07 (C14)", d:"Tótem de arcos · 29 tags"},
+        {t:"03-08 (C15)", d:"Morado diagonal · Mesonefros"},
+        {t:"03-09 (C16)", d:"2 óvalos pálidos + LETRAS"}
+      ]
+    },
+    placaFocus:[
+      {code:"03-07", cue:"Tótem vertical lleno de arcos faríngeos (29 letras).", trap:"C14 / 33 DÍAS — Agujero ciego y eminencia hipofaríngea de la lengua."},
+      {code:"03-08", cue:"Única morada intensa diagonal de abdomen/tronco aquí.", trap:"C15 / 36 DÍAS — Conducto mesonéfrico y Mesenterio dorsal."},
+      {code:"03-09", cue:"Cabeza arriba y 2 óvalos huecos abajo, aún pálida y con LETRAS.", trap:"C16 / 39 DÍAS — no la confundas con C18 (que lleva números o adenohipófisis)."}
+    ],
+    recap:[
+      "0 estructuras están en las 3 placas a la vez (03-08 corta abdomen; 03-07/09 cabeza/cuello).",
+      "Las 3 son Clase 3 (etiquetas con LETRAS) y ya tienen yemas en el 3D.",
+      "03-07 = C14 arcos · 03-08 = C15 morado mesonéfrico · 03-09 = C16 máscara 2 óvalos."
+    ],
+    quiz:[
+      {code:"03-08", q:"Esta placa morada diagonal corta el abdomen/mesonefros. ¿Cuál es?", ok:"EMBRIÓN ETAPA CARNEGIE 15 / 36 DÍAS",
+       opts:["EMBRIÓN ETAPA CARNEGIE 15 / 36 DÍAS","EMBRIÓN ETAPA CARNEGIE 14 / 33 DÍAS","EMBRIÓN ETAPA CARNEGIE 16 / 39 DÍAS","EMBRIÓN ETAPA CARNEGIE 18 / 44 DÍAS"]},
+      {code:"03-09", q:"¿Cómo diferencias 03-09 (C16) de las placas de C18 (05-01/05-02)?", ok:"03-09 usa etiquetas con LETRAS y aún no tiene cartílago vertebral ni costillas",
+       opts:["03-09 usa etiquetas con LETRAS y aún no tiene cartílago vertebral ni costillas","03-09 tiene el hígado gigante rojo","03-09 viene en círculo de microscopio","03-09 lleva paréntesis (TALAMO – HIPOTALAMO)"]}
+    ]
+  },
+  {
+    id:"c3", groupId:"c3", track:"Carnegie · Cap. 3", doodle:"pug",
+    title:"C18–19 · 44–47 días", nick:"Perros que huelen tomate, calamar pug y payaso tristes",
+    codes:["03-10","05-01","05-02","03-11","05-03","06-01"],
+    intro:"¡Entran los perros y el calamar pug! En el 3D la cabeza ya es gigante con <b>paletas de manos</b>, y adentro por fin aparece el <b>Espacio subaracnoideo</b> y los <b>ventrículos</b>.",
+    dev:"Carnegie 18–19 (44–47 días): condensación cartilaginosa cervical (C1–C5), ventrículos laterales bien marcados y tálamo visible en C6.",
+    common:[
+      {name:"Tercer ventrículo", n:"×3/6"}, {name:"Ventrículo lateral", n:"×3/6"},
+      {name:"Espacio subaracnoideo", n:"×3/6"}, {name:"Médula espinal / NC XI / Arteria vertebral", n:"×2/6"}
+    ],
+    uniques:[
+      {code:"03-10", txt:"C18 / 44 DÍAS (C3): LETRAS (A–U) · Adenohipófisis, Conducto coclear, Surco óptico"},
+      {code:"05-01", txt:"C18 – 44 DÍAS (C5): NÚMEROS · cintura simétrica sin brazo · 'EMBRION' SIN tilde y '–'"},
+      {code:"05-02", txt:"C18 – 44 DÍAS (C5): NÚMEROS · brazo saliendo a la izquierda · 'EMBRION' SIN tilde"},
+      {code:"03-11", txt:"C19 / 45-47 DÍAS (C3): gris con LETRAS (A–AA) · Conductos semicirculares, Acueducto cerebral"},
+      {code:"05-03", txt:"C19 / 45-47 DÍAS (C5): pug oscuro con NÚMEROS · Disco C4–C5, Cartílago de Meckel"},
+      {code:"06-01", txt:"C19 / 45-47 DÍAS (C6): bloque AZUL CELESTE + óvalo gigante · ¡lleva (TALAMO – HIPOTALAMO)!"}
+    ],
+    meme:{
+      kind:"drake", title:"TRAMPA ORTOGRÁFICA MORTAL DE C18",
+      bad:{emoji:"🤡", txt:"Ponerle tilde a 'EMBRIÓN' en 05-01 y 05-02 o olvidar el paréntesis (TALAMO – HIPOTALAMO) en la azul celeste 06-01"},
+      good:{emoji:"🧠✅", txt:"03-10 (letras) = EMBRIÓN / 44 DÍAS · 05-01 & 05-02 (rojas con números) = EMBRION – 44 DÍAS · 06-01 (azul) = C19 (TALAMO – HIPOTALAMO)"}
+    },
+    placaFocus:[
+      {code:"05-01", cue:"Roja con NÚMEROS, cintura simétrica y 2 óvalos parejos abajo.", trap:"EMBRION ETAPA CARNEGIE 18 – 44 DÍAS (sin tilde y con guion largo '–')."},
+      {code:"05-02", cue:"Roja con NÚMEROS, le sale un hombro/brazo a la izquierda.", trap:"También EMBRION ETAPA CARNEGIE 18 – 44 DÍAS (sin tilde)."},
+      {code:"05-03", cue:"Pug oscuro sorprendido con boca curva abajo y números.", trap:"EMBRIÓN ETAPA CARNEGIE 19 / 45 - 47 DÍAS."},
+      {code:"06-01", cue:"Inconfundible: centro AZUL CELESTE y un gran óvalo vertical abajo.", trap:"EMBRIÓN ETAPA CARNEGIE 19 / 45 - 47 DÍAS (TALAMO – HIPOTALAMO)."}
+    ],
+    recap:[
+      "3 de 6 comparten Tercer ventrículo, Ventrículo lateral y Espacio subaracnoideo.",
+      "C18: 03-10 (letras, con tilde) vs 05-01/05-02 (números, 'EMBRION' sin tilde y '–').",
+      "C19: 03-11 (gris letras), 05-03 (pug oscuro números), 06-01 (azul con TALAMO – HIPOTALAMO)."
+    ],
+    quiz:[
+      {code:"05-02", q:"¿Cuál es la escritura EXACTA de esta placa roja con bracito a la izquierda?", ok:"EMBRION ETAPA CARNEGIE 18 – 44 DÍAS",
+       opts:["EMBRION ETAPA CARNEGIE 18 – 44 DÍAS","EMBRIÓN ETAPA CARNEGIE 18 / 44 DÍAS","EMBRIÓN ETAPA CARNEGIE 19 / 45 - 47 DÍAS","EMBRIÓN ETAPA CARNEGIE 16 / 39 DÍAS"]},
+      {code:"06-01", q:"Esta placa tiene el bloque azul celeste en el centro. ¿Qué paréntesis EXACTO lleva?", ok:"(TALAMO – HIPOTALAMO)",
+       opts:["(TALAMO – HIPOTALAMO)","(TALAMO – HIPOTALAMO – 3ER. VENTRICULO)","(HEMISFERIO CEREBRAL)","Sin paréntesis"]}
+    ]
+  },
+  {
+    id:"c4", groupId:"c4", track:"Carnegie · Cap. 4", doodle:"mush",
+    title:"C20–22 · 49–55 días", nick:"RESPETO CON SANGRE, perrito come hongos y no le gustan :cc",
+    codes:["03-12","05-04","06-02","05-05","05-06","06-03","06-04"],
+    intro:"¡Capítulo épico! Aquí salen las famosas <b>MANITOS con 5 dedos</b> (05-04), la placa partida con el <b>OJO NEGRO</b> (05-06) y tres cabezas de Clase 6 donde el <b>Tercer ventrículo</b> manda.",
+    dev:"Carnegie 20–22 (49–55 días): rayos digitales separados, costillas y mandíbula cartilaginosas, ojo pigmentado y tálamo/hemisferios bien grandes.",
+    common:[
+      {name:"Tercer ventrículo", n:"×5/7"}, {name:"Hipotálamo", n:"×4/7"},
+      {name:"Espacio subaracnoideo", n:"×3/7"}, {name:"Arteria vertebral / Tálamo dorsal / Placa del techo", n:"×2/7"}
+    ],
+    uniques:[
+      {code:"03-12", txt:"C20 / 49 DÍAS (C3): LETRAS (A–Z) · Agujero magno, Aurícula, Dorso de la silla"},
+      {code:"05-04", txt:"C21 / 49 - 52 DIAS: ¡MANITOS ROJAS 5 DEDOS! · Costillas 2–5, radio, cúbito, metacarpianos · DIAS sin tilde"},
+      {code:"06-02", txt:"C21 / 49 - 52 DIAS: rojizo con 3D a la DERECHA · (TALAMO – HIPOTALAMO – 3ER. VENTRICULO) · DIAS sin tilde"},
+      {code:"05-05", txt:"C22 / 52 - 55 DÍAS: reloj de arena violáceo con V oscura · Mandíbula, Nervio óptico"},
+      {code:"05-06", txt:"C22 / 52 - 55 DÍAS: PARTIDA EN DOS + OJO NEGRO · 0 estructuras verdes · Escalenos, Pectorales"},
+      {code:"06-03", txt:"C22 / 52 - 55 DÍAS: morado compacto (3D izq.) · (TALAMO – HIPOTALAMO)"},
+      {code:"06-04", txt:"C22 / 52 - 55 DÍAS: morado ancho con bulbo arriba · (HEMISFERIO CEREBRAL)"}
+    ],
+    meme:{
+      kind:"x", handle:"@ManitosC21", name:"Las 3 Cabezas de C6 + Las Manitos 🖐️",
+      body:"<b>05-04 (C21):</b> «Aquí están mis dos manitos con 5 dedos y DIAS sin tilde 🖐️🖐️»<br><b>06-02 (C21):</b> «Puse la foto 3D a la DERECHA y también voy sin tilde en DIAS + (TALAMO – HIPOTALAMO – 3ER. VENTRICULO)»<br><b>06-03 vs 06-04 (C22):</b> «06-03 es (TALAMO – HIPOTALAMO); 06-04 sube a (HEMISFERIO CEREBRAL) 🧠»",
+      tiles:[
+        {t:"05-04 (C21)", d:"¡Manitos rojas + DIAS sin tilde!"},
+        {t:"05-06 (C22)", d:"Partida en 2 + ojo negro"},
+        {t:"06-02 / 06-03 / 06-04", d:"3ER VENT. → TALAMO → HEMISFERIO"}
+      ]
+    },
+    placaFocus:[
+      {code:"05-04", cue:"Inconfundible: ¡DOS MANITOS rojas abiertas con 5 dedos!", trap:"C21 / 49 - 52 DIAS (sin tilde en DIAS)."},
+      {code:"06-02", cue:"Rojiza con hendidura vertical y foto 3D a la DERECHA.", trap:"C21 / 49 - 52 DIAS (TALAMO – HIPOTALAMO – 3ER. VENTRICULO)."},
+      {code:"05-06", cue:"Partida en 2 piezas; ojo negro abajo a la derecha.", trap:"C22 / 52 - 55 DÍAS — ¡tiene 0 estructuras verdes! Escalenos y pectorales."},
+      {code:"06-04", cue:"Morada ancha con bulbo raquídeo arriba y 2 grandes ventrículos.", trap:"C22 / 52 - 55 DÍAS (HEMISFERIO CEREBRAL)."}
+    ],
+    recap:[
+      "5 de 7 tienen Tercer ventrículo; 4 de 7 Hipotálamo; 3 de 7 Espacio subaracnoideo.",
+      "C21 (05-04 manitos y 06-02 3D-derecha) llevan DIAS sin tilde.",
+      "C22 (05-05, 05-06 ojo negro, 06-03 TALAMO–HIPOTALAMO, 06-04 HEMISFERIO CEREBRAL) llevan DÍAS con tilde."
+    ],
+    quiz:[
+      {code:"06-02", q:"Fíjate que la foto 3D está a la DERECHA y es rojiza. ¿Qué diagnóstico es?", ok:"EMBRIÓN ETAPA CARNEGIE 21 / 49 - 52 DIAS (TALAMO – HIPOTALAMO – 3ER. VENTRICULO)",
+       opts:["EMBRIÓN ETAPA CARNEGIE 21 / 49 - 52 DIAS (TALAMO – HIPOTALAMO – 3ER. VENTRICULO)","EMBRIÓN ETAPA CARNEGIE 22 / 52 - 55 DÍAS (TALAMO – HIPOTALAMO)","EMBRIÓN ETAPA CARNEGIE 22 / 52 - 55 DÍAS (HEMISFERIO CEREBRAL)","EMBRIÓN ETAPA CARNEGIE 19 / 45 - 47 DÍAS (TALAMO – HIPOTALAMO)"]},
+      {code:"05-04", q:"En las famosas manitos (05-04), ¿qué estructuras de la mano están marcadas?", ok:"Tercer y Quinto metacarpiano, Hueso ganchoso y falange media del 4to dedo",
+       opts:["Tercer y Quinto metacarpiano, Hueso ganchoso y falange media del 4to dedo","Mandíbula y Nervio alveolar inferior","Tercer ventrículo e Hipotálamo","Hígado derecho e izquierdo"]}
+    ]
+  },
+  {
+    id:"c5", groupId:"c5", track:"Carnegie · Cap. 5", doodle:"baby",
+    title:"C23 · 56 días", nick:"Bebé Completo XL",
+    codes:["03-13","06-05","06-06"],
+    intro:"¡Jefe final del parcial! 8 semanas (56 días), ya parece un bebé completo. Ojo al dato curioso: las 3 placas cortan <b>pisos totalmente distintos</b>, por eso no repiten estructuras entre sí.",
+    dev:"Carnegie 23 (56 días): fin del período embrionario. Órganos abdominales completos, hemisferios cerebrales gigantes y cráneo osificándose.",
+    common:[
+      {name:"0 estructuras repetidas en ≥2 placas aquí", n:"¡dato!"},
+      {name:"Cada corte va a un piso distinto", n:"abdomen / techo / cráneo"},
+      {name:"Errata en 06-05: Espacio subacnoideo", n:"ojo"}
+    ],
+    uniques:[
+      {code:"03-13", txt:"C23 / 56 DÍAS (C3): CÍRCULO ROJO con HÍGADO GIGANTE · Costilla 8, Músculos subcostal/trapecio/recto, Vena ácigos"},
+      {code:"06-05", txt:"C23 / 56 DÍAS (HEMISFERIO CEREBRAL): hongo liso gigante · solo 11 flechas, Cerebelo, errata 'Espacio subacnoideo'"},
+      {code:"06-06", txt:"C23 / 56 DÍAS (HEMISFERIO CEREBRAL – TELENCEFALO): cráneo morado con ojo y 3D a la DERECHA · Odontoides C2, Atlas C1"}
+    ],
+    meme:{
+      kind:"drake", title:"C23: 06-05 VS 06-06 (AMBAS SON 56 DÍAS)",
+      bad:{emoji:"😬", txt:"Ponerle (HEMISFERIO CEREBRAL – TELENCEFALO) al casco liso de 11 flechas (06-05)"},
+      good:{emoji:"🏆👶", txt:"Casco liso pálido (11 flechas, 3D izq.) = 06-05 (HEMISFERIO CEREBRAL) · Cráneo completo con ojos (23 flechas, 3D der.) = 06-06 (HEMISFERIO CEREBRAL – TELENCEFALO)"}
+    },
+    placaFocus:[
+      {code:"03-13", cue:"Círculo casi perfecto lleno de un HÍGADO ROJO enorme.", trap:"EMBRIÓN ETAPA CARNEGIE 23 / 56 DÍAS (sin paréntesis)."},
+      {code:"06-05", cue:"Hongo/casco pálido casi puro cerebro (solo 11 etiquetas).", trap:"(HEMISFERIO CEREBRAL) — ¡lleva Cerebelo y la errata Espacio subacnoideo!"},
+      {code:"06-06", cue:"Cabeza fetal morada con ojos, base de cráneo y foto 3D a la DERECHA.", trap:"(HEMISFERIO CEREBRAL – TELENCEFALO) — Apófisis odontoides (C2) y Nervio óptico."}
+    ],
+    recap:[
+      "Las 3 son EMBRIÓN ETAPA CARNEGIE 23 / 56 DÍAS.",
+      "0 estructuras exactas repetidas entre las 3 (abdomen vs casco cerebral vs cráneo/ojo).",
+      "06-05 = (HEMISFERIO CEREBRAL) [11 flechas] · 06-06 = (HEMISFERIO CEREBRAL – TELENCEFALO) [3D derecha]."
+    ],
+    quiz:[
+      {code:"06-05", q:"En este casco liso gigante de 11 flechas, ¿cuál es el diagnóstico EXACTO?", ok:"EMBRIÓN ETAPA CARNEGIE 23 / 56 DÍAS (HEMISFERIO CEREBRAL)",
+       opts:["EMBRIÓN ETAPA CARNEGIE 23 / 56 DÍAS (HEMISFERIO CEREBRAL)","EMBRIÓN ETAPA CARNEGIE 23 / 56 DÍAS (HEMISFERIO CEREBRAL – TELENCEFALO)","EMBRIÓN ETAPA CARNEGIE 22 / 52 - 55 DÍAS (HEMISFERIO CEREBRAL)","EMBRIÓN ETAPA CARNEGIE 23 / 56 DÍAS"]},
+      {code:"03-13", q:"En el corte redondo abdominal (03-13), ¿qué órgano gigante ocupa casi todo el círculo?", ok:"Lóbulo derecho e izquierdo del hígado",
+       opts:["Lóbulo derecho e izquierdo del hígado","Ventrículo lateral","Cavidad pericárdica","Conducto mesonéfrico"]}
+    ]
+  }
+];
+
+function histState(){
+  if(!S.historia || typeof S.historia!=="object"){
+    S.historia={xp:0, unlocked:1, stars:{}, done:{}, bossBest:0};
+  }
+  return S.historia;
+}
+function histSave(){ save(); }
+function histTotalStars(){
+  const hs=histState();
+  return Object.values(hs.stars||{}).reduce((a,b)=>a+(b||0), 0);
+}
+function histMemeHTML(m){
+  if(!m) return "";
+  if(m.kind==="drake"){
+    return `<div class="meme-card"><div class="meme-cap"><span>🔥 ${esc(m.title||"MEME")}</span><span>@FinalBossMorfo</span></div>
+      <div class="meme-body">
+        <div class="meme-drake bad"><div style="font-size:38px;text-align:center">${m.bad.emoji}</div><div style="font-size:13.5px;line-height:1.35">${esc(m.bad.txt)}</div></div>
+        <div class="meme-drake good"><div style="font-size:38px;text-align:center">${m.good.emoji}</div><div style="font-size:13.5px;line-height:1.35;font-weight:700">${esc(m.good.txt)}</div></div>
+      </div></div>`;
+  }
+  const tiles=(m.tiles||[]).map(t=>`<div class="meme-tile"><b>${esc(t.t)}</b><span>${esc(t.d)}</span></div>`).join("");
+  return `<div class="meme-card"><div class="meme-cap"><span>🐦 MEME DE X · TUBO NEURAL</span><span>Reposts: 41</span></div>
+    <div class="meme-body">
+      <div class="meme-x"><div class="meme-x-hd"><span style="font-size:20px">🤖</span><div><b>${esc(m.name)}</b> <span style="opacity:.7">${esc(m.handle)}</span></div></div>
+      <div>${m.body}</div></div>
+      ${tiles?`<div class="meme-grid3">${tiles}</div>`:""}
+    </div></div>`;
+}
+
+function showHistoriaMap(){
+  stopTimer(); clearFB(); setPlayLayout(false); G=null;
+  app.classList.add("histwide");
+  const hs=histState();
+  const doneCount=HIST_CHAPTERS.filter(c=>hs.done && hs.done[c.id]).length;
+  const freeMode=!!S.free;
+  const cards=HIST_CHAPTERS.map((c, idx)=>{
+    const isOpen=freeMode || idx < (hs.unlocked||1);
+    const isDone=!!(hs.done && hs.done[c.id]);
+    const st=(hs.stars && hs.stars[c.id])||0;
+    const starTxt=isDone?("⭐".repeat(st)+"☆".repeat(3-st)):(isOpen?"▶":"🔒");
+    return `<button class="hchap ${isOpen?"":"locked"} ${isDone?"done":""}" data-hidx="${idx}">
+      <div class="hdoodle">${LINEA_DOODLES[c.doodle]||""}</div>
+      <div style="flex:1;min-width:0">
+        <div class="htag">${esc(c.track)} · ${c.codes.length} placas</div>
+        <div class="htit">${esc(c.nick)}</div>
+        <div class="hsub">${esc(c.title)}</div>
+      </div>
+      <div class="hstars">${starTxt}</div>
+    </button>`;
+  }).join("");
+  const bossOpen=freeMode || doneCount>=HIST_CHAPTERS.length;
+  app.innerHTML=`
+    <div class="top">
+      <button class="ib" id="back">◀</button>
+      <div class="brand"><div class="k">Historia interactiva · 8 capítulos</div><h1 style="font-size:21px">Modo Historia: La Saga de Leo</h1></div>
+    </div>
+    <div id="screen-historia">
+      <div class="hxp-bar">
+        <div><b style="color:var(--yel)">⚡ ${hs.xp||0} XP</b> · <span style="color:var(--cyan)">${doneCount}/8 capítulos</span> · <span>⭐ ${histTotalStars()}/24</span></div>
+        <button class="chip ${freeMode?"on":""}" id="h-free">${freeMode?"🔓 Todo abierto":"🔒 Progresivo (toca para abrir todo)"}</button>
+      </div>
+      <div class="bot-bub" style="margin-bottom:10px">
+        <div class="bot-ava">🤖</div>
+        <div class="bot-txt"><b>Dr. Micro-Bot:</b> ¡Quiubo parce! Un paso a la vez, memes del tubo neural, mini-quizzes al tiro y repaso de capítulos anteriores. ¡A darle!</div>
+      </div>
+      <div class="hist-map">${cards}</div>
+      <button class="hchap ${bossOpen?"":"locked"}" id="h-boss" style="width:100%;border-color:#ff3d8a66">
+        <div class="hdoodle" style="font-size:30px">🏆</div>
+        <div style="flex:1">
+          <div class="htag" style="color:var(--hot)">Gran Final · 10 preguntas</div>
+          <div class="htit">Jefe Final de la Historia (Mixto de los 8 capítulos)</div>
+          <div class="hsub">Mejor marca: ${hs.bossBest||0}% ${bossOpen?"· ¡Listo para coronar!":"· Completa los 8 caps o activa Todo abierto"}</div>
+        </div>
+        <div class="hstars">${bossOpen?"▶":"🔒"}</div>
+      </button>
+    </div>`;
+  $("back").onclick=()=>{ app.classList.remove("histwide"); menu(); };
+  $("h-free").onclick=()=>{ S.free=!S.free; save(); showHistoriaMap(); };
+  app.querySelectorAll("[data-hidx]").forEach(b=>b.onclick=()=>{
+    const idx=Number(b.dataset.hidx);
+    if(!S.free && idx >= (histState().unlocked||1)) return;
+    startHistoriaChapter(idx);
+  });
+  $("h-boss").onclick=()=>{
+    if(!bossOpen) return;
+    startHistoriaBoss();
+  };
+}
+
+function startHistoriaChapter(idx){
+  const ch=HIST_CHAPTERS[idx]; if(!ch) return;
+  const steps=[];
+  // Step 1: Intro
+  steps.push({type:"intro", ch});
+  // Step 2: Key structures with repeat counts
+  steps.push({type:"keys", ch});
+  // Step 3: Meme panel
+  steps.push({type:"meme", ch});
+  // Step 4+: Placa spotlights + immediate mini-quiz
+  ch.placaFocus.forEach((pf, pi)=>{
+    const p=P.find(x=>x.code===pf.code);
+    if(p) steps.push({type:"placa", ch, pf, placa:p});
+    if(ch.quiz[pi]){
+      steps.push({type:"quiz", ch, qz:ch.quiz[pi], isReview:false});
+    }
+  });
+  // Any remaining chapter quizzes
+  for(let k=ch.placaFocus.length; k<ch.quiz.length; k++){
+    steps.push({type:"quiz", ch, qz:ch.quiz[k], isReview:false});
+  }
+  // Spaced review from earlier chapters (if idx > 0)
+  if(idx > 0){
+    const prev=HIST_CHAPTERS[idx-1];
+    const rq=prev.quiz[0];
+    if(rq) steps.push({type:"quiz", ch, qz:rq, isReview:true, prevCh:prev});
+    if(idx >= 2){
+      const older=HIST_CHAPTERS[Math.floor(Math.random()*(idx-1))];
+      if(older && older.quiz[1]) steps.push({type:"quiz", ch, qz:older.quiz[1], isReview:true, prevCh:older});
+    }
+  }
+  // Final recap
+  steps.push({type:"recap", ch});
+  G={mode:"historia", idx, ch, steps, si:0, ok:0, bad:0, totalQ:steps.filter(x=>x.type==="quiz").length, locked:false};
+  beep("go");
+  renderHistoriaStep();
+}
+
+function renderHistoriaStep(){
+  stopTimer(); clearFB(); scrollTop();
+  if(!G || G.mode!=="historia") return;
+  if(G.si >= G.steps.length) return finishHistoriaChapter();
+  const st=G.steps[G.si], ch=G.ch;
+  const pct=Math.round((G.si+1)*100/G.steps.length);
+  const hud=`<div class="hud" id="screen-hist-step">
+    <button class="ib" id="back" style="width:34px;height:34px">◀</button>
+    <div>Cap. ${G.idx+1} · ${esc(ch.nick)}</div>
+    <div>${G.si+1}/${G.steps.length}</div>
+  </div>`;
+
+  if(st.type==="placa" || st.type==="quiz"){
+    setPlayLayout(true);
+    if(st.type==="placa"){
+      const p=st.placa;
+      app.innerHTML=playWrap({
+        hud,
+        prompt:`<div class="prompt">Mira esta placa: ${esc(p.code)}</div>`,
+        img:placaHTML({id:"iw", tag:`Clase ${p.cls} · ${p.code}`, src:p.imgSin, alt:p.code, on:true}),
+        body:`
+          <div class="dx-pill">${esc(p.diagnosis)}</div>
+          <div class="bot-bub">
+            <div class="bot-ava">🤖</div>
+            <div class="bot-txt"><b>Al ojo:</b> ${esc(st.pf.cue)}<br><b style="color:#ff94b2">Ojo trampa:</b> ${esc(st.pf.trap)}</div>
+          </div>
+          <button class="go" id="h-next">¡Listo, entendido! ▶</button>`
+      });
+      $("back").onclick=showHistoriaMap;
+      bindPlacaImg({placa:p}, false); wirePlacaClicks();
+      $("h-next").onclick=()=>{ G.si++; renderHistoriaStep(); };
+      return;
+    }
+    // Quiz step
+    const qz=st.qz, p=P.find(x=>x.code===qz.code)||P[0];
+    const opts=shuffle([...qz.opts]);
+    G.locked=false;
+    const revBadge=st.isReview?`<span class="pill" style="background:#3a194a;color:#ffd166;font-size:11px;padding:2px 8px;border-radius:99px;margin-bottom:4px;display:inline-block">🧠 Repaso de ${esc(st.prevCh.nick)}</span>`:"";
+    app.innerHTML=playWrap({
+      hud,
+      prompt:`<div class="prompt">${revBadge}<div>${esc(qz.q)}</div></div>`,
+      img:placaHTML({id:"iw", tag:`Clase ${p.cls} · ${p.code}`, src:p.imgSin, alt:p.code, on:true}),
+      body:`<div class="opts" id="opts">${opts.map((o,i)=>`<button class="opt" data-v="${i}">${esc(o)}</button>`).join("")}</div>`
+    });
+    $("back").onclick=showHistoriaMap;
+    bindPlacaImg({placa:p}, false); wirePlacaClicks();
+    const okPraise=["¡Esoooo parce! +25 XP 🔥","¡Brutal! Te la sabes de memoria 🧠","¡Crack total! Ni una trampa te tumba 💪","¡Sizas, exactísimo! ⭐"];
+    const badRoast=["¡Uy parce, casi te come el tubo neural! Mira bien:","¡Pilas con esa trampa! Era:","¡Casi! Guárdate este truco:"];
+    app.querySelectorAll("#opts .opt").forEach((b,i)=>{
+      b.onclick=()=>{
+        if(G.locked) return;
+        G.locked=true;
+        const val=opts[i], ok=sameAns(val, qz.ok);
+        if(ok){ G.ok++; histState().xp=(histState().xp||0)+25; histSave(); b.classList.add("ok"); beep("ok"); vibe(12); }
+        else {
+          G.bad++; b.classList.add("bad"); beep("bad"); vibe([30,30,30]);
+          app.querySelectorAll("#opts .opt").forEach((x,j)=>{ if(sameAns(opts[j], qz.ok)) x.classList.add("ok"); });
+        }
+        app.querySelectorAll("#opts .opt").forEach(x=>x.classList.add("lock"));
+        const fb=document.createElement("div");
+        fb.className="fb "+(ok?"good":"nope"); fb.id="screen-fb";
+        fb.innerHTML=`<h3>${ok?okPraise[Math.floor(Math.random()*okPraise.length)]:badRoast[Math.floor(Math.random()*badRoast.length)]}</h3>
+          <div class="dx">${esc(qz.ok)}</div>
+          <button class="go" id="btn-next">Siguiente ▶</button>`;
+        $("playbody").appendChild(fb);
+        pinSideActions();
+        $("btn-next").onclick=()=>{ G.si++; renderHistoriaStep(); };
+      };
+    });
+    return;
+  }
+
+  // Non-placa card steps (intro / keys / meme / recap)
+  setPlayLayout(false);
+  app.classList.add("histwide");
+  let inner="";
+  if(st.type==="intro"){
+    const thumbs=ch.codes.slice(0,4).map(c=>{
+      const p=P.find(x=>x.code===c);
+      return p?`<div style="background:#08080e;border:1px solid var(--line);border-radius:10px;padding:4px;text-align:center"><img src="${p.imgSin}" style="width:100%;height:78px;object-fit:contain;border-radius:6px"><div style="font-size:11px;font-weight:800;color:var(--cyan);margin-top:2px">${p.code}</div></div>`:"";
+    }).join("");
+    inner=`
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="hdoodle" style="width:62px;height:62px;border-radius:16px;background:#07060f;border:1px solid var(--line);display:grid;place-items:center">${LINEA_DOODLES[ch.doodle]||""}</div>
+        <div><div style="font-size:12px;font-weight:800;color:var(--cyan);text-transform:uppercase">${esc(ch.track)} · ${esc(ch.title)}</div>
+        <h2 style="margin:2px 0 0;font-size:24px;color:var(--yel)">${esc(ch.nick)}</h2></div>
+      </div>
+      <div class="bot-bub"><div class="bot-ava">🤖</div><div class="bot-txt">${st.ch.intro}<br><span style="color:var(--dim);font-size:13.5px">📌 <b>Qué pasa aquí:</b> ${esc(ch.dev)}</span></div></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px">${thumbs}</div>`;
+  } else if(st.type==="keys"){
+    inner=`
+      <div class="bot-bub"><div class="bot-ava">🤖</div><div class="bot-txt"><b>Las estructuras que SÍ o SÍ te debes saber</b> (con cuántas veces salen en este grupo):</div></div>
+      <div class="hbadges">${ch.common.map(x=>`<span class="hbadge">🟢 ${esc(x.name)} <span class="cnt">${esc(x.n)}</span></span>`).join("")}</div>
+      <div style="background:#090714;border:1px solid var(--line);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:6px">
+        <div style="font-size:12px;font-weight:900;color:#ff94b2;text-transform:uppercase;letter-spacing:.06em">🔴 Lo que delata a cada placa</div>
+        ${ch.uniques.map(u=>`<div style="font-size:13.5px;line-height:1.35"><b style="color:var(--yel)">${esc(u.code)}:</b> ${esc(u.txt)}</div>`).join("")}
+      </div>`;
+  } else if(st.type==="meme"){
+    inner=`
+      <div class="bot-bub"><div class="bot-ava">🤖</div><div class="bot-txt"><b>Pausa de meme pa' que no se te olvide jamás:</b></div></div>
+      ${histMemeHTML(ch.meme)}`;
+  } else if(st.type==="recap"){
+    inner=`
+      <div class="bot-bub"><div class="bot-ava">🤖</div><div class="bot-txt"><b>¡Resumen relámpago de ${esc(ch.nick)}!</b> Si te sabes estas 3 cosas, ya ganaste este capítulo:</div></div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        ${ch.recap.map((r,i)=>`<div style="background:#090714;border:1px solid #2ee59d44;border-radius:12px;padding:10px 12px;font-size:14.5px;line-height:1.38"><b style="color:var(--ok)">${i+1}.</b> ${esc(r)}</div>`).join("")}
+      </div>`;
+  }
+
+  app.innerHTML=`
+    <div id="screen-hist-card">
+      ${hud}
+      <div class="hprog"><i style="width:${pct}%"></i></div>
+      <div class="hist-stage">
+        ${inner}
+        <button class="go" id="h-next" style="margin-top:4px">${st.type==="recap"?"Terminar capítulo 🏆":"Siguiente paso ▶"}</button>
+      </div>
+    </div>`;
+  $("back").onclick=showHistoriaMap;
+  $("h-next").onclick=()=>{ G.si++; renderHistoriaStep(); };
+}
+
+function finishHistoriaChapter(){
+  setPlayLayout(false); app.classList.add("histwide");
+  const ch=G.ch, hs=histState();
+  const acc=G.totalQ?Math.round(G.ok*100/G.totalQ):100;
+  const stars=acc>=90?3:(acc>=65?2:1);
+  hs.done=hs.done||{}; hs.stars=hs.stars||{};
+  hs.done[ch.id]=true;
+  hs.stars[ch.id]=Math.max(hs.stars[ch.id]||0, stars);
+  hs.unlocked=Math.max(hs.unlocked||1, G.idx+2);
+  hs.xp=(hs.xp||0)+50;
+  histSave();
+  beep("combo");
+  const hasNext=G.idx+1 < HIST_CHAPTERS.length;
+  app.innerHTML=`
+    <div class="results" id="screen-results">
+      <div class="k" style="color:var(--cyan);letter-spacing:.14em;font-weight:800;font-size:12px">CAPÍTULO ${G.idx+1} COMPLETADO</div>
+      <h2>${"⭐".repeat(stars)}${"☆".repeat(3-stars)}</h2>
+      <div class="bigscore">${acc}%</div>
+      <p>${esc(ch.nick)} · ${G.ok}/${G.totalQ} mini-retos · +50 XP bonus (Total ${hs.xp} XP)</p>
+      ${hasNext?`<button class="go" id="next-ch">Siguiente capítulo ▶</button>`:`<button class="go" id="go-boss">🏆 Ir al Jefe Final</button>`}
+      <button class="go alt" id="replay">Repetir capítulo</button>
+      <button class="go alt" id="hmap">Mapa de capítulos</button>
+    </div>`;
+  if($("next-ch")) $("next-ch").onclick=()=>startHistoriaChapter(G.idx+1);
+  if($("go-boss")) $("go-boss").onclick=()=>startHistoriaBoss();
+  $("replay").onclick=()=>startHistoriaChapter(G.idx);
+  $("hmap").onclick=showHistoriaMap;
+}
+
+function startHistoriaBoss(){
+  const poolQ=[];
+  HIST_CHAPTERS.forEach(c=>c.quiz.forEach(q=>poolQ.push({ch:c, qz:q})));
+  const qs=shuffle(poolQ).slice(0,10);
+  G={mode:"histboss", qs, i:0, ok:0, bad:0, locked:false};
+  beep("go"); showHistoriaBossQ();
+}
+function showHistoriaBossQ(){
+  stopTimer(); clearFB(); scrollTop();
+  if(!G || G.mode!=="histboss") return;
+  if(G.i>=G.qs.length){
+    setPlayLayout(false); app.classList.add("histwide");
+    const hs=histState();
+    const acc=Math.round(G.ok*100/G.qs.length);
+    hs.bossBest=Math.max(hs.bossBest||0, acc);
+    hs.xp=(hs.xp||0)+acc;
+    histSave();
+    app.innerHTML=`<div class="results" id="screen-results">
+      <div class="k" style="color:var(--hot);letter-spacing:.14em;font-weight:800;font-size:12px">JEFE FINAL · MODO HISTORIA</div>
+      <h2>${acc>=80?"CORONADO PARCE 👑":"CASI LO TIENES"}</h2>
+      <div class="bigscore">${acc}%</div>
+      <p>${G.ok}/${G.qs.length} preguntas · Mejor marca: ${hs.bossBest}% · ${hs.xp} XP</p>
+      <button class="go" id="again">Otro Jefe Final</button>
+      <button class="go alt" id="hmap">Mapa de capítulos</button>
+      <button class="go alt" id="home">Menú principal</button>
+    </div>`;
+    $("again").onclick=startHistoriaBoss;
+    $("hmap").onclick=showHistoriaMap;
+    $("home").onclick=()=>{ app.classList.remove("histwide"); menu(); };
+    return;
+  }
+  const it=G.qs[G.i], qz=it.qz, p=P.find(x=>x.code===qz.code)||P[0];
+  const opts=shuffle([...qz.opts]);
+  G.locked=false; setPlayLayout(true);
+  app.innerHTML=playWrap({
+    hud:`<div class="hud" id="screen-hboss"><button class="ib" id="back" style="width:34px;height:34px">◀</button><div>Jefe Final · ${esc(it.ch.nick)}</div><div>${G.i+1}/${G.qs.length}</div><div class="sp">${G.ok}✓</div></div>`,
+    prompt:`<div class="prompt">${esc(qz.q)}</div>`,
+    img:placaHTML({id:"iw", tag:`Clase ${p.cls} · ${p.code}`, src:p.imgSin, alt:p.code, on:true}),
+    body:`<div class="opts" id="opts">${opts.map((o,i)=>`<button class="opt" data-v="${i}">${esc(o)}</button>`).join("")}</div>`
+  });
+  $("back").onclick=showHistoriaMap;
+  bindPlacaImg({placa:p}, false); wirePlacaClicks();
+  app.querySelectorAll("#opts .opt").forEach((b,i)=>{
+    b.onclick=()=>{
+      if(G.locked) return; G.locked=true;
+      const ok=sameAns(opts[i], qz.ok);
+      if(ok){ G.ok++; b.classList.add("ok"); beep("ok"); }
+      else { G.bad++; b.classList.add("bad"); beep("bad"); app.querySelectorAll("#opts .opt").forEach((x,j)=>{ if(sameAns(opts[j], qz.ok)) x.classList.add("ok"); }); }
+      app.querySelectorAll("#opts .opt").forEach(x=>x.classList.add("lock"));
+      const fb=document.createElement("div");
+      fb.className="fb "+(ok?"good":"nope"); fb.id="screen-fb";
+      fb.innerHTML=`<h3>${ok?"¡Duro parce!":"Era:"}</h3><div class="dx">${esc(qz.ok)}</div><button class="go" id="btn-next">Siguiente ▶</button>`;
+      $("playbody").appendChild(fb); pinSideActions();
+      $("btn-next").onclick=()=>{ G.i++; showHistoriaBossQ(); };
+    };
+  });
+}
+
 function showMap(){
   setPlayLayout(false);
   const cls=selCls;
@@ -3312,14 +4043,14 @@ function auditQuestions(nRandom){
 }
 
 window.FB={ start, menu, showMap, showSettings, showLearnPick, startLearn,
-  showExamSetup, startExam, showExamQ, examReveal, showQ, showLearnQ, showLinea, startLineaDrill, showLineaQ, showEditor, startCustomLineaQuiz, edBuildCanvasJSON, edBuildMarkdown, edShowTip, edHideTip, pickExamPlacas, examTarget, examProgressOn, setExamKind, switchSet, openLightbox, closeLightbox, auditQuestions, canon, sameAns, pickOptions, makeDx, makePart, makeSt, makeZone, makeAbsent,
+  showExamSetup, startExam, showExamQ, examReveal, showQ, showLearnQ, showLinea, startLineaDrill, showLineaQ, showEditor, startCustomLineaQuiz, showHistoriaMap, startHistoriaChapter, startHistoriaBoss, HIST_CHAPTERS, edBuildCanvasJSON, edBuildMarkdown, edShowTip, edHideTip, pickExamPlacas, examTarget, examProgressOn, setExamKind, switchSet, openLightbox, closeLightbox, auditQuestions, canon, sameAns, pickOptions, makeDx, makePart, makeSt, makeZone, makeAbsent,
   get state(){return G;}, getS:()=>S, setS(p){ Object.assign(S,p); save(); },
   unlockAll(){ S.free=true; save(); } };
 bindDataset();
 S=load();
 discoverExtraSets();
 preloadAll();
-menu();
+if((location.hash==="#historia" || new URLSearchParams(location.search).get("mode")==="historia") && lineaAvailable()) showHistoriaMap(); else menu();
 })();
 </script>
 </body>
