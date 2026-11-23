@@ -1547,18 +1547,12 @@ const LINEA_GROUPS = [
   {id:"c5", track:"carnegie", short:"C23 Bebé XL", range:"Carnegie 23 · 56 días", nickname:"Bebé Completo (Hígado y Cerebro XL)", doodle:"baby",
    codes:["03-13","06-05","06-06"], thumbs:["03-13","06-05","06-06"],
    tells:["3D: feto/bebé en miniatura (8 semanas)","03-13: círculo abdominal con HÍGADO ROJO GIGANTE, costilla 8 y músculos","06-05: 'hongo' pálido cerebro XL · 06-06: cráneo fetal completo + ojo + odontoides"]},
-  {id:"p1", track:"pollo", short:"12–14h Lupas", range:"12–14 horas", nickname:"Las Lupas Redondas", doodle:"loupe",
-   codes:["02-07","02-08","02-09","02-10"], thumbs:["02-08","02-10"],
-   tells:["LAS ÚNICAS dentro de un círculo de microscopio en fondo blanco","12 h (02-07/08): pliegue neural ABIERTO en V","14 h (02-09/10): tubo neural CERRADO redondito · Diagnóstico corto sin corte/vista"]},
-  {id:"p2", track:"pollo", short:"16–22h Cinta", range:"16–22 horas · Lámina", nickname:"Cinta Rosada (Bulto → Volcán)", doodle:"ribbon",
-   codes:["02-01","02-02","02-03"], thumbs:["02-01","02-03"],
-   tells:["Corte transversal horizontal en cinta rosada/naranja muy plana","16 h (02-01): bulto sólido = LÍNEA PRIMITIVA · 20 h (02-02): hendidura en U","22 h (02-03): pliegues altos como volcán + mesodermo somático/esplácnico"]},
-  {id:"p3", track:"pollo", short:"23–26h Gusano", range:"23–26 h · 5–8 Somitas", nickname:"El Gusano con Bolitas", doodle:"caterpillar",
+  {id:"p1", track:"pollo", short:"Somitas (dorsal)", range:"5 → 8 somitas · vista dorsal", nickname:"El Gusano con Bolitas", doodle:"caterpillar",
    codes:["03-01","03-02","03-03","03-04"], thumbs:["03-01","03-02","03-04"],
-   tells:["VISTA DORSAL (desde arriba), NO corte: embrión entero con pares de somitas","03-01 (5 somitas, 23h) rojo uniforme · 03-02 (7 somitas, 24h) fila nítida","03-03 (7 somitas) diamante aislado · 03-04 (8 somitas, 26h) fondo blanco + islotes"]},
-  {id:"p4", track:"pollo", short:"24–48h/35s Tubo", range:"24–48 h y 35 Segmentos", nickname:"Nave Morada y Catedral", doodle:"rocket",
-   codes:["02-04","02-05","02-06","03-05"], thumbs:["02-05","02-06","03-05"],
-   tells:["Cortes transversales con tubo cerrado y cuerpo ganando altura","02-04 (24h): óvalo en cinta naranja · 02-05 (26h): placa MORADA ('nave espacial')","02-06 (2 días / 48h): carpa con alas · 03-05 (35 seg): domo rojo con 3 capas medulares"]}
+   tells:["Todas dicen SOMITAS + VISTA DORSAL: embrión entero desde arriba, NO corte","03-01 (5 somitas, 23 h) rojo uniforme · 03-02 (7 somitas, 24 h) rosario nítido","03-03 (7 somitas) diamante aislado · 03-04 (8 somitas, 26 h) fondo blanco + islotes"]},
+  {id:"p2", track:"pollo", short:"Horas/Días/Segm.", range:"12 h → 48 h → 35 segmentos", nickname:"La Escalera del Reloj: Lupas → Cinta → Nave", doodle:"loupe",
+   codes:["02-07","02-08","02-09","02-10","02-01","02-02","02-03","02-04","02-05","02-06","03-05"], thumbs:["02-08","02-10","02-01","02-03","02-05","02-06","03-05"],
+   tells:["🔍 Lupas 12–14 h (02-07..10): círculo de microscopio; 12 h pliegue abierto en V, 14 h tubo cerrado","🎀 Cinta 16–22 h (02-01..03): bulto = línea primitiva (16) · U (20) · volcán (22)","🚀 Nave 24–26 h (02-04 óvalo, 02-05 morado) · ⛪ Catedral 48 h (02-06) y 35 segmentos (03-05)"]}
 ];
 function lineaAvailable(){ return P.some(p=>p.code==="02-01") && P.some(p=>p.code==="06-06"); }
 function groupStructs(g){
@@ -1608,13 +1602,13 @@ function showLinea(tab){
   } else if(isF){
     body=`<div class="lflow">
       <div class="lfstep"><h4>1. ¿Pollo o Humano (Carnegie)?</h4>¿Tiene cuadrito 3D con línea verde arriba a la izq.? <b>SÍ → CARNEGIE</b>.<br>¿Círculo de microscopio, cinta plana, gusano con bolitas o domo? → <b>POLLO</b>.</div>
-      <div class="lfstep"><h4>2A. Si es POLLO → forma + corte</h4>Círculo = <b>12–14 h</b> (abierto=12, cerrado=14) · Cinta plana = <b>16–22 h</b> (bulto=16, U=20, volcán=22) · Gusano dorsal = <b>5–8 somitas (23–26 h)</b> · Tubo cerrado/morado/catedral = <b>24–48 h o 35 seg</b>.</div>
+      <div class="lfstep"><h4>2A. Si es POLLO → ¿somitas o reloj?</h4><b>SOMITAS vista dorsal</b> (gusano entero desde arriba) = grupo <b>Somitas</b>; todo lo demás (círculo o corte) = grupo <b>Horas/Días/Segmentos</b>: círculo 12–14 h · cinta 16–22 h · óvalo/morado 24–26 h · carpa 48 h · domo 35 seg.</div>
       <div class="lfstep"><h4>2B. Si es CARNEGIE → 3D + tejido</h4>Sin miembros + huecos enormes = <b>C11–12</b> · Yemas sin paleta + laxo = <b>C14–16</b> · Paletas + reloj de arena/cara oscura = <b>C18–19</b> · Dedos/manitos + cartílago/ojo = <b>C20–22</b> · Hígado XL / cerebro XL / cráneo = <b>C23</b>.</div>
       <div class="lfstep"><h4>3. Cierra el diagnóstico exacto</h4>Pollo: revisa horas/somitas y <b>CORTE TRANSVERSAL</b> vs <b>VISTA DORSAL</b> (12/14 h van sin corte). Carnegie C6: agrega paréntesis <b>(TALAMO…)</b> o <b>(HEMISFERIO…)</b>. Nunca escribas "Sección N".</div>
     </div>`;
   } else if(isPlan){
     body=`<div class="lflow">
-      <div class="lfstep"><h4>0:00–0:35 · Pollo completo (P1–P4)</h4>Mira los 4 grupos → <b>Aprender estructuras (C2)</b> 15 min → <b>Examen: Solo diagnósticos (C2)</b>. Meta: distinguir 12–48 h al ojo.</div>
+      <div class="lfstep"><h4>0:00–0:35 · Pollo (Somitas + Horas/Días/Segm.)</h4>Mira los 2 bloques → <b>Aprender estructuras (C2)</b> 15 min → <b>Examen: Solo diagnósticos (C2)</b>. Meta: distinguir 12–48 h al ojo.</div>
       <div class="lfstep"><h4>0:35–1:15 · C11–C16 (Fantasma + Perro Joven)</h4>Repasa C4 (04-01..06) y 03-06..09. Juega <b>Nivel 3 Estructuras (C4)</b> + <b>Mapa de secretos (C4)</b>.</div>
       <div class="lfstep"><h4>1:15–2:00 · C18–C19 (Muñeco + Perro Sorprendido)</h4>Fija 03-10, 05-01/02 vs 03-11, 05-03, 06-01. Usa <b>Aprender (C5)</b> y <b>Examen: Solo estructuras</b>.</div>
       <div class="lfstep"><h4>2:00–2:45 · C20–C23 (Manitos + Bebé XL)</h4>Fija 05-04 manitos, 05-06 ojo, 06-02..06 y 03-13 hígado. Haz <b>Aprender (C6)</b> + <b>Nivel 1 Rápido (Todo)</b>.</div>
@@ -1631,11 +1625,11 @@ function showLinea(tab){
       <div class="row" style="margin-bottom:10px">
         <button class="go" id="drill-all" style="flex:1;min-width:210px;margin:0">🎯 Ubícala en la línea (Mixto)</button>
         <button class="chip" id="drill-c">Solo Carnegie (5)</button>
-        <button class="chip" id="drill-p">Solo Pollo (4)</button>
+        <button class="chip" id="drill-p">Solo Pollo (2)</button>
       </div>
       <div class="seg" id="ltabs">
         <button data-t="carnegie" class="${isC?"on":""}">Humana C11–23 (26)</button>
-        <button data-t="pollo" class="${isP?"on":""}">Pollo 12h–35s (15)</button>
+        <button data-t="pollo" class="${isP?"on":""}">Pollo: Somitas + Horas (15)</button>
         <button data-t="flow" class="${isF?"on":""}">Ruta rápida</button>
         <button data-t="plan" class="${isPlan?"on":""}">Plan 4 h</button>
       </div>
