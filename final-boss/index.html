@@ -439,6 +439,29 @@ input[type=range]{width:100%;height:32px;accent-color:#00e6c3}
 .hprog{height:6px;background:#ffffff14;border-radius:99px;overflow:hidden;margin-bottom:8px}
 .hprog i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--yel),var(--hot));transition:width .2s}
 
+
+/* ---- Exam simulator masks, big Dx & pista (phone-first 390x844 + desktop) ---- */
+.imgw .maskbox,#lightbox .maskbox{position:absolute;z-index:2;background:#ffffff;border:2px solid #ffd166ee;border-radius:6px;pointer-events:none;box-shadow:0 1px 6px #0005}
+.imgw .mark,#lightbox .mark{position:absolute;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;background:#ff3d8a;color:#fff;font-weight:900;font-size:13px;display:grid;place-items:center;border:2px solid #ffd166;box-shadow:0 0 0 2px #0008;pointer-events:none;z-index:3}
+#lightbox .tag,.imgw .tag:empty{display:none}
+.ex-dxbig{background:linear-gradient(135deg,#24193d,#161028);border:2px solid #ffd166aa;border-radius:14px;padding:10px 12px;margin:0 0 8px}
+.ex-dxbig b{display:block;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--cyan);margin-bottom:2px}
+.ex-dxbig span{display:block;font-size:15.5px;font-weight:900;color:var(--yel);line-height:1.25}
+.ex-pista{background:#0b2224;border:1px solid #00e6c355;border-radius:12px;padding:8px 10px;margin:0 0 8px;font-size:13px;line-height:1.35;color:#e6fffb}
+.ex-pista b{color:var(--cyan)}
+@media (max-width:767px){
+  .ex-dxbig span{font-size:15px}
+  .ex-pista{font-size:12.5px}
+  .grow{padding:9px 10px;gap:8px}
+  .gbtn{width:42px;height:42px;font-size:18px}
+  .imgw .mark{width:22px;height:22px;font-size:11px;border-width:2px}
+}
+@media (max-height:640px) and (min-width:768px){
+  .ex-dxbig{padding:6px 9px;margin-bottom:5px}
+  .ex-dxbig span{font-size:13.5px}
+  .ex-pista{padding:5px 8px;margin-bottom:5px;font-size:11.5px}
+}
+
 </style>
 </head>
 <body>
@@ -1076,6 +1099,51 @@ function pickSpread(p, n){
   return shuffle(out).map((x,i)=>({id:String(i+1), name:x.e.name, poly:x.e.poly, origId:x.e.id, key:x.e.key||canon(x.e.name)}));
 }
 
+
+const PLACA_PISTAS = {
+  "02-01":"Cinta plana rosada con bulto sólido al centro (sin surco) → 16 h. Ojo: lleva '-' y LINEA sin tilde.",
+  "02-02":"Cinta plana con hendidura chica en U → 20 h SENO ROMBOIDAL (errata: 'Lámina Latera').",
+  "02-03":"Volcán abierto alto con láminas marcadas → 22 h SENO ROMBOIDAL (dice Capa Ectodérmica/Mesodérmica).",
+  "02-04":"Cinta naranja lisa con óvalo acostado (faringe + cerebro medio) → 24 h PLIEGUE CEFÁLICO.",
+  "02-05":"Placa MORADA oscura ('nave') con tubo ovalado + 2 somitas → 26 h TUBO NEURAL.",
+  "02-06":"Carpa/montaña rosada con tubo cerrado en punta → 2 DÍAS (48 HORAS) A NIVEL SENO ROMBOIDAL (¡sin 'DEL'!).",
+  "02-07":"Círculo de lupa (lejos) con V abierta → 12 HORAS (sin 'CORTE', Pliegue/Surco neural).",
+  "02-08":"Círculo de lupa (zoom) con V abierta → 12 HORAS (sin 'CORTE', Pliegue/Surco neural).",
+  "02-09":"Círculo de lupa (lejos) con tubo cerrado → 14 HORAS (sin 'CORTE', ya dice Tubo neural).",
+  "02-10":"Círculo de lupa (zoom) con tubo cerrado → 14 HORAS (sin 'CORTE', ya dice Tubo neural).",
+  "03-01":"Vista dorsal rojo parejo sin fondo blanco + Proamnios → 5 SOMITAS (23 HORAS) VISTA DORSAL.",
+  "03-02":"Vista dorsal gusano rojo largo con 7 pares (13 flechas, Cerebro anterior) → 7 SOMITAS (24 HORAS) VISTA DORSAL.",
+  "03-03":"Rombo/diamante suelto en fondo crema (solo 5 flechas) → 7 SOMITAS (24 HORAS) VISTA DORSAL.",
+  "03-04":"Vista dorsal con fondo blanco amplio + cabeza oscura + islotes vasculares → 8 SOMITAS (26 HORAS) VISTA DORSAL.",
+  "03-05":"Domo rojo ladrillo grande ('catedral', tubo triangular 3 capas) → 35 SEGMENTOS REGIÓN VERTEBRAL.",
+  "03-06":"3D CREMA + corte vertical largo en 8 con corazón gigante (letras) → C12 / 30 DÍAS.",
+  "03-07":"Tótem vertical lleno de arcos faríngeos (29 letras, Agujero ciego) → C14 / 33 DÍAS.",
+  "03-08":"Corte diagonal MORADO oscuro con Conducto mesonéfrico (letras) → C15 / 36 DÍAS.",
+  "03-09":"Cabeza arriba + 2 óvalos pálidos abajo, aún con LETRAS y sin costillas → C16 / 39 DÍAS.",
+  "03-10":"Reloj de arena con LETRAS (Adenohipófisis, Conducto coclear) → EMBRIÓN C18 / 44 DÍAS (con tilde y '/').",
+  "03-11":"Gris oscuro ancho con LETRAS (A–AA, Cápsula ótica) → C19 / 45 - 47 DÍAS.",
+  "03-12":"Rosado alargado con LETRAS (A–Z, Agujero magno) → C20 / 49 DÍAS.",
+  "03-13":"Círculo rojo casi perfecto lleno de HÍGADO gigante + costilla 8 → C23 / 56 DÍAS.",
+  "04-01":"3D oscuro B/N + burbuja pericárdica pálida grande abajo (letras) → C11 / 29 DÍAS.",
+  "04-02":"3D oscuro B/N + masa rosada esponjosa con 2 astas venosas (Septo transverso) → C11 / 29 DÍAS.",
+  "04-03":"3D oscuro B/N + arco/puente cerrando cavidad blanca (Vesícula umbilical) → C11 / 29 DÍAS.",
+  "04-04":"3D oscuro B/N + alas abiertas hacia abajo como medusa/Ditto → C11 / 29 DÍAS.",
+  "04-05":"3D CREMA + maní compacto chico (solo 8 letras, Diencéfalo D1/D2) → C12 / 30 DÍAS.",
+  "04-06":"3D CREMA + pera con 2 patitas colgando separadas por muesca → C12 / 30 DÍAS.",
+  "05-01":"Rojiza con NÚMEROS, cintura simétrica sin brazo → EMBRION C18 – 44 DÍAS (SIN tilde y con '–').",
+  "05-02":"Rojiza con NÚMEROS y brazo/hombro saliendo a la izquierda → EMBRION C18 – 44 DÍAS (SIN tilde y con '–').",
+  "05-03":"Pug oscuro con NÚMEROS (1–25), boca curva abajo, Cartílago de Meckel → C19 / 45 - 47 DÍAS.",
+  "05-04":"¡DOS MANITOS ROJAS con 5 dedos abiertas a los lados! → C21 / 49 - 52 DIAS (DIAS sin tilde).",
+  "05-05":"Reloj de arena violáceo con V oscura abajo (Mandíbula, Nervio óptico) → C22 / 52 - 55 DÍAS.",
+  "05-06":"Partida en 2 piezas + OJO NEGRO abajo derecha (0 verdes) → C22 / 52 - 55 DÍAS.",
+  "06-01":"Centro AZUL CELESTE + óvalo gigante abajo → C19 / 45 - 47 DÍAS (TALAMO – HIPOTALAMO).",
+  "06-02":"Rojiza con hendidura vertical y foto 3D a la DERECHA → C21 / 49 - 52 DIAS (TALAMO – HIPOTALAMO – 3ER. VENTRICULO).",
+  "06-03":"Morado pálido compacto con 3D a la izquierda → C22 / 52 - 55 DÍAS (TALAMO – HIPOTALAMO).",
+  "06-04":"Morado pálido más ancho con bulbo arriba y 2 ventrículos abajo → C22 / 52 - 55 DÍAS (HEMISFERIO CEREBRAL).",
+  "06-05":"Casco/hongo liso pálido gigante (11 flechas, Cerebelo) → C23 / 56 DÍAS (HEMISFERIO CEREBRAL).",
+  "06-06":"Cabeza morada completa con ojos + foto 3D a la DERECHA (23 flechas) → C23 / 56 DÍAS (HEMISFERIO CEREBRAL – TELENCEFALO)."
+};
+
 function showExamSetup(){
   stopTimer(); clearFB(); setPlayLayout(false); G=null;
   const kind=examKindDef(S.examKind||"full");
@@ -1508,8 +1576,8 @@ function showExamQ(){
         <div class="down" id="etleft">⬇ ${G.limit}s</div>
       </div>`,
     bar:`<div class="bar" id="tbar"><i id="tfill"></i></div>`,
-    sheet:`<div class="sheet"><b>Placa ${sheetNum}: ${esc(examKindDef(G.examKind).sheet)}</b><span>${esc(examKindDef(G.examKind).sheetSub)}</span></div>`,
-    img: placaHTML({id:"iw", tag:`Clase ${p.cls} · ${p.code}`, src:p.imgSin, alt:"Placa "+p.code, on:true}),
+    sheet:`<div class="sheet"><b>Placa ${sheetNum} · Clase ${p.cls} (${p.code}): ${esc(examKindDef(G.examKind).sheet)}</b><span>${esc(examKindDef(G.examKind).sheetSub)} · Toca la placa para ampliar</span></div>`,
+    img: placaHTML({id:"iw", tag:"", src:"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7", alt:"Placa "+p.code, on:true}),
     body:`<button class="go" id="okz">Listo</button>`
   });
   $("back").onclick=()=>{ if(confirm("¿Salir del examen? Se pierde esta ronda.")) showExamSetup(); };
@@ -1563,7 +1631,9 @@ function examReveal(timeout){
         ${placaHTML({id:"iw", tag:kind.tag, src:p.imgSin, alt:"Placa "+p.code, on:true})}
         ${placaHTML({id:"iw2", tag:"Con nombres", src:p.imgCon, alt:"Placa "+p.code+" con nombres"})}
       </div>`,
-    body: `<div id="grades">
+    body: `<div class="ex-dxbig" id="ex-dxbig"><b>Diagnóstico oficial</b><span>${esc(p.diagnosis)}</span></div>
+      ${PLACA_PISTAS[p.code]?`<div class="ex-pista" id="ex-pista"><b>💡 Pista para reconocerla:</b> ${esc(PLACA_PISTAS[p.code])}</div>`:""}
+      <div id="grades">
       ${kind.gradeDx?`<div class="grow focus" data-k="dx"><div class="lab"><span style="color:var(--dim);font-size:11px">Diagnóstico</span><br>${esc(p.diagnosis)}</div>
         <button class="gbtn yes" data-v="1">✓</button><button class="gbtn no" data-v="0">✗</button></div>`:""}
       ${marks.map((t,i)=>`<div class="grow ${!kind.gradeDx&&i===0?"focus":""}" data-k="st" data-i="${i}"><div class="lab"><span style="color:var(--yel);font-weight:900">(${esc(t.id)})</span> ${esc(t.name)}</div>
@@ -3732,12 +3802,26 @@ function bindPlacaImg(q, labeled){
     img.decoding="async";
     host.appendChild(img);
   }
-  const src=labeled? p.imgCon : p.imgSin;
+  const examPartial = !labeled && q.kind==="exam" && q.targets && q.targets.length>0 && (!G || G.phase==="ask");
+  const src = (labeled || examPartial) ? p.imgCon : p.imgSin;
   const paintMarks=()=>{
-    host.querySelectorAll(".mark,.zonebox,.img-err").forEach(n=>n.remove());
+    host.querySelectorAll(".mark,.maskbox,.zonebox,.img-err").forEach(n=>n.remove());
     iw.querySelectorAll(":scope > .img-err").forEach(n=>n.remove());
     if(labeled) return;
     const marks=(!labeled && q.targets && q.targets.length) ? q.targets : (!labeled && q.target ? [q.target] : []);
+    if(examPartial){
+      marks.forEach(el=>{
+        if(!el||!el.poly||!el.poly.length) return;
+        const xs=el.poly.map(pt=>pt[0]), ys=el.poly.map(pt=>pt[1]);
+        const x0=Math.max(0, Math.min(...xs)-1.2), x1=Math.min(100, Math.max(...xs)+1.2);
+        const y0=Math.max(0, Math.min(...ys)-0.8), y1=Math.min(100, Math.max(...ys)+0.8);
+        const mb=document.createElement("span");
+        mb.className="maskbox";
+        mb.style.left=x0+"%"; mb.style.top=y0+"%";
+        mb.style.width=Math.max(2.2,x1-x0)+"%"; mb.style.height=Math.max(2.2,y1-y0)+"%";
+        host.appendChild(mb);
+      });
+    }
     marks.forEach(el=>{
       if(!el||!el.poly) return;
       const [x,y]=centroid(el.poly);
@@ -3788,7 +3872,7 @@ function bindPlacaImg(q, labeled){
     }
     img.src=u;
   };
-  load(src,false);
+  paintMarks(); load(src,false);
 }
 
 function renderBody(q, isLearn){
