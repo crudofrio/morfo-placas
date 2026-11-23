@@ -258,6 +258,54 @@ input[type=range]{width:100%;height:32px;accent-color:#00e6c3}
   .playwrap.grade .dualimg{flex:1;display:grid !important;grid-template-columns:1fr;grid-template-rows:1fr 1fr;gap:10px;min-height:0;width:100%;height:100%}
   .playwrap.grade .dualimg .imgw{display:flex !important;max-height:100%;height:100%;max-width:100%;align-items:center;justify-content:center}
 }
+
+/* ---- Línea Carnegie viewer & drill ---- */
+.lcards{display:grid;gap:12px;margin:10px 0}
+@media (min-width:768px){ .lcards{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (min-width:1100px){ .lcards.c5{grid-template-columns:repeat(3,minmax(0,1fr))} }
+.lcard{background:linear-gradient(180deg,#15112c,#0d0b1a);border:1.5px solid var(--line);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.lcard.carn{border-color:#00e6c344}
+.lcard.pollo{border-color:#ffd16644}
+.lhead{display:flex;align-items:center;gap:10px}
+.ldoodle{flex:0 0 auto;width:48px;height:48px;border-radius:12px;background:#07060f;border:1px solid var(--line);display:grid;place-items:center}
+.ldoodle svg{width:40px;height:40px}
+.lrng{font-size:11px;font-weight:800;color:var(--cyan)}
+.lnick{font-size:16px;font-weight:900;color:var(--yel);line-height:1.2}
+.lthumbs{display:grid;grid-template-columns:repeat(auto-fit,minmax(84px,1fr));gap:6px}
+.lth{position:relative;border-radius:8px;overflow:hidden;border:1px solid var(--line);background:#000;cursor:zoom-in}
+.lth img{display:block;width:100%;height:78px;object-fit:contain;background:#08080e}
+.lth span{position:absolute;left:4px;bottom:4px;background:#07060fd9;color:var(--cyan);font-size:10px;font-weight:800;padding:1px 5px;border-radius:5px}
+.ltells{margin:0;padding-left:16px;font-size:12.5px;line-height:1.38;color:#e8e5ff}
+.ltells li{margin:2px 0}
+.ldxs{background:#090714;border:1px solid #ffffff16;border-radius:10px;padding:7px 9px;font-size:11.5px;line-height:1.35}
+.ldxs div{margin:2px 0}
+.ldxs b{color:var(--yel)}
+.ltags{display:flex;flex-wrap:wrap;gap:4px;font-size:10.5px}
+.lsg{background:#0e3824;color:var(--ok);border:1px solid #2ee59d44;padding:2px 6px;border-radius:99px;font-weight:700}
+.lsr{background:#381224;color:#ff94b2;border:1px solid #ff3d8a44;padding:2px 6px;border-radius:99px;font-weight:700}
+.lflow{display:grid;gap:8px;margin:10px 0}
+@media (min-width:768px){ .lflow{grid-template-columns:repeat(2,minmax(0,1fr))} }
+.lfstep{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:13px;line-height:1.4}
+.lfstep h4{margin:0 0 4px;color:var(--yel);font-size:14px}
+.opts.lgrid{grid-template-columns:1fr 1fr;gap:6px}
+.opts.lgrid .opt{padding:8px 10px 8px 32px;min-height:44px;font-size:12px;line-height:1.2}
+.opts.lgrid .opt small{display:block;font-size:10px;color:var(--dim);font-weight:700;margin-top:2px}
+@media (min-width:768px){
+  .opts .opt:nth-child(5)::before{content:"5"}
+  .opts .opt:nth-child(6)::before{content:"6"}
+  .opts .opt:nth-child(7)::before{content:"7"}
+  .opts .opt:nth-child(8)::before{content:"8"}
+  .opts .opt:nth-child(9)::before{content:"9"}
+  .opts .opt:nth-child(5)::before,.opts .opt:nth-child(6)::before,.opts .opt:nth-child(7)::before,.opts .opt:nth-child(8)::before,.opts .opt:nth-child(9)::before{
+    position:absolute;left:10px;top:50%;transform:translateY(-50%);width:18px;height:18px;border-radius:5px;
+    border:1px solid var(--line);display:grid;place-items:center;font-size:10px;font-weight:800;color:var(--dim);background:#0004}
+  .opts.lgrid .opt:nth-child(-n+9){padding-left:32px}
+  .opts.lgrid .opt:nth-child(-n+9)::before{left:8px}
+}
+@media (max-height:640px) and (min-width:768px){
+  .opts.lgrid .opt{min-height:38px;padding:6px 8px 6px 28px;font-size:11.5px}
+}
+
 </style>
 </head>
 <body>
@@ -685,6 +733,7 @@ function menu(){
         ${classChips(selCls,"menu")}
       </div>
       <div class="lv">${levels}</div>
+      ${lineaAvailable()?`<button class="ghost" id="btn-linea" style="margin-bottom:8px;border-color:#00e6c344;color:var(--cyan)">🧭 Línea Carnegie & Pollo + Drill</button>`:""}
       <button class="ghost" id="btn-map">🗺️ Mapa de los secretos</button>
       <button class="ghost" id="btn-free" style="margin-top:8px">${S.free?"★ Juego libre ON (todos los niveles)":"Juego libre: entrar a cualquier nivel"}</button>
     </div>
@@ -700,6 +749,7 @@ function menu(){
   $("btn-play").onclick=()=>{ beep("go"); start({level:n, cls:selCls}); };
   $("btn-exam").onclick=()=>showExamSetup();
   $("btn-learn").onclick=()=>showLearnPick();
+  if($("btn-linea")) $("btn-linea").onclick=()=>showLinea();
   $("btn-map").onclick=()=>showMap();
   $("btn-free").onclick=()=>{S.free=!S.free;save();menu();};
   app.querySelectorAll("#sets [data-set]").forEach(b=>b.onclick=()=>switchSet(b.dataset.set));
@@ -1280,7 +1330,7 @@ function deskKey(ev){
     }
     return;
   }
-  if(/^[1-4]$/.test(k)){
+  if(/^[1-9]$/.test(k)){
     const n=+k-1;
     const packOn=document.querySelector(".packrow");
     if(packOn){
@@ -1465,6 +1515,235 @@ function examResults(){
     </div>`;
   if($("rep")) $("rep").onclick=()=>startExam({cls:G.cls, n:failed.length, only:failed.map(f=>f.code), kind:G.examKind});
   $("again").onclick=()=>showExamSetup();
+  $("home").onclick=menu;
+}
+
+
+/* ---------- Línea Carnegie (visual timeline + drill) ---------- */
+const LINEA_DOODLES = {
+  ghost:`<svg viewBox="0 0 80 80"><path d="M40 10C23 10 14 22 14 38v28l9-7 8 7 9-7 9 7 8-7 9 7V38c0-16-9-28-26-28z" fill="#e9e4ff" stroke="#8b6cff" stroke-width="3"/><circle cx="31" cy="34" r="5" fill="#14102a"/><circle cx="49" cy="34" r="5" fill="#14102a"/><ellipse cx="40" cy="48" rx="6" ry="7" fill="#ff3d8a"/><path d="M8 42q8-6 14 0M58 42q8-6 14 0" stroke="#00e6c3" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`,
+  puppy:`<svg viewBox="0 0 80 80"><ellipse cx="20" cy="34" rx="9" ry="16" transform="rotate(18 20 34)" fill="#c98a5b" stroke="#ffd166" stroke-width="2.5"/><ellipse cx="60" cy="34" rx="9" ry="16" transform="rotate(-18 60 34)" fill="#c98a5b" stroke="#ffd166" stroke-width="2.5"/><circle cx="40" cy="40" r="22" fill="#f4be8c" stroke="#ffd166" stroke-width="2.5"/><circle cx="32" cy="36" r="4" fill="#14102a"/><circle cx="48" cy="36" r="4" fill="#14102a"/><ellipse cx="40" cy="45" rx="5" ry="3.5" fill="#14102a"/><path d="M35 51q5 5 10 0" stroke="#14102a" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`,
+  surprised_dog:`<svg viewBox="0 0 80 80"><path d="M16 26L25 10l10 14M64 26L55 10 45 24" fill="#a864d8" stroke="#00e6c3" stroke-width="2.5" stroke-linejoin="round"/><ellipse cx="40" cy="44" rx="24" ry="22" fill="#f6c7a7" stroke="#ff3d8a" stroke-width="3"/><circle cx="30" cy="38" r="7" fill="#fff" stroke="#14102a" stroke-width="2"/><circle cx="50" cy="38" r="7" fill="#fff" stroke="#14102a" stroke-width="2"/><circle cx="31" cy="38" r="3" fill="#14102a"/><circle cx="49" cy="38" r="3" fill="#14102a"/><ellipse cx="40" cy="52" rx="6" ry="8" fill="#ff3d8a" stroke="#14102a" stroke-width="2"/></svg>`,
+  hands:`<svg viewBox="0 0 80 80"><g fill="#ffd166" stroke="#ff3d8a" stroke-width="2.3" stroke-linejoin="round"><path d="M14 58V32a3 3 0 0 1 6 0v12V24a3 3 0 0 1 6 0v20V20a3 3 0 0 1 6 0v24V26a3 3 0 0 1 6 0v20l5-7a3 3 0 0 1 5 4l-9 17c-2 4-5 6-10 6H22c-5 0-8-3-8-8z"/><path d="M46 58V35a2.5 2.5 0 0 1 5 0v10V28a2.5 2.5 0 0 1 5 0v17V25a2.5 2.5 0 0 1 5 0v20V31a2.5 2.5 0 0 1 5 0v16l4-5a2.5 2.5 0 0 1 4 3l-7 13c-2 3-4 5-8 5H53c-4 0-7-2-7-5z" opacity=".9"/></g></svg>`,
+  baby:`<svg viewBox="0 0 80 80"><circle cx="40" cy="27" r="16" fill="#ffd9c2" stroke="#00e6c3" stroke-width="2.8"/><path d="M35 12q5-6 10 0" stroke="#ffd166" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="34" cy="26" r="2.5" fill="#14102a"/><circle cx="46" cy="26" r="2.5" fill="#14102a"/><path d="M36 33q4 3 8 0" stroke="#ff3d8a" stroke-width="2.2" fill="none" stroke-linecap="round"/><rect x="26" y="43" width="28" height="24" rx="12" fill="#2ee59d" stroke="#00e6c3" stroke-width="2.5"/><path d="M26 48l-9 7M54 48l9 7" stroke="#ffd9c2" stroke-width="5" stroke-linecap="round"/><text x="40" y="60" text-anchor="middle" font-size="13" font-weight="900" fill="#07060f">C23</text></svg>`,
+  loupe:`<svg viewBox="0 0 80 80"><circle cx="34" cy="34" r="21" fill="#e8f3ea" stroke="#00e6c3" stroke-width="4"/><line x1="15" y1="34" x2="53" y2="34" stroke="#ff3d8a" stroke-width="3.5"/><circle cx="34" cy="34" r="5" fill="#ff3d8a"/><line x1="49" y1="49" x2="68" y2="68" stroke="#ffd166" stroke-width="7" stroke-linecap="round"/></svg>`,
+  ribbon:`<svg viewBox="0 0 80 80"><path d="M8 46h20l8-18 8 18h28" fill="none" stroke="#ff6b8b" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 56h64" stroke="#ffd166" stroke-width="3" stroke-dasharray="5 4"/><circle cx="36" cy="28" r="5" fill="#00e6c3"/></svg>`,
+  caterpillar:`<svg viewBox="0 0 80 80"><rect x="10" y="34" width="58" height="14" rx="7" fill="#ff5a7d" stroke="#ffd166" stroke-width="2.5"/><circle cx="24" cy="41" r="4" fill="#fff2b2"/><circle cx="35" cy="41" r="4" fill="#fff2b2"/><circle cx="46" cy="41" r="4" fill="#fff2b2"/><circle cx="57" cy="41" r="4" fill="#fff2b2"/><circle cx="63" cy="39" r="7" fill="#ff3d8a" stroke="#fff" stroke-width="2"/><circle cx="65" cy="37" r="2" fill="#14102a"/></svg>`,
+  rocket:`<svg viewBox="0 0 80 80"><path d="M10 62c12-18 18-38 30-38s18 20 30 38" fill="#8b6cff33" stroke="#8b6cff" stroke-width="4" stroke-linecap="round"/><ellipse cx="40" cy="34" rx="10" ry="14" fill="#ffd166" stroke="#ff3d8a" stroke-width="3"/><ellipse cx="40" cy="34" rx="4" ry="7" fill="#14102a"/><circle cx="23" cy="42" r="6" fill="#00e6c3"/><circle cx="57" cy="42" r="6" fill="#00e6c3"/></svg>`
+};
+const LINEA_GROUPS = [
+  {id:"c1", track:"carnegie", short:"C11–12 Fantasma", range:"Carnegie 11–12 · 29–30 días", nickname:"El Fantasma y el Puente", doodle:"ghost",
+   codes:["04-01","04-02","04-03","04-04","04-05","04-06","03-06"], thumbs:["04-03","04-06","03-06"],
+   tells:["3D: embrión en C cerrada, SIN esbozos de miembros","Cavidades enormes vacías (celoma abierto en puente 04-03/04 o cavidad pericárdica)","Sin cartílago ni vértebras; tubo neural chico + somitas y crestas neurales"]},
+  {id:"c2", track:"carnegie", short:"C14–16 Perro Joven", range:"Carnegie 14–16 · 33–39 días", nickname:"El Perro Joven", doodle:"puppy",
+   codes:["03-07","03-08","03-09"], thumbs:["03-07","03-08","03-09"],
+   tells:["3D: asoman yemas de miembros (sin paletas ni dedos)","Corte estrecho, tejido celular laxo, aún sin cartílago denso","03-07 arcos faríngeos · 03-08 morado mesonéfrico · 03-09 máscara con 2 óvalos abajo"]},
+  {id:"c3", track:"carnegie", short:"C18–19 Muñeco/Perro", range:"Carnegie 18–19 · 44–47 días", nickname:"Muñeco Sexy y Perro Sorprendido", doodle:"surprised_dog",
+   codes:["03-10","05-01","05-02","03-11","05-03","06-01"], thumbs:["05-02","03-11","06-01"],
+   tells:["3D: cabeza grande + paletas de manos (sin dedos separados)","C18: 'Muñeco sexy' en reloj de arena (cintura + 2 óvalos) · C19: 'Perro sorprendido' oscuro/azul","Ya hay condensación cartilaginosa (atlas C1, C4-C5) y espacio subaracnoideo blanco"]},
+  {id:"c4", track:"carnegie", short:"C20–22 Manitos", range:"Carnegie 20–22 · 49–55 días", nickname:"Las Manitos y el Perro Viejito", doodle:"hands",
+   codes:["03-12","05-04","06-02","05-05","05-06","06-03","06-04"], thumbs:["05-04","05-06","06-04"],
+   tells:["3D: dedos / rayos digitales visibles; cuello erguido","05-04 (C21): ¡MANITOS con 5 dedos! · 05-06 (C22): ojo negro pigmentado","Cartílago nítido (costillas, mandíbula) · C6 aquí son tálamo/hipotálamo/hemisferio"]},
+  {id:"c5", track:"carnegie", short:"C23 Bebé XL", range:"Carnegie 23 · 56 días", nickname:"Bebé Completo (Hígado y Cerebro XL)", doodle:"baby",
+   codes:["03-13","06-05","06-06"], thumbs:["03-13","06-05","06-06"],
+   tells:["3D: feto/bebé en miniatura (8 semanas)","03-13: círculo abdominal con HÍGADO ROJO GIGANTE, costilla 8 y músculos","06-05: 'hongo' pálido cerebro XL · 06-06: cráneo fetal completo + ojo + odontoides"]},
+  {id:"p1", track:"pollo", short:"12–14h Lupas", range:"12–14 horas", nickname:"Las Lupas Redondas", doodle:"loupe",
+   codes:["02-07","02-08","02-09","02-10"], thumbs:["02-08","02-10"],
+   tells:["LAS ÚNICAS dentro de un círculo de microscopio en fondo blanco","12 h (02-07/08): pliegue neural ABIERTO en V","14 h (02-09/10): tubo neural CERRADO redondito · Diagnóstico corto sin corte/vista"]},
+  {id:"p2", track:"pollo", short:"16–22h Cinta", range:"16–22 horas · Lámina", nickname:"Cinta Rosada (Bulto → Volcán)", doodle:"ribbon",
+   codes:["02-01","02-02","02-03"], thumbs:["02-01","02-03"],
+   tells:["Corte transversal horizontal en cinta rosada/naranja muy plana","16 h (02-01): bulto sólido = LÍNEA PRIMITIVA · 20 h (02-02): hendidura en U","22 h (02-03): pliegues altos como volcán + mesodermo somático/esplácnico"]},
+  {id:"p3", track:"pollo", short:"23–26h Gusano", range:"23–26 h · 5–8 Somitas", nickname:"El Gusano con Bolitas", doodle:"caterpillar",
+   codes:["03-01","03-02","03-03","03-04"], thumbs:["03-01","03-02","03-04"],
+   tells:["VISTA DORSAL (desde arriba), NO corte: embrión entero con pares de somitas","03-01 (5 somitas, 23h) rojo uniforme · 03-02 (7 somitas, 24h) fila nítida","03-03 (7 somitas) diamante aislado · 03-04 (8 somitas, 26h) fondo blanco + islotes"]},
+  {id:"p4", track:"pollo", short:"24–48h/35s Tubo", range:"24–48 h y 35 Segmentos", nickname:"Nave Morada y Catedral", doodle:"rocket",
+   codes:["02-04","02-05","02-06","03-05"], thumbs:["02-05","02-06","03-05"],
+   tells:["Cortes transversales con tubo cerrado y cuerpo ganando altura","02-04 (24h): óvalo en cinta naranja · 02-05 (26h): placa MORADA ('nave espacial')","02-06 (2 días / 48h): carpa con alas · 03-05 (35 seg): domo rojo con 3 capas medulares"]}
+];
+function lineaAvailable(){ return P.some(p=>p.code==="02-01") && P.some(p=>p.code==="06-06"); }
+function groupStructs(g){
+  const cg={}, cr={}, ng={}, nr={};
+  const smap={}; STRUCTS.forEach(s=>{ smap[s.key]=s; });
+  g.codes.forEach(code=>{
+    const p=P.find(x=>x.code===code); if(!p) return;
+    const seen=new Set();
+    (p.elements||[]).forEach(e=>{
+      const k=e.key||canon(e.name); if(!k||seen.has(k)) return; seen.add(k);
+      const col=smap[k]?smap[k].color:"red";
+      if(col==="green"){ cg[k]=(cg[k]||0)+1; ng[k]=ng[k]||e.name; }
+      else if(col==="red"){ cr[k]=(cr[k]||0)+1; nr[k]=nr[k]||e.name; }
+    });
+  });
+  const gs=Object.keys(cg).sort((a,b)=>cg[b]-cg[a]).slice(0,4).map(k=>ng[k]+" ("+cg[k]+")");
+  const rs=Object.keys(cr).sort((a,b)=>cr[b]-cr[a]).slice(0,3).map(k=>nr[k]);
+  return {gs, rs};
+}
+let lineaTab="carnegie";
+function showLinea(tab){
+  stopTimer(); clearFB(); setPlayLayout(false); G=null;
+  if(tab) lineaTab=tab;
+  app.classList.add("wide");
+  const isC=lineaTab==="carnegie", isP=lineaTab==="pollo", isF=lineaTab==="flow", isPlan=lineaTab==="plan";
+  const renderCard=g=>{
+    const pList=g.codes.map(c=>P.find(x=>x.code===c)).filter(Boolean);
+    const {gs,rs}=groupStructs(g);
+    const cls=g.track==="carnegie"?"carn":"pollo";
+    const thumbs=g.thumbs.map(c=>{
+      const p=P.find(x=>x.code===c); if(!p) return "";
+      return `<div class="lth" data-code="${c}" title="Clic para ampliar"><img src="${p.imgSin}" alt="${c}"><span>${c}</span></div>`;
+    }).join("");
+    return `<div class="lcard ${cls}">
+      <div class="lhead"><div class="ldoodle">${LINEA_DOODLES[g.doodle]||""}</div>
+        <div><div class="lrng">${esc(g.range)}</div><div class="lnick">${esc(g.nickname)}</div></div></div>
+      <div class="lthumbs">${thumbs}</div>
+      <ul class="ltells">${g.tells.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>
+      <div class="ldxs">${pList.map(p=>`<div><b>${p.code}</b> (C${p.cls}): ${esc(p.diagnosis)}</div>`).join("")}</div>
+      <div class="ltags">${gs.map(s=>`<span class="lsg">🟢 ${esc(s)}</span>`).join("")}${rs.map(s=>`<span class="lsr">🔴 ${esc(s)}</span>`).join("")}</div>
+    </div>`;
+  };
+  let body="";
+  if(isC || isP){
+    const list=LINEA_GROUPS.filter(g=>g.track===(isC?"carnegie":"pollo"));
+    body=`<div class="lcards ${isC?"c5":""}">${list.map(renderCard).join("")}</div>`;
+  } else if(isF){
+    body=`<div class="lflow">
+      <div class="lfstep"><h4>1. ¿Pollo o Humano (Carnegie)?</h4>¿Tiene cuadrito 3D con línea verde arriba a la izq.? <b>SÍ → CARNEGIE</b>.<br>¿Círculo de microscopio, cinta plana, gusano con bolitas o domo? → <b>POLLO</b>.</div>
+      <div class="lfstep"><h4>2A. Si es POLLO → forma + corte</h4>Círculo = <b>12–14 h</b> (abierto=12, cerrado=14) · Cinta plana = <b>16–22 h</b> (bulto=16, U=20, volcán=22) · Gusano dorsal = <b>5–8 somitas (23–26 h)</b> · Tubo cerrado/morado/catedral = <b>24–48 h o 35 seg</b>.</div>
+      <div class="lfstep"><h4>2B. Si es CARNEGIE → 3D + tejido</h4>Sin miembros + huecos enormes = <b>C11–12</b> · Yemas sin paleta + laxo = <b>C14–16</b> · Paletas + reloj de arena/cara oscura = <b>C18–19</b> · Dedos/manitos + cartílago/ojo = <b>C20–22</b> · Hígado XL / cerebro XL / cráneo = <b>C23</b>.</div>
+      <div class="lfstep"><h4>3. Cierra el diagnóstico exacto</h4>Pollo: revisa horas/somitas y <b>CORTE TRANSVERSAL</b> vs <b>VISTA DORSAL</b> (12/14 h van sin corte). Carnegie C6: agrega paréntesis <b>(TALAMO…)</b> o <b>(HEMISFERIO…)</b>. Nunca escribas "Sección N".</div>
+    </div>`;
+  } else if(isPlan){
+    body=`<div class="lflow">
+      <div class="lfstep"><h4>0:00–0:35 · Pollo completo (P1–P4)</h4>Mira los 4 grupos → <b>Aprender estructuras (C2)</b> 15 min → <b>Examen: Solo diagnósticos (C2)</b>. Meta: distinguir 12–48 h al ojo.</div>
+      <div class="lfstep"><h4>0:35–1:15 · C11–C16 (Fantasma + Perro Joven)</h4>Repasa C4 (04-01..06) y 03-06..09. Juega <b>Nivel 3 Estructuras (C4)</b> + <b>Mapa de secretos (C4)</b>.</div>
+      <div class="lfstep"><h4>1:15–2:00 · C18–C19 (Muñeco + Perro Sorprendido)</h4>Fija 03-10, 05-01/02 vs 03-11, 05-03, 06-01. Usa <b>Aprender (C5)</b> y <b>Examen: Solo estructuras</b>.</div>
+      <div class="lfstep"><h4>2:00–2:45 · C20–C23 (Manitos + Bebé XL)</h4>Fija 05-04 manitos, 05-06 ojo, 06-02..06 y 03-13 hígado. Haz <b>Aprender (C6)</b> + <b>Nivel 1 Rápido (Todo)</b>.</div>
+      <div class="lfstep"><h4>2:45–3:25 · Calentamiento mixto + Top verdes</h4><b>Mapa de secretos → Ruta de oro</b> + 2 rondas de <b>Examen: Solo diagnósticos (Todo, 6 placas)</b> bajando a 24 s.</div>
+      <div class="lfstep"><h4>3:25–4:00 · Simulacro real del parcial</h4>2–3 rondas de <b>Examen simulado · Completo (4–6 placas, Todo el parcial)</b> en papel. Repite al final las falladas.</div>
+    </div>`;
+  }
+  app.innerHTML=`
+    <div class="top">
+      <button class="ib" id="back">◀</button>
+      <div class="brand"><div class="k">Madurez morfológica · 41 placas</div><h1 style="font-size:21px">Línea Carnegie y Pollo</h1></div>
+    </div>
+    <div id="screen-linea">
+      <div class="row" style="margin-bottom:10px">
+        <button class="go" id="drill-all" style="flex:1;min-width:210px;margin:0">🎯 Ubícala en la línea (Mixto)</button>
+        <button class="chip" id="drill-c">Solo Carnegie (5)</button>
+        <button class="chip" id="drill-p">Solo Pollo (4)</button>
+      </div>
+      <div class="seg" id="ltabs">
+        <button data-t="carnegie" class="${isC?"on":""}">Humana C11–23 (26)</button>
+        <button data-t="pollo" class="${isP?"on":""}">Pollo 12h–35s (15)</button>
+        <button data-t="flow" class="${isF?"on":""}">Ruta rápida</button>
+        <button data-t="plan" class="${isPlan?"on":""}">Plan 4 h</button>
+      </div>
+      ${body}
+    </div>`;
+  $("back").onclick=menu;
+  app.querySelectorAll("#ltabs [data-t]").forEach(b=>b.onclick=()=>showLinea(b.dataset.t));
+  $("drill-all").onclick=()=>startLineaDrill("all");
+  $("drill-c").onclick=()=>startLineaDrill("carnegie");
+  $("drill-p").onclick=()=>startLineaDrill("pollo");
+  app.querySelectorAll(".lth").forEach(el=>{
+    el.onclick=()=>{
+      const p=P.find(x=>x.code===el.dataset.code); if(!p) return;
+      // build temp imgw for openLightbox
+      const box=document.createElement("div");
+      box.className="imgw";
+      box.innerHTML=`<div class="imgnest"><img class="placa" src="${p.imgSin}" alt="${p.code}"><span class="tag">Clase ${p.cls} · ${p.code}</span></div>`;
+      openLightbox(box);
+    };
+  });
+}
+
+function startLineaDrill(scope){
+  scope=scope||"all";
+  const groups=scope==="all"?LINEA_GROUPS:LINEA_GROUPS.filter(g=>g.track===scope);
+  const items=[];
+  groups.forEach(g=>{
+    g.codes.forEach(c=>{
+      const p=P.find(x=>x.code===c);
+      if(p) items.push({placa:p, group:g});
+    });
+  });
+  const qs=shuffle(items).map(it=>({
+    kind:"linea", placa:it.placa, group:it.group, groups, scope,
+    prompt:"¿En qué tramo de la línea va esta placa?"
+  }));
+  G={mode:"linea", scope, qs, i:0, ok:0, bad:0, t0:Date.now(), locked:false};
+  beep("go"); showLineaQ();
+}
+
+function showLineaQ(){
+  stopTimer(); clearFB(); scrollTop();
+  if(!G||G.mode!=="linea") return;
+  if(G.i>=G.qs.length) return lineaDrillDone();
+  const q=G.qs[G.i], p=q.placa;
+  G.locked=false;
+  setPlayLayout(true);
+  const gridCls=q.groups.length>5?" lgrid":"";
+  app.innerHTML=playWrap({
+    hud:`<div class="hud" id="screen-linea-drill">
+        <button class="ib" id="back" style="width:36px;height:36px">◀</button>
+        <div>Ubícala · ${q.scope==="all"?"Todo":q.scope==="carnegie"?"Carnegie":"Pollo"}</div>
+        <div>${G.i+1}/${G.qs.length}</div>
+        <div class="sp">${G.ok}✓ ${G.bad?G.bad+"✗":""}</div>
+      </div>`,
+    prompt:`<div class="prompt">${esc(q.prompt)}</div>`,
+    img: placaHTML({id:"iw", tag:`Clase ${p.cls} · ${p.code}`, src:p.imgSin, alt:"Placa "+p.code, on:true}),
+    body:`<div class="opts${gridCls}" id="opts">${q.groups.map((g,idx)=>
+      `<button class="opt" data-id="${g.id}" data-v="${idx}">${esc(g.short)}<small>${esc(g.range)}</small></button>`
+    ).join("")}</div>`
+  });
+  $("back").onclick=()=>showLinea();
+  bindPlacaImg(q, false);
+  wirePlacaClicks();
+  app.querySelectorAll("#opts .opt").forEach(b=>{
+    b.onclick=()=>{
+      if(G.locked) return;
+      G.locked=true;
+      const pickedId=b.dataset.id;
+      const ok=pickedId===q.group.id;
+      if(ok){ G.ok++; b.classList.add("ok"); beep("ok"); vibe(12); }
+      else {
+        G.bad++; b.classList.add("bad"); beep("bad"); vibe([30,30,30]);
+        const goodBtn=app.querySelector(`#opts .opt[data-id="${q.group.id}"]`);
+        if(goodBtn) goodBtn.classList.add("ok");
+      }
+      app.querySelectorAll("#opts .opt").forEach(x=>x.classList.add("lock"));
+      const fb=document.createElement("div");
+      fb.className="fb "+(ok?"good":"nope");
+      fb.id="screen-fb";
+      fb.innerHTML=`<h3>${ok?"¡En el punto!":"Va en: "+esc(q.group.nickname)}</h3>
+        <div class="dx">${esc(p.diagnosis)}</div>
+        <div class="els">${esc(q.group.tells[0])} · ${esc(q.group.tells[1]||"")}</div>
+        <button class="go" id="btn-next">${G.i+1<G.qs.length?"Siguiente":"Ver resultado"}</button>`;
+      $("playbody").appendChild(fb);
+      pinSideActions();
+      bindPlacaImg(q, true);
+      $("btn-next").onclick=()=>{ G.i++; showLineaQ(); };
+    };
+  });
+}
+
+function lineaDrillDone(){
+  stopTimer(); clearFB(); setPlayLayout(false);
+  const t=Math.round((Date.now()-G.t0)/1000);
+  const acc=G.qs.length?Math.round(G.ok*100/G.qs.length):0;
+  app.innerHTML=`
+    <div class="results" id="screen-results">
+      <div class="k" style="color:var(--cyan);letter-spacing:.16em;font-weight:800;font-size:12px">UBÍCALA EN LA LÍNEA</div>
+      <h2>${acc>=90?"OJO CLÍNICO":acc>=75?"BIEN AFINADO":"OTRA PASADA"}</h2>
+      <div class="bigscore">${acc}%</div>
+      <p>${G.ok}/${G.qs.length} placas · ${t}s</p>
+      <button class="go" id="again">Otra ronda</button>
+      <button class="go alt" id="linea">Ver Línea Carnegie</button>
+      <button class="go alt" id="home">Volver al menú</button>
+    </div>`;
+  $("again").onclick=()=>startLineaDrill(G.scope);
+  $("linea").onclick=()=>showLinea();
   $("home").onclick=menu;
 }
 
@@ -2233,7 +2512,7 @@ function auditQuestions(nRandom){
 }
 
 window.FB={ start, menu, showMap, showSettings, showLearnPick, startLearn,
-  showExamSetup, startExam, showExamQ, examReveal, showQ, showLearnQ, pickExamPlacas, examTarget, examProgressOn, setExamKind, switchSet, openLightbox, closeLightbox, auditQuestions, canon, sameAns, pickOptions, makeDx, makePart, makeSt, makeZone, makeAbsent,
+  showExamSetup, startExam, showExamQ, examReveal, showQ, showLearnQ, showLinea, startLineaDrill, showLineaQ, pickExamPlacas, examTarget, examProgressOn, setExamKind, switchSet, openLightbox, closeLightbox, auditQuestions, canon, sameAns, pickOptions, makeDx, makePart, makeSt, makeZone, makeAbsent,
   get state(){return G;}, getS:()=>S, setS(p){ Object.assign(S,p); save(); },
   unlockAll(){ S.free=true; save(); } };
 bindDataset();
